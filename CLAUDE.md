@@ -22,6 +22,10 @@ Phone app (dialer, call screen, call history) in the VKNXWorks Ctrl series. Kotl
 - The call screen must stay usable when the app is locked and when the phone is locked; it shows only the call.
 - Notification actions go through the non-exported `CallActionReceiver` with immutable PendingIntents.
 
+## Dependency verification
+
+Gradle checks every library and plugin download against its SHA-256 in `gradle/verification-metadata.xml` (checksums only, no PGP). When a dependency or plugin changes, run the `verification-metadata.yml` workflow (`gh api -X POST repos/VoidedKN0X/CallCtrl/actions/workflows/verification-metadata.yml/dispatches -f ref=main`), decode the file from its log, check the diff (only Maven Central, Google's Maven and the Gradle plugin portal) and commit it in the same push. Never turn verification off or make it lenient.
+
 ## Releasing
 
 - A release is published only when `versionName` in `app/build.gradle.kts` is bumped. Bump `versionCode` by 1 at the same time.
