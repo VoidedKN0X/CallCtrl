@@ -52,6 +52,10 @@ jobs:
         with:
           persist-credentials: false
 
+      # The Gradle wrapper jar in the repo must be an official Gradle release.
+      - name: Validate Gradle wrapper
+        uses: gradle/actions/wrapper-validation@ed408507eac070d1f99cc633dbcf757c94c7933a # v4
+
       - uses: actions/setup-java@cf277c60eb25467037889841efdb72551f06f6c3 # v4
         with:
           distribution: temurin
@@ -128,6 +132,21 @@ jobs:
       - name: Remove keystore
         if: always()
         run: rm -f "$RUNNER_TEMP/release.jks"
+
+      - name: Check release signature
+        run: |
+          # The APK must be signed with CallCtrl's release key (fingerprint in SECURITY.md), or phones won't accept updates.
+          expected="8098044555fd7f3811bb9de739acac33778d22b2dab3c35d9d5e8cb968c51c13"
+          apksigner=$(ls "$ANDROID_HOME"/build-tools/*/apksigner | sort -V | tail -1)
+          for f in app/build/outputs/apk/release/*.apk; do
+            "$apksigner" verify --print-certs "$f" | tee signer.txt
+            actual=$(grep -m1 -oP 'certificate SHA-256 digest: \K[0-9a-f]+' signer.txt)
+            if [ "$actual" != "$expected" ]; then
+              echo "::error title=Wrong signing key::$f is signed with $actual, expected the CallCtrl release key $expected"
+              exit 1
+            fi
+          done
+          echo "::notice title=Signed::APK signed with the CallCtrl release key"
 
       - name: Report build errors
         if: failure()

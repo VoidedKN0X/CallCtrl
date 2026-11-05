@@ -156,7 +156,12 @@ object CallNotifications {
                 Intent(Intent.ACTION_SENDTO, Uri.fromParts("smsto", number, null)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
                 PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
             )
-            b.addAction(Notification.Action.Builder(Icon.createWithResource(context, R.drawable.ic_stat_call), context.getString(R.string.call_back), callBack).build())
+            // Calling from the phone's lock screen needs the phone unlocked first, so nobody can call out from it.
+            b.addAction(
+                Notification.Action.Builder(Icon.createWithResource(context, R.drawable.ic_stat_call), context.getString(R.string.call_back), callBack)
+                    .setAuthenticationRequired(true)
+                    .build(),
+            )
             b.addAction(Notification.Action.Builder(Icon.createWithResource(context, R.drawable.ic_stat_message), context.getString(R.string.message), message).build())
         }
         runCatching { nm.notify(ID_MISSED, b.build()) }

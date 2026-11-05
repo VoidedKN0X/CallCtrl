@@ -33,7 +33,7 @@ Part of the [Ctrl series](#the-ctrl-series) by VKNXWorks.
 
 ## Install
 
-1. Open the [latest release](https://github.com/VoidedKN0X/CallCtrl/releases/latest) on your phone, scroll down to **Assets** and tap the file that ends in `.apk` (for example `CallCtrl-v0.1.0.apk`). The "Source code" zip and tar.gz files are not the app; you don't need them.
+1. Open the [latest release](https://github.com/VoidedKN0X/CallCtrl/releases/latest) on your phone, scroll down to **Assets** and tap the file that ends in `.apk` (for example `CallCtrl-v0.1.1.apk`). The "Source code" zip and tar.gz files are not the app; you don't need them.
 2. Open it on your phone. Android may ask you to allow installing apps from your browser or file manager.
 3. Updates install over the old version. Your settings are kept.
 
@@ -71,12 +71,14 @@ Settings and About are behind your profile picture at the top right of every tab
 
 | Permission | What CallCtrl uses it for |
 | --- | --- |
-| Make and manage phone calls | Making calls, and reading which SIMs can make them. |
-| Read and write the call log | Showing your call history, and deleting calls you choose. |
-| Read your contacts | Names and photos of callers, keypad search and the Contacts tab. |
-| Notifications, full-screen alerts | The incoming call screen and banner, the ongoing call and missed calls. |
-| Wake lock, audio settings, vibration | Turning the screen off at your ear, switching speaker and earpiece, and keypad vibration. |
-| Use biometric hardware | Optional fingerprint unlock for the app lock. |
+| Make and manage phone calls (`CALL_PHONE`, `READ_PHONE_STATE`) | Making calls, and reading which SIMs can make them. |
+| Read and write the call log (`READ_CALL_LOG`, `WRITE_CALL_LOG`) | Showing your call history, and deleting calls you choose. Nothing is ever added to or changed in it. |
+| Read your contacts (`READ_CONTACTS`) | Names and photos of callers, keypad search and the Contacts tab. |
+| Notifications, full-screen alerts (`POST_NOTIFICATIONS`, `USE_FULL_SCREEN_INTENT`) | The incoming call screen and banner, the ongoing call and missed calls. |
+| Keep awake (`WAKE_LOCK`) | Turning the screen off while the phone is at your ear during a call. |
+| Use biometric hardware (`USE_BIOMETRIC`) | Optional fingerprint unlock for the app lock. |
+
+`DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION` also shows up in the app's details: it's an internal permission Android adds to every app built for Android 13 and newer, and only keeps CallCtrl's own broadcasts private. Speaker, earpiece and mute go through Android's call service, and keypad vibration through the system, so CallCtrl needs no audio-settings or vibrate permission.
 
 See [Privacy](#privacy) for what happens to your data.
 
@@ -91,12 +93,13 @@ Turn it on under **Settings > Privacy and security > App lock** (tap your profil
 - **Lock again:** as soon as you leave the app (the default), after 1, 5 or 15 minutes or 1 hour away, or only when the app restarts.
 - **Forgot your PIN?** It can't be recovered. The lock screen offers to reset CallCtrl's own settings and turn the lock off. Your call history and contacts are not deleted: they belong to your phone, not to CallCtrl.
 - **Calls are never locked:** the incoming call screen and the ongoing call always open without the PIN, and show only the call.
+- **Missed calls:** **Call back** on the missed-call notification asks you to unlock the phone first when it's locked, so nobody can call out from the lock screen. On the lock screen the notification only shows how many calls you missed, unless your phone is set to show private notification content.
 
 **Hide in screenshots** and **Hide in recent apps** (both off by default): the first keeps CallCtrl out of screenshots and screen recordings, the second shows a blank card in the recent-apps view while screenshots still work. With the app lock on, the recent-apps view always shows a blank card.
 
 ## Privacy
 
-**Telemetry-free.** CallCtrl has no analytics, crash reporting, usage stats or tracking of any kind. It has **no internet permission**, works fully offline and never connects to the internet. Every build checks that the app has no network permission and no Google libraries.
+**Telemetry-free and Google-free.** CallCtrl has no analytics, crash reporting, usage stats, ads or tracking of any kind, and no Google libraries or services. It has **no internet permission**, works fully offline and never connects to anything: there are no network destinations at all. Every build checks that the app has no network permission and no Google libraries.
 
 - Calls go through your phone's own telephony. Your call history stays in the phone's call log and your contacts in its contacts storage; CallCtrl keeps no copy, its own files hold only its settings.
 - A text you send when declining a call goes out as a normal SMS through your phone.
@@ -158,6 +161,7 @@ Native Android apps for self-hosted services and everyday tools, all with the sa
 | [PaperCtrl](https://github.com/VoidedKN0X/PaperCtrl) | Scan and browse documents on Paperless-ngx |
 | [PrintCtrl](https://github.com/VoidedKN0X/PrintCtrl) | Bambu Lab printers through Bambuddy, and Spoolman spools |
 | [ProxCtrl](https://github.com/VoidedKN0X/ProxCtrl) | Manage your Proxmox VE server |
+| [RecorderCtrl](https://github.com/VoidedKN0X/RecorderCtrl) | Private, offline voice recorder |
 | [RideCtrl](https://github.com/VoidedKN0X/RideCtrl) | Offline maintenance, fuel and mod log for your vehicles |
 | [SeerrCtrl](https://github.com/VoidedKN0X/SeerrCtrl) | Request movies and shows on Seerr / Jellyseerr |
 | [SumCtrl](https://github.com/VoidedKN0X/SumCtrl) | Offline calculator, unit converter and work tools |

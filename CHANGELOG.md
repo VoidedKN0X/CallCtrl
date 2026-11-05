@@ -4,6 +4,24 @@ What changed in each CallCtrl release. Every release on the [Releases page](http
 
 To publish a new version: bump `versionCode` and `versionName` in `app/build.gradle.kts`, add a section here, and push to `main`. Pushes without a version bump only build; they don't make a release.
 
+## v0.1.1 (2026-11-05)
+
+A privacy and security check-up: two permissions fewer, and no calling out from the lock screen.
+
+### Security
+
+- **Call back needs an unlocked phone**: tapping **Call back** on a missed-call notification on the phone's lock screen placed the call straight away, without unlocking. It now asks you to unlock the phone first, like **Message** already did. When the phone is unlocked it calls back right away as before.
+
+### Privacy
+
+- **Two permissions fewer**: CallCtrl no longer has the "change your audio settings" and "control vibration" permissions. Switching between speaker and earpiece and muting go through Android's call service, and keypad vibration through the system, so neither was ever used. Everything works as before.
+- **Fewer log messages**: release builds now strip debug and info log messages from the libraries CallCtrl uses as well (CallCtrl itself writes nothing to the system log).
+
+### Project
+
+- README: the permissions table names every permission the app has, the Privacy section says CallCtrl is Google-free with no network destinations at all, the App lock section covers **Call back** on the lock screen, and the Ctrl series list shows all 28 apps.
+- The build now also checks that the Gradle wrapper is an official Gradle release and that the APK is signed with CallCtrl's release key before it's published. `.gitignore` also keeps `google-services.json` out of the repo.
+
 ## v0.1.0 (2026-11-05)
 
 The first release of CallCtrl: a private, offline phone app in the Ctrl series, made to replace your phone's dialer and call screen on any Android 13+ phone.
