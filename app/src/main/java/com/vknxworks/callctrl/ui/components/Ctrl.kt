@@ -413,11 +413,13 @@ fun CtrlAlertDialog(
     title: (@Composable () -> Unit)? = null,
     text: (@Composable () -> Unit)? = null,
     shielded: Boolean = false,
+    /** The app lock's own dialogs ("Forgot PIN?"): also hidden from apps misusing accessibility. */
+    lockDialog: Boolean = false,
 ) {
     AlertDialog(
         onDismissRequest = onDismissRequest,
         confirmButton = {
-            if (shielded) ShieldDialogWindow()
+            if (shielded || lockDialog) ShieldDialogWindow(sensitiveData = lockDialog)
             confirmButton()
         },
         dismissButton = dismissButton,

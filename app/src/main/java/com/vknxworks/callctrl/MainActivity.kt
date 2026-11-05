@@ -78,10 +78,10 @@ fun CtrlWindow(activity: ComponentActivity, content: @Composable () -> Unit) {
         else activity.window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
         activity.setRecentsScreenshotEnabled(!blankRecents)
     }
-    // The lock screen and PIN screens: no other app's floating window over them, and their content hidden from apps
-    // misusing accessibility. Lifted again when they close, so overlays keep working in the rest of the app.
+    // The lock screen and PIN screens (only those): no other app's floating window over them, and their content
+    // hidden from apps misusing accessibility. Lifted again when they close, so overlays keep working in the rest of the app.
     val shielded = lockCovering(c.vault)
-    LaunchedEffect(shielded) { activity.window.shield(shielded) }
+    LaunchedEffect(shielded) { activity.window.shield(shielded, sensitiveData = shielded) }
     CallCtrlTheme(dark) {
         AppLockGate { content() }
     }
