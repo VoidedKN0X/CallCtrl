@@ -6,7 +6,6 @@ import android.app.role.RoleManager
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -71,7 +70,7 @@ fun missingPermissions(context: Context): List<String> = REQUIRED_PERMISSIONS.fi
 
 /** Android 14+ lets you turn off full-screen alerts; incoming calls then only show as a banner. */
 fun canFullScreen(context: Context): Boolean =
-    Build.VERSION.SDK_INT < 34 || context.getSystemService(NotificationManager::class.java)?.canUseFullScreenIntent() != false
+    context.getSystemService(NotificationManager::class.java)?.canUseFullScreenIntent() != false
 
 fun openFullScreenSettings(context: Context) {
     AppLock.expectReturn()

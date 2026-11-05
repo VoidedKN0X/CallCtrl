@@ -17,7 +17,7 @@ Phone app (dialer, call screen, call history) in the VKNXWorks Ctrl series. Kotl
 - **Telemetry-free:** no analytics or crash reporting.
 - arm64-v8a only. Every user-facing string goes in `strings.xml` (shared Ctrl strings in `strings_ctrl.xml`).
 - Settings open only from the profile picture. No settings tab, menu or gear icon, no You tab.
-- Must work as a normal user app on any ROM (Android 13+), not only when built into the system.
+- Must work as a normal user app on any ROM (Android 15+), not only when built into the system.
 - Never declare `android.telecom.IN_CALL_SERVICE_RINGING`: Android plays the ringtone (with per-contact ringtones).
 - The call screen must stay usable when the app is locked and when the phone is locked; it shows only the call.
 - Notification actions go through the non-exported `CallActionReceiver` with immutable PendingIntents.

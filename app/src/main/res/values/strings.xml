@@ -48,7 +48,6 @@
     <string name="clear_history_body">Every call is removed from this phone\'s call history. This can\'t be undone.</string>
     <string name="open_contact">Open contact</string>
     <string name="copy_number">Copy number</string>
-    <string name="copied">Copied</string>
     <string name="block">Block number</string>
     <string name="block_sub">No more calls or texts from this number</string>
     <string name="unblock">Unblock number</string>

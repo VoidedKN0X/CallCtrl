@@ -2,7 +2,7 @@
 
 **A private, offline phone app that replaces your phone's dialer and call screen.**
 
-[![Latest release](https://img.shields.io/github/v/release/VoidedKN0X/CallCtrl?label=download)](https://github.com/VoidedKN0X/CallCtrl/releases/latest) ![Android 13+](https://img.shields.io/badge/Android-13%2B-3DDC84?logo=android&logoColor=white) [![License: GPL-3.0](https://img.shields.io/badge/license-GPL--3.0-blue)](LICENSE) ![Telemetry-free](https://img.shields.io/badge/telemetry-none-brightgreen) ![Offline](https://img.shields.io/badge/internet-none-brightgreen) [![Sponsor](https://img.shields.io/badge/sponsor-GitHub-ea4aaa?logo=githubsponsors&logoColor=white)](https://github.com/sponsors/VoidedKN0X)
+[![Latest release](https://img.shields.io/github/v/release/VoidedKN0X/CallCtrl?label=download)](https://github.com/VoidedKN0X/CallCtrl/releases/latest) ![Android 15+](https://img.shields.io/badge/Android-15%2B-3DDC84?logo=android&logoColor=white) [![License: GPL-3.0](https://img.shields.io/badge/license-GPL--3.0-blue)](LICENSE) ![Telemetry-free](https://img.shields.io/badge/telemetry-none-brightgreen) ![Offline](https://img.shields.io/badge/internet-none-brightgreen) [![Sponsor](https://img.shields.io/badge/sponsor-GitHub-ea4aaa?logo=githubsponsors&logoColor=white)](https://github.com/sponsors/VoidedKN0X)
 
 CallCtrl is a full phone app: a keypad with contact search, your call history, your contacts with a number, and the call screen for incoming and ongoing calls. Calls themselves still go through your phone's own telephony, so your SIM, carrier features and emergency calls work exactly as before. It never goes online.
 
@@ -27,7 +27,7 @@ Part of the [Ctrl series](#the-ctrl-series) by VKNXWorks.
 
 ## Requirements
 
-- Android 13 or newer, on a 64-bit ARM phone (nearly every phone from the last several years)
+- Android 15 or newer, on a 64-bit ARM phone (nearly every phone from the last several years)
 - Works on any Android ROM as a normal app: stock Android, LineageOS, GrapheneOS, CalyxOS, /e/OS and the phone makers' own systems. It doesn't need root or to be built into the system.
 - **Google-free and de-Googled:** no Google Play services, Firebase or other Google libraries, and the app never contacts Google.
 
@@ -44,7 +44,7 @@ Part of the [Ctrl series](#the-ctrl-series) by VKNXWorks.
 
 If the Obtainium button doesn't open the app, add `https://github.com/VoidedKN0X/CallCtrl` in Obtainium by hand.
 
-**Make it your phone app:** the first time you open CallCtrl it asks to become your default phone app. You can also do it later in **Settings > Phone app** or in Android's **Settings > Apps > Default apps > Phone app**. To go back, pick your old phone app there. CallCtrl works as a normal app on any Android 13+ ROM; it doesn't need to be built into the system.
+**Make it your phone app:** the first time you open CallCtrl it asks to become your default phone app. You can also do it later in **Settings > Phone app** or in Android's **Settings > Apps > Default apps > Phone app**. To go back, pick your old phone app there. CallCtrl works as a normal app on any Android 15+ ROM; it doesn't need to be built into the system.
 
 ## Getting started
 
@@ -105,7 +105,7 @@ Turn it on under **Settings > Privacy and security > App lock** (tap your profil
 
 - Calls go through your phone's own telephony. Your call history stays in the phone's call log and your contacts in its contacts storage; CallCtrl keeps no copy, its own files hold only its settings.
 - A text you send when declining a call goes out as a normal SMS through your phone.
-- Copied numbers are marked as sensitive, so Android 13+ doesn't show them in the clipboard preview.
+- Copied numbers are marked as sensitive, so Android doesn't show them in the clipboard preview.
 - CallCtrl is left out of Android's cloud backup and its phone-to-phone transfer.
 - The Support, Report a bug, Source code and Licence links on the You page open in your browser, only when you tap them.
 

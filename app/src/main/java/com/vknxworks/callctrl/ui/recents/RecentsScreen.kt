@@ -343,5 +343,4 @@ fun copy(context: Context, text: String) {
     val clip = ClipData.newPlainText("", text)
     clip.description.extras = PersistableBundle().apply { putBoolean("android.content.extra.IS_SENSITIVE", true) }
     cm.setPrimaryClip(clip)
-    if (android.os.Build.VERSION.SDK_INT < 33) Toast.makeText(context, context.getString(R.string.copied), Toast.LENGTH_SHORT).show()
 }

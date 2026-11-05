@@ -444,12 +444,10 @@ fun NameDialog(title: String, initial: String, confirm: String = stringResource(
  */
 fun android.view.Window.shield(on: Boolean, sensitiveData: Boolean = false) {
     runCatching { setHideOverlayWindows(on) }
-    if (android.os.Build.VERSION.SDK_INT >= 34) {
-        runCatching {
-            decorView.setAccessibilityDataSensitive(
-                if (on && sensitiveData) android.view.View.ACCESSIBILITY_DATA_SENSITIVE_YES else android.view.View.ACCESSIBILITY_DATA_SENSITIVE_AUTO,
-            )
-        }
+    runCatching {
+        decorView.setAccessibilityDataSensitive(
+            if (on && sensitiveData) android.view.View.ACCESSIBILITY_DATA_SENSITIVE_YES else android.view.View.ACCESSIBILITY_DATA_SENSITIVE_AUTO,
+        )
     }
 }
 
