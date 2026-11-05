@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Shell texts for this app -->
+    <string name="settings_subtitle">Phone app, keypad, recents and privacy</string>
+    <string name="app_lock_subtitle">Ask for an app PIN (and optionally your fingerprint) when opening CallCtrl. Incoming calls can always be answered.</string>
+    <string name="app_lock_footer">CallCtrl works fully offline: it has no internet permission, analytics or tracking. Your calls go through your phone\'s own telephony, and the call history stays in your phone\'s call log.</string>
+    <string name="lock_prompt_subtitle">Your calls and contacts</string>
+    <string name="lock_forgot_body">The PIN can\'t be recovered. CallCtrl will reset its own settings and turn the app lock off. Your call history and contacts are not deleted.</string>
+
+    <!-- Tabs -->
+    <string name="tab_keypad">Keypad</string>
+    <string name="tab_recents">Recents</string>
+    <string name="tab_contacts">Contacts</string>
+
+    <!-- Setup -->
+    <string name="setup_default_title">Make CallCtrl your phone app</string>
+    <string name="setup_default_body">As your phone app, CallCtrl shows incoming and ongoing calls, the call history and missed calls. Android keeps handling the calls themselves.</string>
+    <string name="setup_default_button">Set as phone app</string>
+    <string name="setup_default_skip">Not now</string>
+    <string name="setup_perm_title">Allow calls, call history and contacts</string>
+    <string name="setup_perm_body">CallCtrl needs to make calls, read your call history and contacts, and show call notifications. Nothing leaves the phone.</string>
+    <string name="setup_perm_blocked">Some permissions are turned off for CallCtrl. Turn on Phone, Call logs, Contacts and Notifications in the app\'s permissions.</string>
+    <string name="setup_perm_button">Allow</string>
+    <string name="open_settings">Open app settings</string>
+
+    <!-- Keypad -->
+    <string name="action_call">Call</string>
+    <string name="backspace">Delete</string>
+    <string name="add_to_contacts">Add to contacts</string>
+    <string name="message">Message</string>
+    <string name="choose_sim">Call with</string>
+    <string name="call_failed">Couldn\'t start the call</string>
+    <string name="need_phone_permission">Allow the Phone permission for CallCtrl to make calls</string>
+    <string name="voicemail_failed">No voicemail number is set for this SIM</string>
+    <string name="no_app">No app on this phone can open that</string>
+    <string name="return_to_call">Back to call · %1$s</string>
+
+    <!-- Recents -->
+    <string name="filter_all">All</string>
+    <string name="filter_missed">Missed</string>
+    <string name="no_calls">No calls yet</string>
+    <string name="no_missed">No missed calls</string>
+    <string name="private_number">Private number</string>
+    <string name="unknown_caller">Unknown</string>
+    <string name="yesterday">Yesterday</string>
+    <string name="clear_history">Clear call history</string>
+    <string name="clear_history_title">Clear call history?</string>
+    <string name="clear_history_body">Every call is removed from this phone\'s call history. This can\'t be undone.</string>
+    <string name="open_contact">Open contact</string>
+    <string name="copy_number">Copy number</string>
+    <string name="copied">Copied</string>
+    <string name="block">Block number</string>
+    <string name="block_sub">No more calls or texts from this number</string>
+    <string name="unblock">Unblock number</string>
+    <string name="unblock_sub">Calls and texts from this number come through again</string>
+    <string name="block_failed">Couldn\'t change the blocked numbers</string>
+    <plurals name="delete_calls">
+        <item quantity="one">Delete this call</item>
+        <item quantity="other">Delete these %d calls</item>
+    </plurals>
+    <string name="call_list">Calls</string>
+    <string name="type_incoming">Incoming call</string>
+    <string name="type_outgoing">Outgoing call</string>
+    <string name="type_missed">Missed call</string>
+    <string name="type_declined">Declined call</string>
+    <string name="type_blocked">Blocked call</string>
+    <string name="type_voicemail">Voicemail</string>
+
+    <!-- Contacts tab -->
+    <string name="search_contacts">Search contacts</string>
+    <string name="search_none">Nothing found for “%1$s”</string>
+    <string name="no_contacts">No contacts with a phone number</string>
+    <string name="no_contacts_body">Contacts you save with a number show up here.</string>
+    <string name="favourites">Favourites</string>
+    <string name="add_contact">Add contact</string>
+
+    <!-- Call screen -->
+    <string name="state_incoming">Incoming call</string>
+    <string name="state_calling">Calling…</string>
+    <string name="state_ongoing">Ongoing call</string>
+    <string name="state_held">On hold</string>
+    <string name="state_waiting">Call waiting</string>
+    <string name="state_choose_sim">Choose a SIM</string>
+    <string name="state_ended">Call ended</string>
+    <string name="conference">Conference call (%1$d)</string>
+    <string name="answer">Answer</string>
+    <string name="decline">Decline</string>
+    <string name="end_call">End call</string>
+    <string name="mute">Mute</string>
+    <string name="unmute">Unmute</string>
+    <string name="keypad">Keypad</string>
+    <string name="hide_keypad">Hide keypad</string>
+    <string name="hold">Hold</string>
+    <string name="resume">Resume</string>
+    <string name="add_call">Add call</string>
+    <string name="swap">Swap</string>
+    <string name="merge">Merge</string>
+    <string name="route_speaker">Speaker</string>
+    <string name="route_phone">Phone</string>
+    <string name="route_headset">Headset</string>
+    <string name="route_bluetooth">Bluetooth</string>
+    <string name="reply_with_message">Reply with a message</string>
+    <string name="reply_1">Can\'t talk now. Call you later?</string>
+    <string name="reply_2">I\'ll call you right back.</string>
+    <string name="reply_3">I\'m in a meeting, I\'ll call you after.</string>
+    <string name="reply_custom">Write your own…</string>
+    <string name="send">Send</string>
+
+    <!-- Notifications -->
+    <string name="ch_incoming">Incoming calls</string>
+    <string name="ch_incoming_desc">The incoming call screen and banner. The ringtone is played by your phone.</string>
+    <string name="ch_ongoing">Ongoing calls</string>
+    <string name="ch_ongoing_desc">The call you\'re in, with hang up</string>
+    <string name="ch_missed">Missed calls</string>
+    <string name="ch_missed_desc">Calls you didn\'t answer</string>
+    <string name="missed_one">Missed call</string>
+    <plurals name="missed_many">
+        <item quantity="one">%d missed call</item>
+        <item quantity="other">%d missed calls</item>
+    </plurals>
+    <string name="missed_last">Last from %1$s</string>
+    <string name="call_back">Call back</string>
+
+    <!-- Settings -->
+    <string name="group_phone_app">Phone app</string>
+    <string name="phone_app_footer">Calls always go through your phone\'s own telephony. Your SIM, carrier and emergency calls work the same as before.</string>
+    <string name="default_phone_app">Default phone app</string>
+    <string name="default_yes">CallCtrl is your phone app</string>
+    <string name="default_no">Another app is your phone app. Tap to change</string>
+    <string name="full_screen_calls">Show calls on the lock screen</string>
+    <string name="full_screen_calls_sub">Full-screen alerts are off for CallCtrl, so incoming calls only show as a notification. Tap to allow</string>
+    <string name="blocked_numbers">Blocked numbers</string>
+    <string name="blocked_numbers_sub">Numbers that can\'t call or text you</string>
+    <string name="calling_accounts">SIMs and calling accounts</string>
+    <string name="calling_accounts_sub">Which SIM calls go out on, in Android\'s settings</string>
+    <string name="ringtone">Ringtone</string>
+    <string name="ringtone_sub">Your phone\'s ringtone and vibration, in Android\'s sound settings</string>
+    <string name="group_keypad">Keypad</string>
+    <string name="keypad_tones">Keypad tones</string>
+    <string name="keypad_tones_sub">A tone for each key while dialling (when your phone\'s dial pad tones are on too)</string>
+    <string name="keypad_haptics">Vibrate on key press</string>
+    <string name="keypad_haptics_sub">A short tick on every key</string>
+    <string name="group_calls">Group calls</string>
+    <string name="group_calls_sub">Calls in a row with the same number on one line</string>
+    <string name="recents_footer">The call history is your phone\'s own call log, shared with other phone apps. CallCtrl keeps no copy.</string>
+    <string name="block_number">Block a number</string>
+    <string name="blocked_empty">No blocked numbers</string>
+    <string name="blocked_empty_body">Block a number here, or from a call in Recents.</string>
+    <string name="blocked_footer">Your phone blocks these numbers for every app: calls don\'t ring and texts don\'t arrive.</string>
+</resources>
