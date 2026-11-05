@@ -401,7 +401,10 @@ fun CtrlProgressBar(progress: Float, modifier: Modifier = Modifier, color: Color
 
 // ---------- Dialogs and sheets ----------
 
-/** Dialog on the surface colour, 26dp corners and a 1dp border. */
+/**
+ * Dialog on the surface colour, 26dp corners and a 1dp border. [shielded] for destructive confirmations and
+ * "Forgot PIN?": no other app's floating window over it while it shows (see [shield]).
+ */
 @Composable
 fun CtrlAlertDialog(
     onDismissRequest: () -> Unit,
@@ -409,10 +412,14 @@ fun CtrlAlertDialog(
     dismissButton: (@Composable () -> Unit)? = null,
     title: (@Composable () -> Unit)? = null,
     text: (@Composable () -> Unit)? = null,
+    shielded: Boolean = false,
 ) {
     AlertDialog(
         onDismissRequest = onDismissRequest,
-        confirmButton = confirmButton,
+        confirmButton = {
+            if (shielded) ShieldDialogWindow()
+            confirmButton()
+        },
         dismissButton = dismissButton,
         title = title,
         text = text,

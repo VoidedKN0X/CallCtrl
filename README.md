@@ -66,6 +66,7 @@ Settings and About are behind your profile picture at the top right of every tab
   ```
 
   Advanced users can check it with [AppVerifier](https://github.com/soupslurpr/AppVerifier).
+- **Check a download.** Each release's notes end with the APK's SHA-256, so you can check the file you downloaded (`sha256sum CallCtrl-vX.Y.Z.apk`). With the [GitHub CLI](https://cli.github.com/), `gh attestation verify CallCtrl-vX.Y.Z.apk -R VoidedKN0X/CallCtrl` proves the APK was built by this repo's build workflow from the tagged commit. The signing-certificate fingerprint above stays the check Android and AppVerifier use.
 
 **Permissions.** CallCtrl has **no internet permission**: it can't go online at all. It asks only for what it needs, when it needs it:
 
@@ -77,6 +78,7 @@ Settings and About are behind your profile picture at the top right of every tab
 | Notifications, full-screen alerts (`POST_NOTIFICATIONS`, `USE_FULL_SCREEN_INTENT`) | The incoming call screen and banner, the ongoing call and missed calls. |
 | Keep awake (`WAKE_LOCK`) | Turning the screen off while the phone is at your ear during a call. |
 | Use biometric hardware (`USE_BIOMETRIC`) | Optional fingerprint unlock for the app lock. |
+| Hide other apps' floating windows (`HIDE_OVERLAY_WINDOWS`) | Hide other apps' floating windows over the PIN screen, and over the lock screen and confirmations, only while they show (never over the call screen). Granted at install, without a prompt. It isn't a network permission. |
 
 `DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION` also shows up in the app's details: it's an internal permission Android adds to every app built for Android 13 and newer, and only keeps CallCtrl's own broadcasts private. Speaker, earpiece and mute go through Android's call service, and keypad vibration through the system, so CallCtrl needs no audio-settings or vibrate permission.
 
@@ -128,6 +130,8 @@ You need [Android Studio](https://developer.android.com/studio), or JDK 17 and t
 3. The APK is in `app/build/outputs/apk/debug/`. Copy it to your phone and install it.
 
 Or open the folder in Android Studio and press **Run** with your phone connected.
+
+**Dependency verification:** every library and Gradle plugin the build downloads is checked against its SHA-256 in `gradle/verification-metadata.xml`, and the build stops if one doesn't match. When you add or update a dependency or plugin, run the **Dependency verification metadata** workflow from the Actions tab, check the diff of the file it prints, and commit the new `gradle/verification-metadata.xml` in the same push.
 
 ## Support the project
 

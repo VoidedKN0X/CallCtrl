@@ -400,6 +400,7 @@ fun WarningCard(text: String, icon: ImageVector, modifier: Modifier = Modifier) 
 fun ConfirmDialog(title: String, body: String, confirm: String, onDismiss: () -> Unit, onConfirm: () -> Unit) {
     CtrlAlertDialog(
         onDismissRequest = onDismiss,
+        shielded = true,
         title = { Text(title, style = MaterialTheme.typography.titleLarge) },
         text = { Text(body, style = MaterialTheme.typography.bodyMedium) },
         confirmButton = { TextButton(onClick = onConfirm) { Text(confirm, color = CtrlColors.Error) } },
@@ -428,4 +429,34 @@ fun NameDialog(title: String, initial: String, confirm: String = stringResource(
         },
         dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.cancel), color = CtrlColors.Text) } },
     )
+}
+
+// ---------- Window shield ----------
+
+/**
+ * Shields a window while a PIN, lock, secret or confirmation screen shows on it: other apps' floating windows
+ * (overlays such as chat heads) are hidden over it, so they can't cover or imitate it, and on Android 14+ its
+ * content is hidden from apps that misuse accessibility access. Real accessibility tools such as TalkBack keep
+ * working. [on] = false lifts it again, so overlays keep working everywhere else in the app.
+ */
+fun android.view.Window.shield(on: Boolean) {
+    runCatching { setHideOverlayWindows(on) }
+    if (android.os.Build.VERSION.SDK_INT >= 34) {
+        runCatching {
+            decorView.setAccessibilityDataSensitive(
+                if (on) android.view.View.ACCESSIBILITY_DATA_SENSITIVE_YES else android.view.View.ACCESSIBILITY_DATA_SENSITIVE_AUTO,
+            )
+        }
+    }
+}
+
+/** Shields the dialog it's called from (a destructive or security confirmation) for as long as it shows. */
+@Composable
+fun ShieldDialogWindow() {
+    val view = androidx.compose.ui.platform.LocalView.current
+    androidx.compose.runtime.DisposableEffect(view) {
+        val window = (view.parent as? androidx.compose.ui.window.DialogWindowProvider)?.window
+        window?.shield(true)
+        onDispose { window?.shield(false) }
+    }
 }

@@ -4,6 +4,21 @@ What changed in each CallCtrl release. Every release on the [Releases page](http
 
 To publish a new version: bump `versionCode` and `versionName` in `app/build.gradle.kts`, add a section here, and push to `main`. Pushes without a version bump only build; they don't make a release.
 
+## v0.1.2 (2026-11-05)
+
+More protection for the PIN screen and confirmations, and a way to check that a download really comes from this repo. CallCtrl still has no internet permission, and calls work exactly as before.
+
+### Security
+
+- **No floating windows over the PIN screen:** while the lock screen, a PIN screen, "Forgot PIN?" or a delete confirmation is open, other apps' floating windows (chat heads, overlays) are hidden, so they can't cover or imitate it. They come back as soon as it closes, keep working everywhere else in CallCtrl and are never hidden over the call screen. This uses Android's "hide overlay windows" permission, which is granted at install without a prompt. It isn't a network permission: CallCtrl stays offline.
+- **PIN screens hidden from accessibility misuse (Android 14+):** the lock screen and PIN screens are hidden from apps that use accessibility access to read the screen. Real accessibility tools such as TalkBack keep working.
+- **Stricter about other apps' requests (Android 16+):** CallCtrl now only accepts requests from other apps that match what it declares: the launcher, `tel:` links, "dial" and "show call log" requests, the call button, and Android's call and missed-call services.
+- **Every library checked:** the build now refuses any library or build plugin whose SHA-256 doesn't match the one recorded in the repo.
+
+### Project
+
+- **Check a download:** this is the first release with GitHub build provenance. The release notes end with the APK's SHA-256, and `gh attestation verify CallCtrl-v0.1.2.apk -R VoidedKN0X/CallCtrl` proves the APK was built by this repo's workflow from the tagged commit. The README explains both, next to the signing-certificate fingerprint, and lists the new permission.
+
 ## Project updates (2026-11-05)
 
 No app changes in this push, so no new version.
