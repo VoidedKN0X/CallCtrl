@@ -4,6 +4,16 @@ What changed in each CallCtrl release. Every release on the [Releases page](http
 
 To publish a new version: bump `versionCode` and `versionName` in `app/build.gradle.kts`, add a section here, and push to `main`. Pushes without a version bump only build; they don't make a release.
 
+## v0.1.5 (2026-11-12)
+
+### Fixed
+
+- **The caller's name is readable in the dark theme.** On the call screen the name (or number) under the picture, the name above the in-call keypad, the second caller's name and the quick-reply and audio lists were drawn in black, so on the dark background you could hardly see them. Text now takes its colour from the theme everywhere in the app: light on the dark background, dark on the light one, and it changes with your phone's dark mode.
+
+### Changed
+
+- **Slightly smaller download.** The bundled JetBrains Mono font (numbers, readouts and labels) no longer carries the Cyrillic, Vietnamese and maths-alphabet letters CallCtrl never shows itself, which takes about 0.1 MB off the download and 0.2 MB off the installed app. Everything looks the same; if a name or a log line shown in that font uses one of those scripts, those letters are now drawn with your phone's own font.
+
 ## v0.1.4 (2026-11-05)
 
 CallCtrl now needs Android 15 or newer.

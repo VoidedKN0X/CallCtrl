@@ -2,6 +2,7 @@ package com.vknxworks.callctrl.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Shapes
 import androidx.compose.material3.Typography
@@ -295,7 +296,11 @@ fun CallCtrlTheme(dark: Boolean = isSystemInDarkTheme(), content: @Composable ()
             colorScheme = if (dark) DarkScheme else LightScheme,
             typography = AppTypography,
             shapes = AppShapes,
-            content = content,
-        )
+        ) {
+            // Text and icons that don't name a colour take the theme's text colour. Without this they fall
+            // back to Compose's default, black, on any screen that isn't inside a Surface (dark text on the
+            // dark background). Surfaces and the Ctrl components still set their own colour for their fill.
+            CompositionLocalProvider(LocalContentColor provides palette.Text, content = content)
+        }
     }
 }
