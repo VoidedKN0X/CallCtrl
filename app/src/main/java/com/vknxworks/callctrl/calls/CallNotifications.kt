@@ -23,8 +23,11 @@ object CallNotifications {
     const val CH_INCOMING = "incoming_calls"
     const val CH_ONGOING = "ongoing_calls"
     const val CH_MISSED = "missed_calls"
+    const val CH_SCREENED = "screened_calls"
     private const val ID_CALL = 1
     const val ID_MISSED = 2
+    private const val ID_SCREENED = 3
+    private var screenedCount = 0
     private val photos = android.util.LruCache<String, Bitmap>(8)
 
     fun channels(context: Context) {
@@ -44,6 +47,13 @@ object CallNotifications {
         })
         nm.createNotificationChannel(NotificationChannel(CH_MISSED, context.getString(R.string.ch_missed), NotificationManager.IMPORTANCE_DEFAULT).apply {
             description = context.getString(R.string.ch_missed_desc)
+        })
+        // Rejected by call screening: quiet (no sound, no vibration, no banner), only in the notification shade.
+        nm.createNotificationChannel(NotificationChannel(CH_SCREENED, context.getString(R.string.ch_screened), NotificationManager.IMPORTANCE_LOW).apply {
+            description = context.getString(R.string.ch_screened_desc)
+            setSound(null, null)
+            enableVibration(false)
+            setShowBadge(false)
         })
     }
 
@@ -165,5 +175,37 @@ object CallNotifications {
             b.addAction(Notification.Action.Builder(Icon.createWithResource(context, R.drawable.ic_stat_message), context.getString(R.string.message), message).build())
         }
         runCatching { nm.notify(ID_MISSED, b.build()) }
+    }
+
+    /**
+     * "Rejected a call from +44 20 …": a quiet notification after call screening rejected a call. Calls rejected
+     * while it's still showing are counted on it. Tapping it opens Recents.
+     */
+    @Synchronized
+    fun screened(context: Context, number: String?) {
+        channels(context)
+        val nm = context.getSystemService(NotificationManager::class.java) ?: return
+        val stillShowing = runCatching { nm.activeNotifications.any { it.id == ID_SCREENED } }.getOrDefault(false)
+        screenedCount = if (stillShowing) screenedCount + 1 else 1
+        val count = screenedCount
+        val who = number?.let { Phone.format(context, it) } ?: context.getString(R.string.unknown_caller)
+        val open = PendingIntent.getActivity(
+            context, 20,
+            Intent(context, MainActivity::class.java).setAction(MainActivity.ACTION_SHOW_RECENTS).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
+        )
+        val title = context.resources.getQuantityString(R.plurals.screened_title, count, count)
+        val n = Notification.Builder(context, CH_SCREENED)
+            .setSmallIcon(R.drawable.ic_stat_blocked)
+            .setContentTitle(title)
+            .setContentText(if (count == 1) who else context.getString(R.string.screened_last, who))
+            .setCategory(Notification.CATEGORY_STATUS)
+            .setContentIntent(open)
+            .setAutoCancel(true)
+            .setOnlyAlertOnce(true)
+            .setVisibility(Notification.VISIBILITY_PRIVATE)
+            .setPublicVersion(Notification.Builder(context, CH_SCREENED).setSmallIcon(R.drawable.ic_stat_blocked).setContentTitle(title).build())
+            .build()
+        runCatching { nm.notify(ID_SCREENED, n) }
     }
 }

@@ -75,6 +75,7 @@ import com.vknxworks.callctrl.ui.dialer.KeypadScreen
 import com.vknxworks.callctrl.ui.people.PeopleScreen
 import com.vknxworks.callctrl.ui.recents.RecentsScreen
 import com.vknxworks.callctrl.ui.settings.BlockedScreen
+import com.vknxworks.callctrl.ui.settings.ScreeningScreen
 import com.vknxworks.callctrl.ui.settings.SettingsScreen
 import com.vknxworks.callctrl.ui.settings.YouScreen
 import com.vknxworks.callctrl.ui.theme.CtrlColors
@@ -201,6 +202,7 @@ private fun AppNavHost(navController: NavHostController) {
         composable<YouRoute> { YouScreen() }
         composable<SettingsRoute> { SettingsScreen() }
         composable<BlockedRoute> { BlockedScreen() }
+        composable<ScreeningRoute> { ScreeningScreen() }
     }
 }
 

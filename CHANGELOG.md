@@ -4,6 +4,26 @@ What changed in each CallCtrl release. Every release on the [Releases page](http
 
 To publish a new version: bump `versionCode` and `versionName` in `app/build.gradle.kts`, add a section here, and push to `main`. Pushes without a version bump only build; they don't make a release.
 
+## v0.2.0 (2026-11-13)
+
+Call screening: decide which calls ring, which ring silently and which are turned away, with your own rules. Still fully offline, with no new permissions.
+
+### New
+
+- **Call screening** (Settings > Phone app > Call screening, off until you turn it on). Before a call rings, CallCtrl checks it against your rules and rejects it, lets it ring silently, or lets it through. It works while CallCtrl is your default phone app.
+- **Rules by number:** "starts with" (for example +44 or 0900), one exact number, or a simple pattern where ? is one digit and * any number of digits (for example +32 4?? 12 *). Spaces and dashes don't matter, and +32 and 0 forms of the same number both match.
+- **Rules for who is calling:** callers who aren't in your contacts, and hidden or private numbers.
+- **Three actions:** Reject declines the call without ringing; Silence lets it ring without sound or vibration, so it ends up as a missed call; Allow always lets it through. When several rules match, Allow wins, then Reject, then Silence, so you can make exceptions (for example: silence everyone who isn't a contact, but allow your doctor's number).
+- **Your callers list:** numbers you always want rejected or silenced, even when they're saved in your contacts.
+- **Contacts always ring** (on by default): calls from your contacts skip the rules.
+- **Rejected calls in Recents:** they're kept in your call history as blocked calls (you can turn this off), and an optional quiet notification tells you a call was rejected, without sound or a banner.
+- **Emergency numbers are never screened**, whatever your rules say.
+- **Import and export:** save every rule, your callers list and your blocked numbers as a JSON file, or as a CSV file (one line per rule or number) for a spreadsheet or another app, and import them again on another phone. Importing adds to what you have and checks every line; a plain list of numbers is imported as numbers to block.
+- **Blocked numbers stay shared:** the blocked list is still your phone's own list, so numbers you block in CallCtrl are blocked in your messaging app too, and the other way round. Android blocks them before your screening rules are checked.
+
+### Changed
+
+- **"Forgot PIN?"** now also resets the call screening rules, along with CallCtrl's other settings. Your call history, contacts and blocked numbers are still not deleted.
 ## v0.1.5 (2026-11-12)
 
 ### Fixed

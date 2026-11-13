@@ -59,6 +59,9 @@ import com.vknxworks.callctrl.ui.lock.AppLock
 import com.vknxworks.callctrl.ui.lock.PinRequest
 import com.vknxworks.callctrl.ui.lock.findActivity
 import com.vknxworks.callctrl.ui.nav.BlockedRoute
+import com.vknxworks.callctrl.ui.nav.ScreeningRoute
+import androidx.compose.material.icons.outlined.PhoneLocked
+import androidx.compose.ui.res.pluralStringResource
 import com.vknxworks.callctrl.ui.nav.LocalNavigator
 import com.vknxworks.callctrl.ui.setup.canFullScreen
 import com.vknxworks.callctrl.ui.setup.openFullScreenSettings
@@ -123,6 +126,18 @@ private fun PhoneAppGroup() {
                 onClick = { openFullScreenSettings(context) },
             )
         }
+        val screening by context.container.screening.config.collectAsStateWithLifecycle()
+        GroupRow(
+            stringResource(R.string.screening),
+            if (screening.enabled) {
+                stringResource(R.string.screening_sub_on, pluralStringResource(R.plurals.screening_rules_count, screening.rules.size, screening.rules.size))
+            } else {
+                stringResource(R.string.screening_sub_off)
+            },
+            icon = Icons.Outlined.PhoneLocked,
+            showChevron = true,
+            onClick = { nav.navigate(ScreeningRoute) },
+        )
         if (canBlock) {
             GroupRow(stringResource(R.string.blocked_numbers), stringResource(R.string.blocked_numbers_sub), icon = Icons.Outlined.Block, showChevron = true, onClick = { nav.navigate(BlockedRoute) })
         }

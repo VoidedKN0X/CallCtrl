@@ -5,7 +5,7 @@
     <string name="app_lock_subtitle">Ask for an app PIN (and optionally your fingerprint) when opening CallCtrl. Incoming calls can always be answered.</string>
     <string name="app_lock_footer">CallCtrl works fully offline: it has no internet permission, analytics or tracking. Your calls go through your phone\'s own telephony, and the call history stays in your phone\'s call log.</string>
     <string name="lock_prompt_subtitle">Your calls and contacts</string>
-    <string name="lock_forgot_body">The PIN can\'t be recovered. CallCtrl will reset its own settings and turn the app lock off. Your call history and contacts are not deleted.</string>
+    <string name="lock_forgot_body">The PIN can\'t be recovered. CallCtrl will reset its own settings and call screening rules and turn the app lock off. Your call history, contacts and blocked numbers are not deleted.</string>
 
     <!-- Tabs -->
     <string name="tab_keypad">Keypad</string>
@@ -146,4 +146,98 @@
     <string name="blocked_empty">No blocked numbers</string>
     <string name="blocked_empty_body">Block a number here, or from a call in Recents.</string>
     <string name="blocked_footer">Your phone blocks these numbers for every app: calls don\'t ring and texts don\'t arrive.</string>
+    <!-- Call screening -->
+    <string name="ch_screened">Screened calls</string>
+    <string name="ch_screened_desc">A quiet note when call screening rejected a call</string>
+    <plurals name="screened_title">
+        <item quantity="one">Rejected %d call</item>
+        <item quantity="other">Rejected %d calls</item>
+    </plurals>
+    <string name="screened_last">Last from %1$s</string>
+    <string name="screening">Call screening</string>
+    <string name="screening_sub_on">On: %1$s</string>
+    <string name="screening_sub_off">Off. Reject or silence calls by number, hidden callers or people not in your contacts</string>
+    <plurals name="screening_rules_count">
+        <item quantity="one">%d rule</item>
+        <item quantity="other">%d rules</item>
+    </plurals>
+    <string name="screening_not_default">Call screening only works while CallCtrl is your default phone app.</string>
+    <string name="screening_enable">Screen calls</string>
+    <string name="screening_enable_sub">Check every incoming call against your rules before it rings</string>
+    <string name="screening_contacts">Contacts always ring</string>
+    <string name="screening_contacts_sub">Calls from your contacts skip the rules (your callers list still applies)</string>
+    <string name="screening_log">Keep rejected calls in Recents</string>
+    <string name="screening_log_sub">Rejected calls show in your call history as blocked calls</string>
+    <string name="screening_notify">Quiet notification</string>
+    <string name="screening_notify_sub">A silent note in the notification shade when a call was rejected</string>
+    <string name="screening_footer">Emergency numbers are never screened. Numbers on your phone\'s blocked list are blocked by Android itself, before these rules.</string>
+    <string name="screening_rules">Rules</string>
+    <string name="screening_rules_footer">When several rules match a call, Allow wins, then Reject, then Silence. Reject declines the call without ringing; Silence lets it ring without sound or vibration, so it shows as a missed call.</string>
+    <string name="screening_add_rule">Add a rule</string>
+    <string name="screening_edit_rule">Edit rule</string>
+    <string name="screening_remove_rule">Remove rule</string>
+    <string name="rule_prefix">Starts with %1$s</string>
+    <string name="rule_exact">Number %1$s</string>
+    <string name="rule_pattern">Matches %1$s</string>
+    <string name="rule_not_in_contacts">Not in your contacts</string>
+    <string name="rule_hidden">Hidden numbers</string>
+    <string name="rule_kind">Which calls</string>
+    <string name="kind_prefix">Number starts with</string>
+    <string name="kind_exact">One number</string>
+    <string name="kind_pattern">Number pattern</string>
+    <string name="kind_not_in_contacts">Callers not in your contacts</string>
+    <string name="kind_hidden">Hidden or private numbers</string>
+    <string name="rule_value_prefix">Start of the number, e.g. +44 or 0900</string>
+    <string name="rule_value_exact">Phone number</string>
+    <string name="rule_value_pattern">Pattern, e.g. +32 4?? 12 *</string>
+    <string name="rule_pattern_help">\? stands for one digit and * for any number of digits. Only digits, +, ? and * count; spaces and dashes are ignored.</string>
+    <string name="rule_action">What happens</string>
+    <string name="action_reject">Reject</string>
+    <string name="action_reject_sub">Declined without ringing</string>
+    <string name="action_silence">Silence</string>
+    <string name="action_silence_sub">Rings without sound or vibration</string>
+    <string name="action_allow">Allow</string>
+    <string name="action_allow_sub">Always rings, whatever other rules say</string>
+    <string name="rule_error_empty">Type a number</string>
+    <string name="rule_error_characters">Only digits, + at the start, and ? or * in a pattern</string>
+    <string name="rule_error_no_digits">Needs at least one digit</string>
+    <string name="rule_error_too_long">Too long (32 digits at most)</string>
+    <string name="screening_list">Your callers list</string>
+    <string name="screening_list_footer">Numbers you always want rejected or silenced, even when they\'re in your contacts. Checked before the rules.</string>
+    <string name="screening_add_number">Add a number</string>
+    <string name="screening_edit_number">Edit number</string>
+    <string name="screening_remove_number">Remove from your list</string>
+    <string name="screening_show_all">Show all %1$d</string>
+    <string name="screening_blocked_sub">Your phone\'s own list, shared with your messaging app and other apps</string>
+    <string name="screening_backup">Import and export</string>
+    <string name="screening_backup_footer">The JSON file holds every rule, your callers list, the switches and your blocked numbers. The CSV file has one line per rule or number (type,value,action), for a spreadsheet or another app. Importing adds to what you have; your switches stay as they are.</string>
+    <string name="screening_export_json">Export as JSON</string>
+    <string name="screening_export_csv">Export as CSV</string>
+    <string name="screening_import">Import rules and numbers</string>
+    <string name="screening_import_sub">From a CallCtrl JSON or CSV file, or a plain list of numbers to block</string>
+    <string name="screening_exported">Exported</string>
+    <string name="screening_export_failed">Couldn\'t write the file</string>
+    <string name="screening_import_failed">Couldn\'t read this file. Pick a CallCtrl JSON or CSV export, or a list of numbers.</string>
+    <string name="screening_import_empty">Nothing to import in this file</string>
+    <string name="screening_import_title">Import?</string>
+    <string name="screening_import_body">%1$s, %2$s and %3$s will be added.</string>
+    <plurals name="screening_import_skipped">
+        <item quantity="one">%1$d line wasn\'t valid and is left out.</item>
+        <item quantity="other">%1$d lines weren\'t valid and are left out.</item>
+    </plurals>
+    <string name="screening_import_confirm">Import</string>
+    <plurals name="import_rules">
+        <item quantity="one">%d rule</item>
+        <item quantity="other">%d rules</item>
+    </plurals>
+    <plurals name="import_list">
+        <item quantity="one">%d number for your callers list</item>
+        <item quantity="other">%d numbers for your callers list</item>
+    </plurals>
+    <plurals name="import_blocked">
+        <item quantity="one">%d blocked number</item>
+        <item quantity="other">%d blocked numbers</item>
+    </plurals>
+    <string name="screening_imported">Imported</string>
+    <string name="screening_import_blocked_failed">Some numbers couldn\'t be added to the blocked list</string>
 </resources>

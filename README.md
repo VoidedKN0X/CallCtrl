@@ -19,6 +19,7 @@ Part of the [Ctrl series](#the-ctrl-series) by VKNXWorks.
 - **Contacts** with a phone number, favourites on top, search, and a choice of number for contacts with several
 - **Missed call notifications** with Call back and Message, and the caller's name only on the lock screen when your phone allows private notification content
 - **Blocked numbers:** block and unblock numbers from Recents or Settings; your phone blocks their calls and texts for every app
+- **Call screening** with your own rules: numbers that start with or match a pattern, one number, callers not in your contacts and hidden numbers, plus your own list of callers to always reject or silence. Each rule rejects, silences or allows; rejected calls can stay in Recents as blocked calls with a quiet notification. Emergency numbers are never screened. Import and export the rules and blocked numbers as JSON or CSV
 - **Two SIMs:** choose the SIM for each call when there's no default, and see which SIM a call is on
 - **The screen turns off at your ear**, and the call keeps a notification with hang up while you use other apps
 - **Works with other apps:** phone number links and "Call" buttons in other apps open CallCtrl's keypad with the number filled in
@@ -53,7 +54,7 @@ If the Obtainium button doesn't open the app, add `https://github.com/VoidedKN0X
 - **Contacts:** tap a contact to call; long-press to open it in your contacts app.
 - **During a call:** mute, keypad, speaker (or Bluetooth), hold, add a call, then swap or merge. The bar at the top of CallCtrl leads back to the call.
 
-Settings and About are behind your profile picture at the top right of every tab.
+Settings and About are behind your profile picture at the top right of every tab. Call screening is in **Settings > Phone app > Call screening**.
 
 ## Is it safe to install?
 
@@ -73,7 +74,7 @@ Settings and About are behind your profile picture at the top right of every tab
 | Permission | What CallCtrl uses it for |
 | --- | --- |
 | Make and manage phone calls (`CALL_PHONE`, `READ_PHONE_STATE`) | Making calls, and reading which SIMs can make them. |
-| Read and write the call log (`READ_CALL_LOG`, `WRITE_CALL_LOG`) | Showing your call history, and deleting calls you choose. Nothing is ever added to or changed in it. |
+| Read and write the call log (`READ_CALL_LOG`, `WRITE_CALL_LOG`) | Showing your call history, and deleting calls you choose. CallCtrl itself never adds to or changes it (calls rejected by call screening are added by Android, as blocked calls, if you keep that on). |
 | Read your contacts (`READ_CONTACTS`) | Names and photos of callers, keypad search and the Contacts tab. |
 | Notifications, full-screen alerts (`POST_NOTIFICATIONS`, `USE_FULL_SCREEN_INTENT`) | The incoming call screen and banner, the ongoing call and missed calls. |
 | Keep awake (`WAKE_LOCK`) | Turning the screen off while the phone is at your ear during a call. |
@@ -103,7 +104,7 @@ Turn it on under **Settings > Privacy and security > App lock** (tap your profil
 
 **Telemetry-free and Google-free.** CallCtrl has no analytics, crash reporting, usage stats, ads or tracking of any kind, and no Google libraries or services. It has **no internet permission**, works fully offline and never connects to anything: there are no network destinations at all. Every build checks that the app has no network permission and no Google libraries.
 
-- Calls go through your phone's own telephony. Your call history stays in the phone's call log and your contacts in its contacts storage; CallCtrl keeps no copy, its own files hold only its settings.
+- Calls go through your phone's own telephony. Your call history stays in the phone's call log and your contacts in its contacts storage; CallCtrl keeps no copy, its own files hold only its settings and your call screening rules. Screening runs on your phone; nothing about your calls leaves it.
 - A text you send when declining a call goes out as a normal SMS through your phone.
 - Copied numbers are marked as sensitive, so Android doesn't show them in the clipboard preview.
 - CallCtrl is left out of Android's cloud backup and its phone-to-phone transfer.

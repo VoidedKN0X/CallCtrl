@@ -11,3 +11,4 @@ import kotlinx.serialization.Serializable
 @Serializable data object YouRoute
 @Serializable data object SettingsRoute
 @Serializable data object BlockedRoute
+@Serializable data object ScreeningRoute

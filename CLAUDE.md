@@ -6,6 +6,7 @@ Phone app (dialer, call screen, call history) in the VKNXWorks Ctrl series. Kotl
 
 - `calls/CallService.kt`: the InCallService. `calls/CallManager.kt`: call state, controls, audio route and the proximity wake lock.
 - `calls/InCallActivity.kt` + `InCallScreen.kt`: the call screen (shows over the lock screen, never behind the app lock).
+- `calls/ScreeningService.kt`: the CallScreeningService (bound by Telecom for the default dialer, `BIND_SCREENING_SERVICE`). `data/screening/`: rules, matching and JSON/CSV import/export (pure Kotlin, unit-tested in `app/src/test`; no regex, emergency numbers never screened), `ScreeningStore` (`filesDir/screening.json`). UI in `ui/settings/ScreeningScreen.kt`.
 - `calls/CallNotifications.kt`: CallStyle notifications (incoming with full-screen intent, ongoing) and missed calls. `calls/Receivers.kt`: notification actions and Telecom's missed-call broadcast.
 - `data/Phone.kt`: placing calls, SIMs, role, number formatting. `data/CallHistory.kt`: call log and blocked numbers. `data/Contacts.kt`: contacts with numbers, caller lookup, T9.
 - `ui/dialer`, `ui/recents`, `ui/people`: the three tabs. `ui/setup/Setup.kt`: role and permission onboarding.

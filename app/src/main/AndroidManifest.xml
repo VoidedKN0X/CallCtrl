@@ -102,6 +102,18 @@
             </intent-filter>
         </service>
 
+        <!-- Call screening: as the default phone app, Android asks this service about each incoming call before it
+             rings (Settings > Call screening). Only Android can bind it (BIND_SCREENING_SERVICE); no permission is
+             added for it. -->
+        <service
+            android:name=".calls.ScreeningService"
+            android:exported="true"
+            android:permission="android.permission.BIND_SCREENING_SERVICE">
+            <intent-filter>
+                <action android:name="android.telecom.CallScreeningService" />
+            </intent-filter>
+        </service>
+
         <!-- Answer / decline / hang up / speaker / mute from the call notification. Not exported: only CallCtrl's
              own notification can use it. -->
         <receiver
