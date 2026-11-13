@@ -74,7 +74,9 @@ import com.vknxworks.callctrl.ui.components.TabItem
 import com.vknxworks.callctrl.ui.dialer.KeypadScreen
 import com.vknxworks.callctrl.ui.people.PeopleScreen
 import com.vknxworks.callctrl.ui.recents.RecentsScreen
+import com.vknxworks.callctrl.ui.recordings.RecordingsScreen
 import com.vknxworks.callctrl.ui.settings.BlockedScreen
+import com.vknxworks.callctrl.ui.settings.CallRecordingScreen
 import com.vknxworks.callctrl.ui.settings.ScreeningScreen
 import com.vknxworks.callctrl.ui.settings.SettingsScreen
 import com.vknxworks.callctrl.ui.settings.YouScreen
@@ -125,6 +127,15 @@ private fun MainScaffold() {
             navController.currentBackStackEntryFlow.first()
             c.showRecents.value = false
             selectTab(1)
+        }
+    }
+    // A call-recording notification opens the Recordings screen (behind the app lock, like the rest of the app).
+    val showRecordings by c.showRecordings.collectAsStateWithLifecycle()
+    LaunchedEffect(showRecordings) {
+        if (showRecordings) {
+            navController.currentBackStackEntryFlow.first()
+            c.showRecordings.value = false
+            navigator.navigate(RecordingsRoute)
         }
     }
     val dial by c.dialNumber.collectAsStateWithLifecycle()
@@ -203,6 +214,8 @@ private fun AppNavHost(navController: NavHostController) {
         composable<SettingsRoute> { SettingsScreen() }
         composable<BlockedRoute> { BlockedScreen() }
         composable<ScreeningRoute> { ScreeningScreen() }
+        composable<CallRecordingRoute> { CallRecordingScreen() }
+        composable<RecordingsRoute> { RecordingsScreen() }
     }
 }
 

@@ -9,6 +9,7 @@ Phone app (dialer, call screen, call history) in the VKNXWorks Ctrl series. Kotl
 - `calls/ScreeningService.kt`: the CallScreeningService (bound by Telecom for the default dialer, `BIND_SCREENING_SERVICE`). `data/screening/`: rules, matching and JSON/CSV import/export (pure Kotlin, unit-tested in `app/src/test`; no regex, emergency numbers never screened), `ScreeningStore` (`filesDir/screening.json`). UI in `ui/settings/ScreeningScreen.kt`.
 - `calls/CallNotifications.kt`: CallStyle notifications (incoming with full-screen intent, ongoing) and missed calls. `calls/Receivers.kt`: notification actions and Telecom's missed-call broadcast.
 - `data/Phone.kt`: placing calls, SIMs, role, number formatting. `data/CallHistory.kt`: call log and blocked numbers. `data/Contacts.kt`: contacts with numbers, caller lookup, T9.
+- `recording/`: the call recorder. `shell/CaptureService.kt` is a Shizuku user service (own process, shell uid) that only captures call audio (VOICE_CALL, else VOICE_DOWNLINK + VOICE_UPLINK) into a pipe; its AIDL (`src/main/aidl/.../ICallCapture.aidl`) has start/stop/format/destroy only. `ShizukuGate.kt`: Shizuku state, permission, binding. `CallRecorder.kt`: follows CallManager's calls, decides, splits files, writes through `Segment`/`Encoders` (MediaCodec FLAC/AAC/Opus, own WAV and FLAC framing). `RecordingStore.kt`: `filesDir/recordings` + `<file>.json` sidecars, MediaStore copies, auto-delete. Pure logic (`CaptureFormat.kt`, `RecordingRules.kt`, `Containers.kt`) is unit-tested. UI: `ui/settings/CallRecordingScreen.kt`, `ui/recordings/RecordingsScreen.kt`, the bar in `InCallScreen.kt`.
 - `ui/dialer`, `ui/recents`, `ui/people`: the three tabs. `ui/setup/Setup.kt`: role and permission onboarding.
 
 ## Hard rules
@@ -22,6 +23,7 @@ Phone app (dialer, call screen, call history) in the VKNXWorks Ctrl series. Kotl
 - Never declare `android.telecom.IN_CALL_SERVICE_RINGING`: Android plays the ringtone (with per-contact ringtones).
 - The call screen must stay usable when the app is locked and when the phone is locked; it shows only the call.
 - Notification actions go through the non-exported `CallActionReceiver` with immutable PendingIntents.
+- **Call recording is Shizuku only:** never the microphone, no fallback of any kind; without Shizuku it explains how to start it and doesn't record. The capture service exposes only start/stop/format (no command execution), is bound only while recording or about to, and CallCtrl needs no RECORD_AUDIO or microphone foreground service. Recordings stay in `filesDir/recordings` (excluded from backup) and behind the app lock. Keep `CaptureService` in R8 (Shizuku instantiates it by name).
 
 ## Dependency verification
 

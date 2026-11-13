@@ -28,6 +28,14 @@
          show; never over the call screen). Granted at install, no prompt. Not a network permission. -->
     <uses-permission android:name="android.permission.HIDE_OVERLAY_WINDOWS" />
 
+    <!-- Call recording goes through Shizuku: CallCtrl checks whether the Shizuku app is installed and opens it.
+         (Seeing one named app is not a permission.) The Shizuku library also adds Shizuku's own
+         "moe.shizuku.manager.permission.API_V23": that's how the Shizuku app lists CallCtrl under its authorised
+         apps. It only means something to Shizuku; nothing is granted until you allow CallCtrl in Shizuku's dialog. -->
+    <queries>
+        <package android:name="moe.shizuku.privileged.api" />
+    </queries>
+
     <uses-feature android:name="android.hardware.telephony" android:required="false" />
     <uses-feature android:name="android.hardware.sensor.proximity" android:required="false" />
 
@@ -129,6 +137,27 @@
                 <action android:name="android.telecom.action.SHOW_MISSED_CALLS_NOTIFICATION" />
             </intent-filter>
         </receiver>
+
+        <!-- Shizuku hands CallCtrl its binder through this provider (as Shizuku documents it). Only Shizuku (running
+             as the shell or root) can call it: INTERACT_ACROSS_USERS_FULL is a system-only permission. -->
+        <provider
+            android:name="rikka.shizuku.ShizukuProvider"
+            android:authorities="${applicationId}.shizuku"
+            android:enabled="true"
+            android:exported="true"
+            android:multiprocess="false"
+            android:permission="android.permission.INTERACT_ACROSS_USERS_FULL" />
+
+        <!-- Sharing a call recording you chose: only files/recordings, only with a one-time read grant. -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.files"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
 
         <!-- No downloadable emoji font: don't let androidx.emoji2 look one up from a font provider
              at start-up. Emoji are drawn with the phone's own emoji font instead. -->

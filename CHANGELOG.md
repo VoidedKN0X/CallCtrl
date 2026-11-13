@@ -6,7 +6,7 @@ To publish a new version: bump `versionCode` and `versionName` in `app/build.gra
 
 ## v0.2.0 (2026-11-13)
 
-Call screening: decide which calls ring, which ring silently and which are turned away, with your own rules. Still fully offline, with no new permissions.
+Call screening: decide which calls ring, which ring silently and which are turned away, with your own rules. And a call recorder that works through Shizuku, in lossless quality. Still fully offline.
 
 ### New
 
@@ -20,10 +20,21 @@ Call screening: decide which calls ring, which ring silently and which are turne
 - **Emergency numbers are never screened**, whatever your rules say.
 - **Import and export:** save every rule, your callers list and your blocked numbers as a JSON file, or as a CSV file (one line per rule or number) for a spreadsheet or another app, and import them again on another phone. Importing adds to what you have and checks every line; a plain list of numbers is imported as numbers to block.
 - **Blocked numbers stay shared:** the blocked list is still your phone's own list, so numbers you block in CallCtrl are blocked in your messaging app too, and the other way round. Android blocks them before your screening rules are checked.
+- **Call recording** (Settings > Phone app > Call recording, off until you turn it on). Android doesn't let normal apps record calls, so CallCtrl does it through [Shizuku](https://shizuku.rikka.app/), a free app you start with Wireless debugging (no root). The settings page shows where Shizuku stands (not installed, not running and how to start it, waiting for your OK, or ready) and asks Shizuku's permission for you.
+- **What gets recorded:** Off, Ask each call (a Record button on the call screen), Always, Only numbers not in your contacts, or Only the contacts you pick. Recording starts when the call is answered, never while it rings, and stops when the call ends or goes on hold (you can keep it recording on hold). A second call or a conference gets its own file.
+- **On the call screen:** a red bar with the recording time; tap it to stop. In every mode but Off there's a Record button to start one yourself.
+- **Best quality your phone gives:** CallCtrl tries 48 kHz down to 8 kHz, stereo then mono, 32-bit float then 16-bit, and uses the best one your phone accepts for call audio (both sides of the call). When the two channels hold the same sound it saves mono, half the size and nothing lost. If your phone won't share the call audio as one stream, CallCtrl records the other person and you separately and mixes them, and tells you if only one side could be captured. It never falls back to the microphone.
+- **File types:** FLAC (lossless, the default), WAV (lossless, uncompressed), or the smaller Opus (OGG) and AAC (M4A). Each recording shows its real sample rate, channels and what was captured.
+- **Recordings screen** (from Settings > Call recording): play with a seek bar, share, save a copy to Music/CallCtrl, delete. Recordings also show on their call in Recents, with a small mark on the call.
+- **Private by default:** recordings stay in CallCtrl's own storage, left out of every backup, behind the app lock. Optional: save a copy of each new recording to Music/CallCtrl, and delete recordings automatically after 7, 30, 90 or 365 days.
+- **A short legal note** the first time you turn recording on: in Belgium you may record calls you take part in, but using or sharing them is restricted; tell the other person.
+- **When something goes wrong:** if Shizuku stops during a call, or the phone runs out of space, the recording stops cleanly, what was recorded is kept, and a notification says why.
 
 ### Changed
 
-- **"Forgot PIN?"** now also resets the call screening rules, along with CallCtrl's other settings. Your call history, contacts and blocked numbers are still not deleted.
+- **"Forgot PIN?"** now also resets the call screening rules, along with CallCtrl's other settings. Your call history, contacts and blocked numbers are still not deleted. If you have call recordings, it asks whether to delete them or keep them.
+- **New permission, for Shizuku only:** CallCtrl now lists Shizuku's own "moe.shizuku.manager.permission.API_V23", which is how the Shizuku app shows CallCtrl among its authorised apps. It grants nothing by itself, and it isn't a network permission.
+
 ## v0.1.5 (2026-11-12)
 
 ### Fixed

@@ -5,7 +5,7 @@
     <string name="app_lock_subtitle">Ask for an app PIN (and optionally your fingerprint) when opening CallCtrl. Incoming calls can always be answered.</string>
     <string name="app_lock_footer">CallCtrl works fully offline: it has no internet permission, analytics or tracking. Your calls go through your phone\'s own telephony, and the call history stays in your phone\'s call log.</string>
     <string name="lock_prompt_subtitle">Your calls and contacts</string>
-    <string name="lock_forgot_body">The PIN can\'t be recovered. CallCtrl will reset its own settings and call screening rules and turn the app lock off. Your call history, contacts and blocked numbers are not deleted.</string>
+    <string name="lock_forgot_body">The PIN can\'t be recovered. CallCtrl will reset its own settings and call screening rules and turn the app lock off. Your call history, contacts and blocked numbers are not deleted. If you have call recordings, you choose next whether to keep them.</string>
 
     <!-- Tabs -->
     <string name="tab_keypad">Keypad</string>
@@ -240,4 +240,128 @@
     </plurals>
     <string name="screening_imported">Imported</string>
     <string name="screening_import_blocked_failed">Some numbers couldn\'t be added to the blocked list</string>
+
+    <!-- Call recording: settings -->
+    <string name="call_recording">Call recording</string>
+    <string name="call_recording_sub_off">Off. Record calls through Shizuku</string>
+    <string name="call_recording_sub_on">On: %1$s</string>
+    <string name="rec_not_default">Call recording only works while CallCtrl is your default phone app.</string>
+    <string name="rec_shizuku_group">Shizuku</string>
+    <string name="rec_shizuku_not_installed">Shizuku isn\'t installed</string>
+    <string name="rec_shizuku_not_installed_sub">CallCtrl records calls through Shizuku, a free, open-source app that lets apps use system features without root. Install it, start it, then come back here.</string>
+    <string name="rec_shizuku_get">Get Shizuku</string>
+    <string name="rec_shizuku_not_running">Shizuku isn\'t running</string>
+    <string name="rec_shizuku_not_running_sub">Open Shizuku and tap Start: with Wireless debugging on the phone itself (in Developer options), or with adb from a computer. Start it again after every restart of the phone.</string>
+    <string name="rec_shizuku_open">Open Shizuku</string>
+    <string name="rec_shizuku_too_old">Shizuku is too old</string>
+    <string name="rec_shizuku_too_old_sub">Update Shizuku to version 11 or newer, then come back here.</string>
+    <string name="rec_shizuku_permission">Allow CallCtrl in Shizuku</string>
+    <string name="rec_shizuku_permission_sub">Shizuku asks whether CallCtrl may use it. CallCtrl only uses it to capture call audio while a call is recorded.</string>
+    <string name="rec_shizuku_allow">Allow</string>
+    <string name="rec_shizuku_denied">CallCtrl isn\'t allowed in Shizuku</string>
+    <string name="rec_shizuku_denied_sub">You chose not to be asked again. Open Shizuku, go to its authorised applications and allow CallCtrl.</string>
+    <string name="rec_shizuku_ready">Shizuku is ready</string>
+    <string name="rec_shizuku_ready_sub">Shizuku is running and CallCtrl may use it.</string>
+    <string name="rec_shizuku_footer">Android doesn\'t let normal apps record calls. While a call is recorded, Shizuku runs a small part of CallCtrl with the rights of Android\'s debugging shell. That part can only capture call audio, never the microphone, and it ends when the recording does.</string>
+    <string name="rec_mode">Record calls</string>
+    <string name="rec_mode_off">Off</string>
+    <string name="rec_mode_ask">Ask each call</string>
+    <string name="rec_mode_always">Always</string>
+    <string name="rec_mode_unknown">Only numbers not in your contacts</string>
+    <string name="rec_mode_selected">Only selected contacts</string>
+    <string name="rec_mode_footer">Recording starts when the call is answered, never while it rings, and stops when the call ends or goes on hold. In every mode but Off the call screen has a Record button; tap the red recording bar to stop.</string>
+    <string name="rec_contacts">Contacts to record</string>
+    <string name="rec_contacts_none">None picked yet</string>
+    <plurals name="rec_contacts_count">
+        <item quantity="one">%d contact</item>
+        <item quantity="other">%d contacts</item>
+    </plurals>
+    <string name="rec_contacts_empty">No contacts with a phone number</string>
+    <string name="rec_group_files">Recordings</string>
+    <string name="rec_format">File type</string>
+    <string name="rec_format_flac">FLAC: lossless (default)</string>
+    <string name="rec_format_wav">WAV: lossless, uncompressed (large)</string>
+    <string name="rec_format_opus">Opus (OGG): small</string>
+    <string name="rec_format_aac">AAC (M4A): small</string>
+    <string name="rec_on_hold">Keep recording on hold</string>
+    <string name="rec_on_hold_sub">When off, the recording stops on hold and a new file starts when the call resumes</string>
+    <string name="rec_copy_music">Save copies to Music/CallCtrl</string>
+    <string name="rec_copy_music_sub">A copy of each new recording in your Music folder, where other apps (and your backups) can see it</string>
+    <string name="rec_auto_delete">Delete recordings after</string>
+    <string name="rec_auto_never">Never</string>
+    <plurals name="rec_auto_days">
+        <item quantity="one">%d day</item>
+        <item quantity="other">%d days</item>
+    </plurals>
+    <plurals name="rec_count">
+        <item quantity="one">%d recording</item>
+        <item quantity="other">%d recordings</item>
+    </plurals>
+    <string name="rec_files_footer">Recordings stay in CallCtrl\'s private storage, left out of every backup and behind the app lock. Nothing leaves the phone unless you share a recording or save copies to Music. Delete after only removes CallCtrl\'s own copies.</string>
+    <string name="rec_notice_title">Before you record calls</string>
+    <string name="rec_notice_body">In Belgium you may record a call you take part in yourself. Using or sharing the recording is restricted: you generally need the other person\'s consent, and you may not make it public. Tell the other person you\'re recording.\n\nOther countries have other rules. You\'re responsible for following the law where you are.</string>
+    <string name="rec_notice_ok">Turn on recording</string>
+
+    <!-- Call recording: call screen -->
+    <string name="rec_button">Record</string>
+    <string name="rec_indicator">Recording · %1$s</string>
+    <string name="rec_tap_stop">Tap to stop</string>
+    <string name="rec_stop">Stop recording</string>
+    <string name="rec_starting">Starting recording…</string>
+    <string name="rec_captured_split">Both sides, captured separately</string>
+    <string name="rec_captured_downlink">Only the other person\'s voice</string>
+    <string name="rec_captured_uplink">Only your voice</string>
+
+    <!-- Call recording: notifications and problems -->
+    <string name="ch_recording">Call recording</string>
+    <string name="ch_recording_desc">When a call couldn\'t be recorded, or a recording stopped early</string>
+    <string name="rec_problem_not_ready">Call not recorded</string>
+    <string name="rec_problem_not_ready_text">Shizuku isn\'t running, or CallCtrl isn\'t allowed in it. See Settings > Phone app > Call recording.</string>
+    <string name="rec_problem_lost">Recording stopped</string>
+    <string name="rec_problem_lost_text">Shizuku stopped during the call. What was recorded until then is saved.</string>
+    <string name="rec_problem_refused">Call not recorded</string>
+    <string name="rec_problem_refused_text">Your phone didn\'t share the call audio. CallCtrl never records the microphone instead.</string>
+    <string name="rec_problem_storage">Recording stopped: storage full</string>
+    <string name="rec_problem_storage_text">Your phone is almost out of space. What was recorded until then is saved.</string>
+    <string name="rec_problem_error">Recording stopped</string>
+    <string name="rec_problem_error_text">The recording couldn\'t be written. What was recorded until then is saved.</string>
+
+    <!-- Call recording: the Recordings screen -->
+    <string name="recordings">Recordings</string>
+    <string name="recordings_empty">No recordings</string>
+    <string name="recordings_empty_body">Recorded calls show up here. Turn recording on in Settings > Phone app > Call recording.</string>
+    <string name="rec_play">Play</string>
+    <string name="rec_pause">Pause</string>
+    <string name="rec_share">Share</string>
+    <string name="rec_share_note">Sharing a call recording generally needs the other person\'s consent.</string>
+    <string name="rec_delete">Delete recording</string>
+    <string name="rec_delete_title">Delete this recording?</string>
+    <string name="rec_delete_body">The recording is removed from CallCtrl. Copies in Music or ones you shared stay. This can\'t be undone.</string>
+    <string name="rec_save_copy">Save a copy to Music/CallCtrl</string>
+    <string name="rec_saved_copy">Saved to Music/CallCtrl</string>
+    <string name="rec_save_failed">Couldn\'t save the copy</string>
+    <string name="rec_play_failed">Can\'t play this recording</string>
+    <string name="rec_detail_file">File: %1$s</string>
+    <string name="rec_detail_capture">Captured: %1$s</string>
+    <string name="rec_khz">%1$s kHz</string>
+    <string name="rec_mono">mono</string>
+    <string name="rec_stereo">stereo</string>
+    <string name="rec_bits">%1$d-bit</string>
+    <string name="rec_float">32-bit float</string>
+    <string name="rec_source_call">call audio, both sides</string>
+    <string name="rec_source_split">both sides, captured separately</string>
+    <string name="rec_source_down">only the other person</string>
+    <string name="rec_source_up">only you</string>
+    <string name="rec_ended_shizuku">Stopped early: Shizuku stopped</string>
+    <string name="rec_ended_storage">Stopped early: storage full</string>
+    <string name="rec_ended_error">Stopped early</string>
+    <string name="rec_part">Part %1$d</string>
+    <string name="rec_conference">Conference call</string>
+    <string name="rec_forgot_title">Delete your call recordings too?</string>
+    <plurals name="rec_forgot_body">
+        <item quantity="one">%d call recording is kept in CallCtrl. Without the app lock, anyone using this phone can listen to it.</item>
+        <item quantity="other">%d call recordings are kept in CallCtrl. Without the app lock, anyone using this phone can listen to them.</item>
+    </plurals>
+    <string name="rec_forgot_delete">Delete recordings</string>
+    <string name="rec_forgot_keep">Keep recordings</string>
 </resources>

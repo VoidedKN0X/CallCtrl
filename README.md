@@ -20,6 +20,7 @@ Part of the [Ctrl series](#the-ctrl-series) by VKNXWorks.
 - **Missed call notifications** with Call back and Message, and the caller's name only on the lock screen when your phone allows private notification content
 - **Blocked numbers:** block and unblock numbers from Recents or Settings; your phone blocks their calls and texts for every app
 - **Call screening** with your own rules: numbers that start with or match a pattern, one number, callers not in your contacts and hidden numbers, plus your own list of callers to always reject or silence. Each rule rejects, silences or allows; rejected calls can stay in Recents as blocked calls with a quiet notification. Emergency numbers are never screened. Import and export the rules and blocked numbers as JSON or CSV
+- **Call recording** through [Shizuku](https://shizuku.rikka.app/) (no root): Off, Ask each call, Always, only numbers not in your contacts, or only contacts you pick. Best quality your phone gives (up to 48 kHz, both sides of the call), saved as FLAC (lossless, default), WAV, Opus or AAC. A recording bar on the call screen with the time; a Recordings screen to play, share and delete; recordings on their call in Recents. Private storage, no backups, behind the app lock; optional copies in Music/CallCtrl and auto-delete. Never the microphone
 - **Two SIMs:** choose the SIM for each call when there's no default, and see which SIM a call is on
 - **The screen turns off at your ear**, and the call keeps a notification with hang up while you use other apps
 - **Works with other apps:** phone number links and "Call" buttons in other apps open CallCtrl's keypad with the number filled in
@@ -54,7 +55,24 @@ If the Obtainium button doesn't open the app, add `https://github.com/VoidedKN0X
 - **Contacts:** tap a contact to call; long-press to open it in your contacts app.
 - **During a call:** mute, keypad, speaker (or Bluetooth), hold, add a call, then swap or merge. The bar at the top of CallCtrl leads back to the call.
 
-Settings and About are behind your profile picture at the top right of every tab. Call screening is in **Settings > Phone app > Call screening**.
+Settings and About are behind your profile picture at the top right of every tab. Call screening is in **Settings > Phone app > Call screening**, call recording in **Settings > Phone app > Call recording**.
+
+## Call recording
+
+Android doesn't let normal apps record calls. CallCtrl records them through [Shizuku](https://shizuku.rikka.app/), a free, open-source app that lets apps use system features without root. Without Shizuku, CallCtrl doesn't record at all: it explains how to start Shizuku, and never falls back to the microphone.
+
+1. Install Shizuku and start it (with **Wireless debugging** on the phone itself, or with adb from a computer). Start it again after each restart of the phone.
+2. In CallCtrl, open **Settings > Phone app > Call recording**. The Shizuku card shows what's missing; tap **Allow** and confirm in Shizuku's dialog.
+3. Choose **Record calls**: Off (the default), Ask each call, Always, Only numbers not in your contacts, or Only selected contacts. The first time, CallCtrl shows a short note about the law.
+
+How it works: while a call is recorded (or about to be), Shizuku starts a small part of CallCtrl in its own process with the rights of Android's debugging shell, which may capture call audio. That part can only capture call audio and hand it to CallCtrl through a pipe: it has no other commands, never records the microphone, and ends when the recording does. CallCtrl encodes and saves the file itself.
+
+- **Quality:** 48, 32, 24, 16 then 8 kHz, stereo then mono, 32-bit float then 16-bit: the best format your phone accepts for call audio. Stereo is kept only when the two channels really differ. If your phone won't give the call audio as one stream, CallCtrl records the other person and you separately and mixes them, and says so if only one side could be captured.
+- **Files:** FLAC (lossless, default), WAV (lossless, uncompressed), Opus in OGG or AAC in M4A (smaller), named like `20261113-142501_in_Anna.flac`. Each recording shows the sample rate, channels and source that were really used. If your phone has no encoder for the chosen type, the recording is saved as WAV instead.
+- **When:** from the moment the call is answered (never while it rings) until it ends or goes on hold (optionally kept on hold). A second call or a conference gets its own file. The call screen shows a red bar with the time; tap it to stop.
+- **Problems:** if Shizuku stops during a call or the phone runs out of space, the recording stops cleanly, keeps what it had, and a notification says why.
+
+**The law:** in Belgium you may record a call you take part in, but using or sharing the recording is restricted (you generally need the other person's consent). Tell the other person you're recording. Other countries have other rules; you're responsible for following the law where you are.
 
 ## Is it safe to install?
 
@@ -79,9 +97,10 @@ Settings and About are behind your profile picture at the top right of every tab
 | Notifications, full-screen alerts (`POST_NOTIFICATIONS`, `USE_FULL_SCREEN_INTENT`) | The incoming call screen and banner, the ongoing call and missed calls. |
 | Keep awake (`WAKE_LOCK`) | Turning the screen off while the phone is at your ear during a call. |
 | Use biometric hardware (`USE_BIOMETRIC`) | Optional fingerprint unlock for the app lock. |
+| Shizuku API (`moe.shizuku.manager.permission.API_V23`) | Only for call recording: it's Shizuku's own permission, added by the Shizuku library, and it's how the Shizuku app lists CallCtrl among its authorised apps. It grants nothing by itself: CallCtrl can use Shizuku only after you allow it in Shizuku's dialog. Not a network permission. |
 | Hide other apps' floating windows (`HIDE_OVERLAY_WINDOWS`) | Hide other apps' floating windows over the PIN screen, and over the lock screen and confirmations, only while they show (never over the call screen). Granted at install, without a prompt. It isn't a network permission. |
 
-`DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION` also shows up in the app's details: it's an internal permission Android adds to every app built for Android 13 and newer, and only keeps CallCtrl's own broadcasts private. Speaker, earpiece and mute go through Android's call service, and keypad vibration through the system, so CallCtrl needs no audio-settings or vibrate permission.
+`DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION` also shows up in the app's details: it's an internal permission Android adds to every app built for Android 13 and newer, and only keeps CallCtrl's own broadcasts private. Speaker, earpiece and mute go through Android's call service, and keypad vibration through the system, so CallCtrl needs no audio-settings or vibrate permission. Call recording needs no microphone or storage permission either: the call audio is captured by the Shizuku part (see [Call recording](#call-recording)), and copies to Music/CallCtrl go through Android's media store.
 
 See [Privacy](#privacy) for what happens to your data.
 
@@ -94,7 +113,8 @@ Turn it on under **Settings > Privacy and security > App lock** (tap your profil
 - **The PIN is never stored.** It's stretched with 600,000 rounds of PBKDF2 and mixed with a key held in the phone's secure hardware.
 - **Wrong PINs:** after 5 tries you wait 30 seconds, doubling up to 15 minutes. Restarting the app or the phone, or changing the clock, doesn't skip the wait.
 - **Lock again:** as soon as you leave the app (the default), after 1, 5 or 15 minutes or 1 hour away, or only when the app restarts.
-- **Forgot your PIN?** It can't be recovered. The lock screen offers to reset CallCtrl's own settings and turn the lock off. Your call history and contacts are not deleted: they belong to your phone, not to CallCtrl.
+- **Forgot your PIN?** It can't be recovered. The lock screen offers to reset CallCtrl's own settings and turn the lock off. Your call history and contacts are not deleted: they belong to your phone, not to CallCtrl. If you have call recordings, it asks whether to delete them or keep them.
+- **Call recordings** are behind the app lock too: the Recordings screen and recordings in Recents open only after unlocking.
 - **Calls are never locked:** the incoming call screen and the ongoing call always open without the PIN, and show only the call.
 - **Missed calls:** **Call back** on the missed-call notification asks you to unlock the phone first when it's locked, so nobody can call out from the lock screen. On the lock screen the notification only shows how many calls you missed, unless your phone is set to show private notification content.
 
@@ -104,7 +124,8 @@ Turn it on under **Settings > Privacy and security > App lock** (tap your profil
 
 **Telemetry-free and Google-free.** CallCtrl has no analytics, crash reporting, usage stats, ads or tracking of any kind, and no Google libraries or services. It has **no internet permission**, works fully offline and never connects to anything: there are no network destinations at all. Every build checks that the app has no network permission and no Google libraries.
 
-- Calls go through your phone's own telephony. Your call history stays in the phone's call log and your contacts in its contacts storage; CallCtrl keeps no copy, its own files hold only its settings and your call screening rules. Screening runs on your phone; nothing about your calls leaves it.
+- Calls go through your phone's own telephony. Your call history stays in the phone's call log and your contacts in its contacts storage; CallCtrl keeps no copy, its own files hold only its settings, your call screening rules and your call recordings. Screening and recording run on your phone; nothing about your calls leaves it.
+- Call recordings stay in CallCtrl's private storage, left out of every backup. They leave it only when you share one, save a copy, or turn on "Save copies to Music/CallCtrl". Shizuku only runs CallCtrl's own capture code; nothing goes to Shizuku's developers or anyone else.
 - A text you send when declining a call goes out as a normal SMS through your phone.
 - Copied numbers are marked as sensitive, so Android doesn't show them in the clipboard preview.
 - CallCtrl is left out of Android's cloud backup and its phone-to-phone transfer.
@@ -187,5 +208,7 @@ Native Android apps for self-hosted services and everyday tools, all with the sa
 ## License
 
 CallCtrl is licensed under the [GNU General Public License v3.0](LICENSE). © VKNXWorks
+
+Libraries: the [Shizuku API](https://github.com/RikkaApps/Shizuku-API) (MIT licence), for call recording.
 
 Fonts, bundled in the app (nothing is downloaded): [Space Grotesk](https://github.com/floriankarsten/space-grotesk) and [JetBrains Mono](https://github.com/JetBrains/JetBrainsMono), both under the SIL Open Font License 1.1 ([FONT-LICENSE-SpaceGrotesk.txt](FONT-LICENSE-SpaceGrotesk.txt), [FONT-LICENSE-JetBrainsMono.txt](FONT-LICENSE-JetBrainsMono.txt)).

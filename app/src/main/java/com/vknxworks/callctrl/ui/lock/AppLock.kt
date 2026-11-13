@@ -66,6 +66,8 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.platform.WindowInfo
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.pluralStringResource
+import com.vknxworks.callctrl.recording.RecordFormat
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntOffset
@@ -348,6 +350,7 @@ private fun PinLockScreen() {
     var checking by remember { mutableStateOf(false) }
     var lockout by remember { mutableLongStateOf(vault.lockoutRemaining()) }
     var forgetting by remember { mutableStateOf(false) }
+    var recordingsToForget by remember { mutableStateOf<Int?>(null) }
     val bioAvailable = remember(AppLock.lockCount, AppLock.returns) {
         vault.biometricEnabled && AppLock.biometricAvailable(context) && !vault.pinRequired()
     }
@@ -446,10 +449,37 @@ private fun PinLockScreen() {
             confirmButton = {
                 TextButton(onClick = {
                     forgetting = false
-                    scope.launch { c.forgetEverything() }
+                    scope.launch {
+                        // With call recordings: ask whether to keep them (the lock was what kept them private).
+                        val count = withContext(Dispatchers.IO) {
+                            c.recordings.dir.listFiles().orEmpty().count { f -> RecordFormat.entries.any { f.name.endsWith("." + it.extension) } }
+                        }
+                        if (count > 0) recordingsToForget = count else c.forgetEverything(deleteRecordings = false)
+                    }
                 }) { Text(stringResource(R.string.lock_forgot_confirm), color = CtrlColors.Error) }
             },
             dismissButton = { TextButton(onClick = { forgetting = false }) { Text(stringResource(R.string.cancel), color = CtrlColors.Text) } },
+        )
+    }
+    recordingsToForget?.let { count ->
+        CtrlAlertDialog(
+            onDismissRequest = { recordingsToForget = null },
+            shielded = true,
+            lockDialog = true,
+            title = { Text(stringResource(R.string.rec_forgot_title)) },
+            text = { Text(pluralStringResource(R.plurals.rec_forgot_body, count, count)) },
+            confirmButton = {
+                TextButton(onClick = {
+                    recordingsToForget = null
+                    scope.launch { c.forgetEverything(deleteRecordings = true) }
+                }) { Text(stringResource(R.string.rec_forgot_delete), color = CtrlColors.Error) }
+            },
+            dismissButton = {
+                TextButton(onClick = {
+                    recordingsToForget = null
+                    scope.launch { c.forgetEverything(deleteRecordings = false) }
+                }) { Text(stringResource(R.string.rec_forgot_keep), color = CtrlColors.Text) }
+            },
         )
     }
 }

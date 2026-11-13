@@ -48,11 +48,14 @@ class MainActivity : ComponentActivity() {
                 }
             }
             ACTION_SHOW_RECENTS -> c.showRecents.value = true
+            ACTION_SHOW_RECORDINGS -> c.showRecordings.value = true
         }
     }
 
     companion object {
         const val ACTION_SHOW_RECENTS = "com.vknxworks.callctrl.SHOW_RECENTS"
+        /** From a call-recording notification (only CallCtrl's own, immutable PendingIntent). */
+        const val ACTION_SHOW_RECORDINGS = "com.vknxworks.callctrl.SHOW_RECORDINGS"
         const val ACTION_ADD_CALL = "com.vknxworks.callctrl.ADD_CALL"
     }
 }

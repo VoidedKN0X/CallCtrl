@@ -67,7 +67,14 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vknxworks.callctrl.MainActivity
 import com.vknxworks.callctrl.R
+import com.vknxworks.callctrl.container
 import com.vknxworks.callctrl.data.Phone
+import com.vknxworks.callctrl.recording.CallRecorder
+import com.vknxworks.callctrl.recording.CaptureMode
+import com.vknxworks.callctrl.recording.RecordProblem
+import com.vknxworks.callctrl.recording.RecordingRules
+import android.widget.Toast
+import androidx.compose.material.icons.outlined.RadioButtonChecked
 import com.vknxworks.callctrl.ui.common.ContactAvatar
 import com.vknxworks.callctrl.ui.components.CtrlBottomSheet
 import com.vknxworks.callctrl.ui.components.GroupRow
@@ -138,6 +145,11 @@ fun InCallScreen(calls: List<CallInfo>, ended: CallInfo?) {
                 Text(main.title, style = MaterialTheme.typography.titleLarge, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 Spacer(Modifier.height(8.dp))
                 Text(dtmf.ifEmpty { " " }, style = CtrlType.Readout, color = CtrlColors.Text, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            }
+
+            // Call recording: the red bar with the time while recording (tap to stop), or the Record button.
+            if (!keypad && main !== ended && !main.ended) {
+                RecordingControl(main)
             }
 
             // A second call: waiting (ringing) or on hold.
@@ -336,6 +348,76 @@ private fun Control(icon: ImageVector, label: String, on: Boolean, modifier: Mod
         Icon(icon, null, Modifier.size(24.dp), tint = fg)
         Text(label, style = MaterialTheme.typography.labelMedium, color = fg, maxLines = 1)
     }
+}
+
+@Composable
+private fun RecordingControl(main: CallInfo) {
+    val context = LocalContext.current
+    val rec by CallRecorder.state.collectAsStateWithLifecycle()
+    val settings by context.container.settings.settings.collectAsStateWithLifecycle()
+    val recordingThis = rec.call == main.call
+    val starting = rec.starting == main.call
+    if (!recordingThis && !starting && !(main.active && RecordingRules.showRecordButton(settings.recordMode))) return
+    Spacer(Modifier.height(14.dp))
+    when {
+        recordingThis -> {
+            var now by remember { mutableLongStateOf(SystemClock.elapsedRealtime()) }
+            LaunchedEffect(rec.since) {
+                while (true) {
+                    now = SystemClock.elapsedRealtime()
+                    delay(1000 - (now - rec.since) % 1000)
+                }
+            }
+            val elapsed = formatDuration(((now - rec.since) / 1000).coerceAtLeast(0))
+            val stop = stringResource(R.string.rec_stop)
+            val captured = when (rec.capture?.mode) {
+                CaptureMode.SPLIT -> stringResource(R.string.rec_captured_split)
+                CaptureMode.DOWNLINK_ONLY -> stringResource(R.string.rec_captured_downlink)
+                CaptureMode.UPLINK_ONLY -> stringResource(R.string.rec_captured_uplink)
+                else -> null
+            }
+            Row(
+                Modifier
+                    .clip(CtrlShapes.Chip)
+                    .background(CtrlColors.Error)
+                    .clickable(role = Role.Button, onClickLabel = stop) { CallRecorder.toggle(context, main.call) }
+                    .padding(horizontal = 16.dp, vertical = 10.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Box(Modifier.size(10.dp).clip(CtrlShapes.Chip).background(CtrlColors.OnError))
+                Spacer(Modifier.width(10.dp))
+                Column {
+                    Text(stringResource(R.string.rec_indicator, elapsed), style = MaterialTheme.typography.labelLarge, color = CtrlColors.OnError)
+                    Text(captured ?: stringResource(R.string.rec_tap_stop), style = MaterialTheme.typography.labelSmall, color = CtrlColors.OnError)
+                }
+            }
+        }
+        starting -> {
+            Text(stringResource(R.string.rec_starting), style = CtrlType.Data, color = CtrlColors.Muted)
+        }
+        else -> {
+            val problem = rec.problem.takeIf { rec.problemCall == main.call }
+            TextButton(onClick = {
+                val p = CallRecorder.toggle(context, main.call)
+                if (p != null) Toast.makeText(context, context.getString(R.string.rec_problem_not_ready_text), Toast.LENGTH_LONG).show()
+            }) {
+                Icon(Icons.Outlined.RadioButtonChecked, null, Modifier.size(18.dp), tint = CtrlColors.Error)
+                Spacer(Modifier.width(8.dp))
+                Text(stringResource(R.string.rec_button), color = CtrlColors.Text)
+            }
+            if (problem != null) {
+                Text(stringResource(problemText(problem)), style = MaterialTheme.typography.bodySmall, color = CtrlColors.Muted, textAlign = TextAlign.Center)
+            }
+        }
+    }
+}
+
+private fun problemText(p: RecordProblem): Int = when (p) {
+    RecordProblem.SHIZUKU_NOT_READY -> R.string.rec_problem_not_ready_text
+    RecordProblem.SHIZUKU_LOST -> R.string.rec_problem_lost_text
+    RecordProblem.REFUSED -> R.string.rec_problem_refused_text
+    RecordProblem.STORAGE_FULL -> R.string.rec_problem_storage_text
+    RecordProblem.ERROR -> R.string.rec_problem_error_text
 }
 
 @Composable

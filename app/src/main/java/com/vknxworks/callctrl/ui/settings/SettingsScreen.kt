@@ -58,7 +58,10 @@ import com.vknxworks.callctrl.ui.components.ScreenTopBar
 import com.vknxworks.callctrl.ui.lock.AppLock
 import com.vknxworks.callctrl.ui.lock.PinRequest
 import com.vknxworks.callctrl.ui.lock.findActivity
+import com.vknxworks.callctrl.recording.RecordMode
 import com.vknxworks.callctrl.ui.nav.BlockedRoute
+import com.vknxworks.callctrl.ui.nav.CallRecordingRoute
+import androidx.compose.material.icons.outlined.RadioButtonChecked
 import com.vknxworks.callctrl.ui.nav.ScreeningRoute
 import androidx.compose.material.icons.outlined.PhoneLocked
 import androidx.compose.ui.res.pluralStringResource
@@ -137,6 +140,15 @@ private fun PhoneAppGroup() {
             icon = Icons.Outlined.PhoneLocked,
             showChevron = true,
             onClick = { nav.navigate(ScreeningRoute) },
+        )
+        val appSettings by context.container.settings.settings.collectAsStateWithLifecycle()
+        GroupRow(
+            stringResource(R.string.call_recording),
+            if (appSettings.recordMode == RecordMode.OFF) stringResource(R.string.call_recording_sub_off)
+            else stringResource(R.string.call_recording_sub_on, recordModeLabel(appSettings.recordMode)),
+            icon = Icons.Outlined.RadioButtonChecked,
+            showChevron = true,
+            onClick = { nav.navigate(CallRecordingRoute) },
         )
         if (canBlock) {
             GroupRow(stringResource(R.string.blocked_numbers), stringResource(R.string.blocked_numbers_sub), icon = Icons.Outlined.Block, showChevron = true, onClick = { nav.navigate(BlockedRoute) })

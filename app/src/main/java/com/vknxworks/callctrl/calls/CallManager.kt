@@ -10,6 +10,7 @@ import android.telecom.PhoneAccountHandle
 import android.telecom.VideoProfile
 import com.vknxworks.callctrl.data.Caller
 import com.vknxworks.callctrl.data.ContactsRepository
+import com.vknxworks.callctrl.recording.CallRecorder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -81,6 +82,7 @@ object CallManager {
         appContext = context.applicationContext
         call.registerCallback(callback)
         callers[call] = Caller(call.details.contactDisplayName?.toString()?.takeIf { it.isNotBlank() }, null, null, null)
+        CallRecorder.onAdded(context, call)
         refresh()
         // Photo and number label from the contacts, in the background.
         val number = numberOf(call)
@@ -104,6 +106,7 @@ object CallManager {
             }
         }
         refresh()
+        CallRecorder.onRemoved(call)
     }
 
     fun onAudio(state: CallAudioState?) {
@@ -114,6 +117,7 @@ object CallManager {
     fun clearAll() {
         callers.clear()
         _calls.value = emptyList()
+        CallRecorder.onCalls(emptyList())
         updateProximity()
     }
 
@@ -144,6 +148,7 @@ object CallManager {
                 accountLabel = if (accounts.size > 1) accounts.firstOrNull { it.handle == d.accountHandle }?.label else null,
             )
         }.sortedBy { order(it.state) }
+        CallRecorder.onCalls(_calls.value)
         svc?.let { CallNotifications.update(it, _calls.value) }
         updateProximity()
     }

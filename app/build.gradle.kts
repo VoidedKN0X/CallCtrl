@@ -67,6 +67,8 @@ android {
     buildFeatures {
         compose = true
         buildConfig = true
+        // The call recorder's capture service interface (runs in a Shizuku user service).
+        aidl = true
     }
 
     packaging {
@@ -124,6 +126,10 @@ dependencies {
 
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.kotlinx.coroutines.android)
+
+    // Call recording through Shizuku (MIT licence). No network: Shizuku talks to its own app on the phone only.
+    implementation(libs.shizuku.api)
+    implementation(libs.shizuku.provider)
 
     testImplementation(libs.junit)
 }

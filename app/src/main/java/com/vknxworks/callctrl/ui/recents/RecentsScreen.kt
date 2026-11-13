@@ -73,6 +73,12 @@ import com.vknxworks.callctrl.data.CallGroup
 import com.vknxworks.callctrl.data.CallHistory
 import com.vknxworks.callctrl.data.Caller
 import com.vknxworks.callctrl.data.Phone
+import com.vknxworks.callctrl.recording.Recording
+import com.vknxworks.callctrl.recording.RecordingMatch
+import com.vknxworks.callctrl.ui.recordings.RecordingSheet
+import com.vknxworks.callctrl.ui.recordings.recordingDetails
+import androidx.compose.material.icons.outlined.PlayArrow
+import androidx.compose.material.icons.outlined.RadioButtonChecked
 import com.vknxworks.callctrl.ui.common.ContactAvatar
 import com.vknxworks.callctrl.ui.components.ConfirmDialog
 import com.vknxworks.callctrl.ui.components.CtrlBottomSheet
@@ -113,6 +119,19 @@ fun RecentsScreen() {
         if (settings.groupRecents) CallHistory.group(list) else list.map { CallGroup(listOf(it)) }
     }
 
+    // Call recordings, shown on their call.
+    val recordingList by c.recordings.list.collectAsStateWithLifecycle()
+    LaunchedEffect(Unit) { c.recordings.reload() }
+    val recorded = remember(groups, recordingList) {
+        if (recordingList.isEmpty()) emptyMap()
+        else groups.associate { g ->
+            g.key to recordingList.filter { r ->
+                g.calls.any { e -> RecordingMatch.belongs(r.meta.number, r.meta.startedAt, e.number, e.hidden, e.date, e.duration) { a, b -> Phone.same(a, b) } }
+            }.sortedBy { it.meta.startedAt }
+        }.filterValues { it.isNotEmpty() }
+    }
+    var playing by remember { mutableStateOf<Recording?>(null) }
+
     fun call(number: String) {
         startCall(context, number) { sims = number to it }
     }
@@ -137,7 +156,7 @@ fun RecentsScreen() {
             )
             else -> LazyColumn(Modifier.fillMaxSize(), contentPadding = PaddingValues(bottom = 24.dp)) {
                 items(groups, key = { it.key }) { g ->
-                    CallRow(g, onOpen = { open = g }, onCall = { call(g.first.number) })
+                    CallRow(g, recorded = recorded.containsKey(g.key), onOpen = { open = g }, onCall = { call(g.first.number) })
                 }
                 item { Spacer(Modifier.bottomClearance(0.dp)) }
             }
@@ -147,6 +166,8 @@ fun RecentsScreen() {
     open?.let { g ->
         CallDetails(
             g,
+            recordings = recorded[g.key].orEmpty(),
+            onPlay = { r -> open = null; playing = r },
             onDismiss = { open = null },
             onCall = { open = null; call(g.first.number) },
             onDelete = {
@@ -155,6 +176,7 @@ fun RecentsScreen() {
             },
         )
     }
+    playing?.let { r -> RecordingSheet(r, onDismiss = { playing = null }) }
     if (confirmClear) {
         ConfirmDialog(
             title = stringResource(R.string.clear_history_title),
@@ -196,7 +218,7 @@ fun rememberCaller(number: String): Caller {
 }
 
 @Composable
-private fun CallRow(g: CallGroup, onOpen: () -> Unit, onCall: () -> Unit) {
+private fun CallRow(g: CallGroup, recorded: Boolean, onOpen: () -> Unit, onCall: () -> Unit) {
     val context = LocalContext.current
     val e = g.first
     val caller = if (e.hidden) Caller(null, null, null, null) else rememberCaller(e.number)
@@ -220,6 +242,10 @@ private fun CallRow(g: CallGroup, onOpen: () -> Unit, onCall: () -> Unit) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(typeIcon(e), null, Modifier.size(14.dp), tint = if (e.missed) CtrlColors.Error else CtrlColors.Muted)
                 Spacer(Modifier.width(6.dp))
+                if (recorded) {
+                    Icon(Icons.Outlined.RadioButtonChecked, stringResource(R.string.recordings), Modifier.size(14.dp), tint = CtrlColors.Muted)
+                    Spacer(Modifier.width(6.dp))
+                }
                 Text(
                     listOfNotNull(caller.label.takeIf { caller.name != null }, whenText(context, e.date)).joinToString(" · "),
                     style = CtrlType.Data, color = CtrlColors.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis,
@@ -261,7 +287,7 @@ fun whenText(context: Context, millis: Long): String {
 }
 
 @Composable
-private fun CallDetails(g: CallGroup, onDismiss: () -> Unit, onCall: () -> Unit, onDelete: () -> Unit) {
+private fun CallDetails(g: CallGroup, recordings: List<Recording>, onPlay: (Recording) -> Unit, onDismiss: () -> Unit, onCall: () -> Unit, onDelete: () -> Unit) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val e = g.first
@@ -313,6 +339,26 @@ private fun CallDetails(g: CallGroup, onDismiss: () -> Unit, onCall: () -> Unit,
                 }
             }
             item { GroupRow(pluralStringResource(R.plurals.delete_calls, g.calls.size, g.calls.size), icon = Icons.Outlined.Delete, iconTint = CtrlColors.Error, titleColor = CtrlColors.Error, onClick = onDelete) }
+            if (recordings.isNotEmpty()) {
+                item {
+                    Text(
+                        stringResource(R.string.recordings).uppercase(),
+                        style = CtrlType.Label, color = CtrlColors.Muted,
+                        modifier = Modifier.padding(start = 24.dp, end = 24.dp, top = 16.dp, bottom = 6.dp),
+                    )
+                }
+                items(recordings, key = { "rec-" + it.key }) { r ->
+                    GroupRow(
+                        DateUtils.formatDateTime(context, r.meta.startedAt, DateUtils.FORMAT_SHOW_TIME or DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_ABBREV_ALL) +
+                            if (r.meta.part > 1) " · " + stringResource(R.string.rec_part, r.meta.part) else "",
+                        recordingDetails(context, r).firstOrNull(),
+                        icon = Icons.Outlined.PlayArrow,
+                        iconTint = CtrlColors.AccentText,
+                        value = if (r.meta.durationMs > 0) formatDuration(r.meta.durationMs / 1000) else null,
+                        onClick = { onPlay(r) },
+                    )
+                }
+            }
             item {
                 Text(
                     stringResource(R.string.call_list).uppercase(),

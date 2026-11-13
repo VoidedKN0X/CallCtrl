@@ -18,3 +18,10 @@
     public static int d(...);
     public static int i(...);
 }
+
+# Call recording: Shizuku starts the capture service by class name in its own process (reflection), with the
+# (Context) or no-argument constructor. Keep both and the name.
+-keep class com.vknxworks.callctrl.recording.shell.CaptureService {
+    public <init>(android.content.Context);
+    public <init>();
+}
