@@ -46,7 +46,7 @@ jobs:
         run: |
           chmod +x gradlew
           # CI and GITHUB_ACTIONS unset: without the release secrets the build would otherwise refuse to configure.
-          env -u CI -u GITHUB_ACTIONS ./gradlew --no-daemon assembleDebug
+          env -u CI -u GITHUB_ACTIONS ./gradlew --no-daemon --no-build-cache assembleDebug
 
       - uses: github/codeql-action/analyze@f3bbb05694c2f74569081c28664c0866d64dec21 # v4.39.3
         with:
