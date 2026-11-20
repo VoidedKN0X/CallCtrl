@@ -16,13 +16,16 @@ class SealedDataException(message: String, cause: Throwable? = null) : Exception
  *
  *     "CALLCTRL-REST1" | IV (12) | ciphertext + tag (16)
  *
- * A file that doesn't start with that marker is an ordinary file (a FLAC starts with `fLaC`, a WAV with
+ * Recordings too big to hold in memory are sealed in pieces instead ([ChunkedSealedFile], marker
+ * `CALLCTRL-REST2`). A file that starts with neither marker is an ordinary file (a FLAC starts with `fLaC`, a WAV with
  * `RIFF`, an OGG with `OggS`) and is read as it is, so both kinds work side by side. Nothing here deletes a
  * readable file: a file is only ever replaced, in one step, by a copy that was first written out in full,
  * read back and checked.
  */
 object SealedFile {
     private val MAGIC = "CALLCTRL-REST1".toByteArray(Charsets.US_ASCII)
+    /** The marker of the chunked layout ([ChunkedSealedFile]); the same length as [MAGIC]. */
+    private val MAGIC2 = "CALLCTRL-REST2".toByteArray(Charsets.US_ASCII)
     private const val AES_GCM = "AES/GCM/NoPadding"
     private const val IV_LEN = 12
     private const val TAG_LEN = 16
@@ -35,7 +38,11 @@ object SealedFile {
         return true
     }
 
-    /** True when [file] starts like a sealed file (only its first bytes are read). False when it can't be read. */
+    /**
+     * True when [file] starts like a sealed file, in either layout: this one, or the chunked one long recordings
+     * get ([ChunkedSealedFile], marker `CALLCTRL-REST2`; [ChunkedSealedFile.isChunked] tells which). Only its
+     * first bytes are read. False when it can't be read.
+     */
     fun isSealed(file: File): Boolean = try {
         val head = ByteArray(MAGIC.size)
         var read = 0
@@ -46,7 +53,7 @@ object SealedFile {
                 read += n
             }
         }
-        read == head.size && isSealed(head)
+        read == head.size && (isSealed(head) || head.contentEquals(MAGIC2))
     } catch (e: Exception) {
         false
     }

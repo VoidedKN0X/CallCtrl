@@ -6,18 +6,21 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.util.AtomicFile
 import com.vknxworks.callctrl.calls.CallManager
+import com.vknxworks.callctrl.data.crypto.ChunkedSealedFile
 import com.vknxworks.callctrl.data.crypto.DataKeyStore
 import com.vknxworks.callctrl.data.crypto.SealedFile
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import java.io.ByteArrayInputStream
 import java.io.File
+import java.io.IOException
 import java.io.InputStream
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -65,9 +68,10 @@ data class Recording(val file: File, val meta: RecordingMeta) {
  *
  * Encryption at rest: a recording is written as an ordinary audio file while the call lasts (the recorder is not
  * involved in any of this). Once it's finished and no call is going on, [sealPass] replaces it, in the background,
- * with a copy encrypted under the app's data key ([SealedFile]); recordings above [MAX_SEAL_BYTES] stay ordinary
- * files. Playing, sharing and "Save a copy" decrypt it again, so what leaves CallCtrl is always a normal audio
- * file. The `<file>.json` notes next to a recording are not encrypted: the list, auto-delete and the recorder read
+ * with a copy encrypted under the app's data key: in one piece up to [MAX_SEAL_BYTES] ([SealedFile]), and in
+ * chunks above that ([ChunkedSealedFile]), so a long recording is sealed and opened without ever being held in
+ * memory whole. Playing, sharing and "Save a copy" decrypt it again, so what leaves CallCtrl is always a normal
+ * audio file. The `<file>.json` notes next to a recording are not encrypted: the list, auto-delete and the recorder read
  * and write them, also during calls, and none of that may wait for the key.
  */
 class RecordingStore(private val context: Context, private val scope: CoroutineScope, private val keys: DataKeyStore) {
@@ -93,6 +97,13 @@ class RecordingStore(private val context: Context, private val scope: CoroutineS
     @Volatile private var pinned: Set<String> = emptySet()
 
     private val sealing = AtomicBoolean(false)
+
+    /**
+     * Long recordings whose chunked sealing failed in this run (not: was stopped for a call, or had no room).
+     * They stay ordinary files and are tried again after the next start, not on every reload: each try reads
+     * and writes the whole file.
+     */
+    @Volatile private var bigSealFailed: Set<String> = emptySet()
 
     /** Reads the list again, then (in the background) seals finished recordings and checks the key. */
     fun reload() {
@@ -231,20 +242,43 @@ class RecordingStore(private val context: Context, private val scope: CoroutineS
     /** A call is on, or a file is being written: no sealing now. */
     private fun busy(): Boolean = inProgress.isNotEmpty() || CallManager.calls.value.isNotEmpty()
 
-    /** A finished recording that is still an ordinary file and small enough to seal. */
+    /** A finished recording that is still an ordinary file. */
     private fun sealable(r: Recording): Boolean {
         val f = r.file
-        if (!r.meta.complete || f.name in inProgress || f.name in pinned) return false
+        if (!r.meta.complete || f.name in inProgress || f.name in pinned || f.name in bigSealFailed) return false
         // Without its notes file there's no telling whether it's finished: only when it's been left alone for an hour.
         if (!metaFile(f).baseFile.exists() && System.currentTimeMillis() - f.lastModified() < 3_600_000L) return false
-        val size = f.length()
-        return size in 1..MAX_SEAL_BYTES && !SealedFile.isSealed(f)
+        return f.length() >= 1 && !SealedFile.isSealed(f)
+    }
+
+    /**
+     * Seals the ordinary file [file] (the caller holds [fileLock] and has checked [sealable]). Up to
+     * [MAX_SEAL_BYTES] in one piece, as always. A longer recording in chunks, which takes a while: it is given
+     * up the moment a call starts (the file stays ordinary and is tried again later), and not started without
+     * room for the sealed copy next to the original.
+     */
+    private fun sealOne(key: ByteArray, file: File) {
+        val tmp = File(file.parentFile, file.name + SEAL_TMP)
+        val size = file.length()
+        if (size <= MAX_SEAL_BYTES) {
+            SealedFile.sealInPlace(key, file, tmp)
+            return
+        }
+        val room = runCatching { file.parentFile?.usableSpace ?: 0L }.getOrDefault(0L)
+        if (room < ChunkedSealedFile.sealedLength(size) + MIN_FREE_START) return
+        var stopped = false
+        val ok = ChunkedSealedFile.sealInPlace(key, file, tmp) {
+            if (busy()) stopped = true
+            stopped
+        }
+        if (!ok && !stopped) bigSealFailed = bigSealFailed + file.name
     }
 
     /**
      * Encrypts the finished recordings in [all] that are still ordinary files, one at a time, never while a call
      * is on. Each one is replaced in a single step by a sealed copy that was first written out, read back and
-     * compared ([SealedFile.sealInPlace]); one that can't be sealed stays as it is and still plays. Safe to stop
+     * compared ([SealedFile.sealInPlace], or [ChunkedSealedFile.sealInPlace] for a long one); one that can't be
+     * sealed stays as it is and still plays. Safe to stop
      * at any point: the next run carries on with what's left. Without a data key nothing changes.
      */
     private fun sealPass(all: List<Recording>) {
@@ -262,7 +296,7 @@ class RecordingStore(private val context: Context, private val scope: CoroutineS
             for (r in pending) {
                 if (busy()) return
                 synchronized(fileLock) {
-                    if (r.file.isFile && sealable(r)) SealedFile.sealInPlace(key, r.file, File(r.file.parentFile, r.file.name + SEAL_TMP))
+                    if (r.file.isFile && sealable(r)) sealOne(key, r.file)
                 }
             }
         } finally {
@@ -291,7 +325,10 @@ class RecordingStore(private val context: Context, private val scope: CoroutineS
         }
     }
 
-    /** The decrypted audio of the sealed recording [file], or null when it can't be opened. */
+    /**
+     * The decrypted audio of the recording [file] sealed in one piece, or null when it can't be opened. Never
+     * for a chunked one ([ChunkedSealedFile.isChunked]): those are too big to hold in memory.
+     */
     private fun openSealed(file: File): ByteArray? = try {
         val key = keys.get(create = false)
         if (key == null) null else SealedFile.open(key, file.readBytes())
@@ -299,11 +336,48 @@ class RecordingStore(private val context: Context, private val scope: CoroutineS
         null
     }
 
+    /**
+     * Decrypts the chunked sealed recording [file] into [dir] under its own name, chunk by chunk, and returns
+     * that copy; null when it can't be opened or written. The copy is first written under another name and only
+     * gets the recording's name once every chunk checked out, so a copy with that name is always whole.
+     * [beforeRename] runs in between (the caller clears older copies there).
+     */
+    private fun decryptChunkedInto(file: File, dir: File, beforeRename: (part: File) -> Unit = {}): File? {
+        var part: File? = null
+        return try {
+            val key = keys.get(create = false) ?: return null
+            dir.mkdirs()
+            val tmp = File(dir, file.name + "." + System.nanoTime() + PART)
+            part = tmp
+            ChunkedSealedFile.openTo(key, file, tmp)
+            beforeRename(tmp)
+            val out = File(dir, file.name)
+            if (!tmp.renameTo(out)) throw IOException("can't put the copy in place")
+            out
+        } catch (e: Throwable) {
+            try {
+                part?.delete()
+            } catch (ignored: Throwable) {
+            }
+            null
+        }
+    }
+
     /** The recording's ordinary audio as a stream, or null when it's sealed and can't be opened. */
     private fun plainStream(file: File): InputStream? {
         // Opened under the lock: a file sealed right after this is still read as the ordinary file it was.
         synchronized(fileLock) {
             if (!SealedFile.isSealed(file)) return file.inputStream()
+        }
+        if (ChunkedSealedFile.isChunked(file)) {
+            // Decrypted chunk by chunk while it is read. A chunk that doesn't check out makes the read fail, so
+            // the copy being made from it fails as a whole (and is thrown away by the caller).
+            return try {
+                val key = keys.get(create = false)
+                if (key == null) null else ChunkedSealedFile.inputStream(key, file)
+            } catch (e: Throwable) {
+                null
+            }
         }
         return openSealed(file)?.let { ByteArrayInputStream(it) }
     }
@@ -315,6 +389,18 @@ class RecordingStore(private val context: Context, private val scope: CoroutineS
      */
     suspend fun playable(r: Recording): File? = withContext(Dispatchers.IO) {
         if (!SealedFile.isSealed(r.file)) return@withContext r.file
+        if (ChunkedSealedFile.isChunked(r.file)) {
+            val dir = File(context.cacheDir, PLAY_DIR)
+            val copy = decryptChunkedInto(r.file, dir) { part ->
+                dir.listFiles()?.forEach { if (it != part) it.delete() }
+            }
+            // The player was closed while a long recording was still being decrypted: nobody removes this copy.
+            if (copy != null && !isActive) {
+                runCatching { copy.delete() }
+                return@withContext null
+            }
+            return@withContext copy
+        }
         val plain = openSealed(r.file) ?: return@withContext null
         runCatching {
             val out = File(context.cacheDir, PLAY_DIR).apply { mkdirs() }
@@ -342,6 +428,9 @@ class RecordingStore(private val context: Context, private val scope: CoroutineS
             }
         }
         if (ordinary) return@withContext r.file
+        if (ChunkedSealedFile.isChunked(r.file)) {
+            return@withContext decryptChunkedInto(r.file, File(context.cacheDir, SHARE_DIR))
+        }
         val plain = openSealed(r.file) ?: return@withContext null
         runCatching {
             val out = File(context.cacheDir, SHARE_DIR).apply { mkdirs() }
@@ -365,9 +454,14 @@ class RecordingStore(private val context: Context, private val scope: CoroutineS
 
     companion object {
         const val DIR = "recordings"
-        /** Recordings above this size stay ordinary files: sealing and opening hold the whole file in memory. */
+        /**
+         * Recordings up to this size are sealed in one piece (sealing and opening hold the whole file in
+         * memory); longer ones are sealed in chunks ([ChunkedSealedFile]).
+         */
         const val MAX_SEAL_BYTES = 32L * 1024 * 1024
         private const val SEAL_TMP = ".seal.tmp"
+        /** A decrypted copy that is still being written. */
+        private const val PART = ".part"
         private const val PLAY_DIR = "playback"
         private const val SHARE_DIR = "shared"
         private const val SHARED_KEEP_MS = 3_600_000L

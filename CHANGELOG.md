@@ -4,7 +4,24 @@ What changed in each CallCtrl release. Every release on the [Releases page](http
 
 To publish a new version: bump `versionCode` and `versionName` in `app/build.gradle.kts`, add a section here, and push to `main`. Pushes without a version bump only build; they don't make a release.
 
-## v0.3.0 (2026-11-20)
+## Unreleased
+
+**This encrypts long call recordings that were left as normal files until now. An older version of CallCtrl cannot read them afterwards (details below).** Built and checked by CI only: nothing here had been run on a phone when it was pushed.
+
+### Security
+
+- **Long call recordings are now encrypted too.** Until now a finished recording above 32 MB (roughly 10 to 15 minutes of FLAC, about 3 minutes of stereo WAV) stayed a normal audio file in CallCtrl's storage, because encrypting it needed the whole file in memory at once. Such recordings are now encrypted in pieces of 1 MB, so neither encrypting nor opening one ever holds more than a piece in memory. Same key and cipher as before (AES-256-GCM under the key in `data.key`, which is locked by a key in the phone's secure hardware). Recordings up to 32 MB are encrypted exactly as in 0.3.0, and recordings that are already encrypted are never rewritten.
+- **How the pieces are protected.** The file starts with a marker (`CALLCTRL-REST2`), the piece size, the length of the recording and a random file number. Every piece is encrypted on its own with its own random starting value, and is tied to that header, to its position in the file and to whether it is the last piece. So pieces that were swapped, repeated, left out, cut off, added or taken from another recording, and any change to the header or to a single bit, are noticed and the recording is refused instead of played wrong.
+- **Long recordings you already have are encrypted the same careful way as short ones**, one at a time, in the background, only when no call is going on, the next time CallCtrl starts or you open Recents or Recordings. The encrypted copy is first written next to the original and synced to storage, then read back, decrypted and compared byte for byte with the original, and only then put in its place in one step. If anything fails or the app is stopped halfway, the original stays as it is and still plays. Three things are specific to long recordings: it needs free space for a second copy of the recording while it works (if there isn't enough, plus 50 MB to spare, the recording simply stays a normal file for now); it stops at once when a call starts and tries again later; and a recording whose encryption failed for another reason is not tried again until the next time CallCtrl starts, so it doesn't rewrite hundreds of megabytes over and over.
+- **Playing, sharing and "Save a copy to Music" still give a normal audio file.** For a long encrypted recording, playing and sharing first decrypt it into a temporary copy in CallCtrl's cache (removed as before: the playing copy when you close the recording, when the app locks and at the next start; a shared copy after an hour). The copy only gets the recording's name once every piece checked out. "Save a copy" decrypts while it copies; if a piece is damaged the copy is thrown away and you get "couldn't save".
+- **What you may notice:** opening a long recording to play or share it now takes a moment (the whole file is decrypted first; before, long recordings were normal files and opened at once), and it needs as much free space as the recording is big. If there isn't room, you get the existing "can't open" message and the recording itself is untouched.
+- **If the key is lost**, long encrypted recordings behave like the short ones: they are kept as they are, counted in the "encrypted recordings can't be opened" notice with **Try again**, and never removed by "Delete after".
+- **An older CallCtrl can't play them.** CallCtrl 0.3.0 and older see a long encrypted recording as a normal audio file that won't play, and sharing it gives an unreadable file. Before going back to an older version, use "Save a copy to Music/CallCtrl" (or Share) on the recordings you want to keep.
+
+### Project
+
+- A unit test (`ChunkedSealedFileTest`, 16 tests) covers the new format: several pieces, lengths that are an exact number of pieces, an empty file, every single flipped bit, a file cut off at every possible length, extra data at the end, pieces swapped, repeated, dropped or taken from another file (with and without the header changed to match), wrong keys, bad headers, that already encrypted files are never rewritten, and that encrypting which is stopped or fails at any point leaves the normal file and no temporary file. These tests, and the existing `SealedFileTest`, were run on a computer and pass; CI builds the app but doesn't run unit tests, and none of this has run on a phone.
+
 
 **This release encrypts some of what the app stores on the phone. An older version cannot read it afterwards, so export or back up anything you need before you update (details below).** Built and checked by CI only: nothing in this release had been run on a phone when it was published.
 
