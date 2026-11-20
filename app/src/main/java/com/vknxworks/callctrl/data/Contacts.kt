@@ -35,6 +35,8 @@ data class Person(
     /** The name on a phone keypad: "Anna" is 2662, so typing 266 finds her. */
     val t9: List<String> = searchName.split(' ', '-', '.').filter { it.isNotEmpty() }.map { w -> w.map(::t9Digit).joinToString("") }
     val digits: List<String> = phones.map { p -> p.number.filter { it.isDigit() } }
+    /** All the keypad words in a row ("Anna Smit" is 266276648), made once instead of on every typed digit. */
+    private val t9Joined: String = t9.joinToString("")
 
     fun matches(query: String): Boolean {
         val q = fold(query.trim())
@@ -48,12 +50,14 @@ data class Person(
     fun matchesDigits(typed: String): Boolean {
         val d = typed.filter { it.isDigit() }
         if (d.isEmpty()) return false
-        val joined = t9.joinToString("")
-        return t9.any { it.startsWith(d) } || joined.startsWith(d) || (d.length >= 3 && digits.any { it.contains(d) })
+        return t9.any { it.startsWith(d) } || t9Joined.startsWith(d) || (d.length >= 3 && digits.any { it.contains(d) })
     }
 
     companion object {
-        fun fold(s: String): String = Normalizer.normalize(s, Normalizer.Form.NFD).replace(Regex("\\p{Mn}+"), "").lowercase()
+        /** Accents and other combining marks. Compiled once: [fold] runs for every contact on every typed letter. */
+        private val MARKS = Regex("\\p{Mn}+")
+
+        fun fold(s: String): String = Normalizer.normalize(s, Normalizer.Form.NFD).replace(MARKS, "").lowercase()
 
         private fun t9Digit(c: Char): Char = when (c) {
             in 'a'..'c' -> '2'; in 'd'..'f' -> '3'; in 'g'..'i' -> '4'; in 'j'..'l' -> '5'

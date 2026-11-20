@@ -112,8 +112,11 @@ fun ContactAvatar(name: String, photoUri: String?, size: Dp = 44.dp, modifier: M
     }
 }
 
+/** Runs of spaces between the words of a name. Compiled once: [initials] runs for every picture-less row. */
+private val WHITESPACE = Regex("\\s+")
+
 fun initials(name: String): String {
-    val words = name.trim().split(Regex("\\s+")).filter { it.isNotEmpty() && it[0].isLetterOrDigit() }
+    val words = name.trim().split(WHITESPACE).filter { it.isNotEmpty() && it[0].isLetterOrDigit() }
     return when {
         words.isEmpty() -> name.trim().take(1).uppercase().ifEmpty { "#" }
         words.size == 1 -> words[0].take(1).uppercase()

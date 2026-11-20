@@ -25,6 +25,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         if (savedInstanceState == null) take(intent)
+        secureBeforeFirstFrame()
         setContent { CtrlWindow(this) { AppRoot() } }
     }
 
@@ -57,6 +58,18 @@ class MainActivity : ComponentActivity() {
         /** From a call-recording notification (only CallCtrl's own, immutable PendingIntent). */
         const val ACTION_SHOW_RECORDINGS = "com.vknxworks.callctrl.SHOW_RECORDINGS"
         const val ACTION_ADD_CALL = "com.vknxworks.callctrl.ADD_CALL"
+    }
+}
+
+/**
+ * Keeps the window out of screenshots and screen recordings from its very first frame when the app opens locked
+ * (or "Hide in screenshots" is already known to be on). [CtrlWindow] keeps the flag up to date after that, with
+ * the same rule. Call before setContent.
+ */
+fun ComponentActivity.secureBeforeFirstFrame() {
+    val c = container
+    if (c.settings.settings.value.hideScreenshots || lockCovering(c.vault)) {
+        window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
     }
 }
 

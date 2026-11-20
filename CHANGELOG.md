@@ -4,6 +4,26 @@ What changed in each CallCtrl release. Every release on the [Releases page](http
 
 To publish a new version: bump `versionCode` and `versionName` in `app/build.gradle.kts`, add a section here, and push to `main`. Pushes without a version bump only build; they don't make a release.
 
+## Unreleased
+
+Changes that are in the code but not in a release yet. They ship with the next version. None of this was run on a phone: the changes were checked by reading the code and by the CI build only.
+
+### Faster
+
+- **Searching contacts no longer stutters with a big address book.** For every contact, on every letter you typed, the app rebuilt the small text pattern it uses to ignore accents ("é" finds "e"). It is now built once and reused. The same goes for the pattern that works out the initials shown for contacts without a picture, which ran for every such row while scrolling. Search results and initials are exactly the same as before.
+- **Keypad suggestions do less work per digit.** The keypad spelling of each name (Anna = 2662) is joined into one string when contacts load, instead of again for every contact on every digit you type. The suggestions are the same.
+- **The Contacts tab doesn't regroup the list while you use it.** Favourites and the A-Z sections were worked out again every time the list was laid out; now only when the contacts or the search text change.
+- **Grouping call history is lighter.** To decide whether two calls belong in one group, the calendar day of every call was worked out twice; now once. The groups are the same.
+
+### Privacy
+
+- **The app is hidden from screenshots from its very first frame when it opens locked.** The "not in screenshots or screen recordings" protection was switched on a moment after the first frame was drawn, so the very first frame of the lock screen was not covered. It is now set before anything is drawn when the app lock is on (and when "Hide in screenshots" is already known to be on). Nothing changes while the app is open.
+
+### Not changed
+
+- CallCtrl has no home-screen widgets and no Quick Settings tiles, so there was nothing to remove.
+- Call handling, call screening and the call recorder are untouched.
+
 ## Project updates (2026-11-19)
 
 ### Project

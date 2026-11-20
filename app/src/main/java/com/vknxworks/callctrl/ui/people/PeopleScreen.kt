@@ -84,6 +84,11 @@ fun PeopleScreen() {
     var choose by remember { mutableStateOf<Person?>(null) }
     var sims by remember { mutableStateOf<Pair<String, List<CallAccount>>?>(null) }
     val shown = remember(people, query) { if (query.isBlank()) people else people.filter { it.matches(query) } }
+    // Favourites and the A-Z sections are worked out once per list, not every time the list is laid out again.
+    val favourites = remember(shown, query) { if (query.isBlank()) shown.filter { it.starred } else emptyList() }
+    val groups = remember(shown) {
+        shown.groupBy { p -> p.name.firstOrNull()?.takeIf { it.isLetter() }?.let { Person.fold(it.toString()).uppercase().take(1) } ?: "#" }
+    }
 
     fun call(number: String) {
         startCall(context, number) { sims = number to it }
@@ -119,12 +124,10 @@ fun PeopleScreen() {
             people.isEmpty() -> MessageView(Icons.Outlined.Contacts, stringResource(R.string.no_contacts), stringResource(R.string.no_contacts_body), modifier = Modifier.bottomClearance())
             shown.isEmpty() -> MessageView(Icons.Outlined.Search, stringResource(R.string.search_none, query.trim()), modifier = Modifier.bottomClearance())
             else -> LazyColumn(Modifier.fillMaxSize(), contentPadding = PaddingValues(bottom = 24.dp)) {
-                val favourites = if (query.isBlank()) shown.filter { it.starred } else emptyList()
                 if (favourites.isNotEmpty()) {
                     stickyHeader(key = "h-fav") { Header(stringResource(R.string.favourites)) }
                     items(favourites, key = { "f${it.id}" }) { p -> PersonRow(p, onTap = { tap(p) }, onLong = { openContact(context, p.lookupUri) }) }
                 }
-                val groups = shown.groupBy { p -> p.name.firstOrNull()?.takeIf { it.isLetter() }?.let { Person.fold(it.toString()).uppercase().take(1) } ?: "#" }
                 for ((letter, group) in groups) {
                     stickyHeader(key = "h-$letter") { Header(letter) }
                     items(group, key = { it.id }) { p -> PersonRow(p, onTap = { tap(p) }, onLong = { openContact(context, p.lookupUri) }) }

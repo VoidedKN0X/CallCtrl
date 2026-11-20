@@ -124,16 +124,21 @@ class CallHistory(private val context: Context, private val scope: CoroutineScop
         fun group(calls: List<CallEntry>): List<CallGroup> {
             val out = ArrayList<CallGroup>()
             var cur = ArrayList<CallEntry>()
+            // The calendar day of each call is worked out once (it used to be worked out twice per call).
+            val zone = java.time.ZoneId.systemDefault()
+            var lastDay: java.time.LocalDate? = null
             for (c in calls) {
                 val last = cur.lastOrNull()
-                val sameDay = last != null && java.time.Instant.ofEpochMilli(last.date).atZone(java.time.ZoneId.systemDefault()).toLocalDate() ==
-                    java.time.Instant.ofEpochMilli(c.date).atZone(java.time.ZoneId.systemDefault()).toLocalDate()
+                val day = java.time.Instant.ofEpochMilli(c.date).atZone(zone).toLocalDate()
+                val sameDay = last != null && lastDay == day
                 if (last != null && sameDay && last.missed == c.missed && (Phone.same(last.number, c.number) || (last.hidden && c.hidden))) {
                     cur += c
                 } else {
                     if (cur.isNotEmpty()) out += CallGroup(cur)
                     cur = arrayListOf(c)
                 }
+                // [c] is now the last call of the current group, so its day is the one the next call is compared with.
+                lastDay = day
             }
             if (cur.isNotEmpty()) out += CallGroup(cur)
             return out
