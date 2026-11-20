@@ -36,6 +36,13 @@ Phone app (dialer, call screen, call history) in the VKNXWorks Ctrl series. Kotl
 - Nothing on the incoming-call, screening or recording path may ask for the data key. Keep key use on background threads.
 - `SealedFileTest` covers the one-piece format, the migration step and the key rules; `ChunkedSealedFileTest` covers the chunked format (several chunks, exact multiples, empty, every flipped bit, every truncation, moved/repeated/dropped/foreign chunks, wrong key, bad headers), that sealed files are never rewritten, and that a stopped or failed sealing leaves the ordinary file (`./gradlew :app:testDebugUnitTest`; CI doesn't run unit tests).
 
+## Build toolchain
+
+- AGP 9.5.1, Gradle 9.9.2, Kotlin 2.4.21, Compose BOM 2026.09.00, `compileSdk` 37 (Compose 1.12 needs it), `minSdk` 35, `targetSdk` 36. All versions are in `gradle/libs.versions.toml`. `buildFeatures { aidl = true }` stays on for the call-recording capture service.
+- AGP 9 has built-in Kotlin: there is no `org.jetbrains.kotlin.android` plugin any more. The Kotlin version is pinned by the `kotlin-gradle-plugin` classpath entry in the root `build.gradle.kts`; the Compose and serialization compiler plugins use the same `kotlin` version. Don't re-add the Kotlin Android plugin.
+- AGP 9's R8 is stricter (`-keep class X` without a member block no longer keeps the constructor; resources are shrunk together with code). Keep rules in `proguard-rules.pro` must name the members they need, and resources must be referenced through `R`, never by name.
+- Any change here needs the dependency verification procedure below.
+
 ## Dependency verification
 
 Gradle checks every library and plugin download against its SHA-256 in `gradle/verification-metadata.xml` (checksums only, no PGP). When a dependency or plugin changes, run the `verification-metadata.yml` workflow (`gh api -X POST repos/VoidedKN0X/CallCtrl/actions/workflows/verification-metadata.yml/dispatches -f ref=main`), decode the file from its log, check the diff (only Maven Central and Google's Maven) and commit it in the same push. Never turn verification off or make it lenient.
