@@ -48,6 +48,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -66,12 +67,14 @@ import com.vknxworks.callctrl.ui.components.CtrlBottomSheet
 import com.vknxworks.callctrl.ui.components.CtrlSquareButton
 import com.vknxworks.callctrl.ui.components.GroupRow
 import com.vknxworks.callctrl.ui.components.MessageView
+import com.vknxworks.callctrl.ui.components.PillButton
 import com.vknxworks.callctrl.ui.components.ScreenTopBar
 import com.vknxworks.callctrl.ui.theme.CtrlColors
 import com.vknxworks.callctrl.ui.theme.CtrlType
 import com.vknxworks.callctrl.ui.theme.Gutter
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.io.File
 
 /**
  * Settings > Phone app > Call recording > Recordings (and from a recording notification): every recording,
@@ -82,6 +85,7 @@ fun RecordingsScreen() {
     val context = LocalContext.current
     val c = context.container
     val list by c.recordings.list.collectAsStateWithLifecycle()
+    val unreadable by c.recordings.unreadable.collectAsStateWithLifecycle()
     var open by remember { mutableStateOf<Recording?>(null) }
     LaunchedEffect(Unit) { c.recordings.reload() }
 
@@ -91,11 +95,25 @@ fun RecordingsScreen() {
             MessageView(Icons.Outlined.RadioButtonChecked, stringResource(R.string.recordings_empty), stringResource(R.string.recordings_empty_body))
         } else {
             LazyColumn(Modifier.fillMaxSize().navigationBarsPadding(), contentPadding = PaddingValues(bottom = 24.dp)) {
+                if (unreadable > 0) item(key = "unreadable-notice") { UnreadableNotice(unreadable) { c.recordings.retryKey() } }
                 items(list, key = { it.key }) { r -> RecordingRow(r) { open = r } }
             }
         }
     }
     open?.let { r -> RecordingSheet(r, onDismiss = { open = null }) }
+}
+
+/**
+ * Encrypted recordings can't be opened because their key is missing (for example after the phone's secure key
+ * storage was reset). They are kept as they are; "Try again" asks for the key once more.
+ */
+@Composable
+private fun UnreadableNotice(count: Int, onRetry: () -> Unit) {
+    Column(Modifier.fillMaxWidth().padding(horizontal = Gutter, vertical = 12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Text(pluralStringResource(R.plurals.rec_unreadable_title, count, count), style = MaterialTheme.typography.titleMedium, color = CtrlColors.Error)
+        Text(stringResource(R.string.rec_unreadable_body), style = MaterialTheme.typography.bodyMedium, color = CtrlColors.Muted)
+        PillButton(stringResource(R.string.rec_unreadable_retry), onClick = onRetry)
+    }
 }
 
 /** The caller's name, number or "Private number" / "Conference call". */
@@ -189,7 +207,13 @@ fun RecordingSheet(r: Recording, onDismiss: () -> Unit) {
                 Spacer(Modifier.size(8.dp))
                 recordingDetails(context, r).forEach { Text(it, style = CtrlType.Data, color = CtrlColors.Muted) }
             }
-            GroupRow(stringResource(R.string.rec_share), stringResource(R.string.rec_share_note), icon = Icons.Outlined.Share, onClick = { share(context, r) })
+            GroupRow(stringResource(R.string.rec_share), stringResource(R.string.rec_share_note), icon = Icons.Outlined.Share, onClick = {
+                scope.launch {
+                    val file = c.recordings.shareable(r)
+                    if (file == null) Toast.makeText(context, context.getString(R.string.rec_open_failed), Toast.LENGTH_SHORT).show()
+                    else share(context, r, file)
+                }
+            })
             if (!r.meta.copied) {
                 GroupRow(stringResource(R.string.rec_save_copy), icon = Icons.Outlined.LibraryMusic, onClick = {
                     scope.launch {
@@ -220,20 +244,38 @@ fun RecordingSheet(r: Recording, onDismiss: () -> Unit) {
 @Composable
 private fun Player(r: Recording) {
     val context = LocalContext.current
+    val c = context.container
     var playing by remember { mutableStateOf(false) }
     var duration by remember { mutableIntStateOf((r.meta.durationMs).toInt().coerceAtLeast(0)) }
     var position by remember { mutableIntStateOf(0) }
     var dragging by remember { mutableStateOf(false) }
     var dragValue by remember { mutableFloatStateOf(0f) }
-    val player = remember(r.key) {
-        runCatching {
-            MediaPlayer().apply {
-                setDataSource(r.file.path)
-                prepare()
-                setOnCompletionListener { playing = false; position = 0; runCatching { seekTo(0) } }
-            }
-        }.getOrNull()
+    // The player is made once the audio is ready: at once for an ordinary file; an encrypted recording is first
+    // decrypted (off the main thread) into a copy in the cache, which is removed again when this closes.
+    var loaded by remember(r.key) { mutableStateOf<MediaPlayer?>(null) }
+    var preparing by remember(r.key) { mutableStateOf(true) }
+    LaunchedEffect(r.key) {
+        var made: MediaPlayer? = null
+        // Twice at most: the file may have been encrypted between the look and the open.
+        var attempts = 0
+        while (made == null && attempts < 2) {
+            attempts++
+            val source = c.recordings.playable(r) ?: break
+            made = runCatching {
+                MediaPlayer().apply {
+                    setDataSource(source.path)
+                    prepare()
+                    setOnCompletionListener { playing = false; position = 0; runCatching { seekTo(0) } }
+                }
+            }.getOrNull()
+        }
+        loaded = made
+        preparing = false
     }
+    DisposableEffect(r.key) {
+        onDispose { c.recordings.clearPlayback(r) }
+    }
+    val player = loaded
     DisposableEffect(player) {
         player?.duration?.takeIf { it > 0 }?.let { duration = it }
         onDispose { runCatching { player?.release() } }
@@ -250,7 +292,9 @@ private fun Player(r: Recording) {
             stringResource(if (playing) R.string.rec_pause else R.string.rec_play),
             onClick = {
                 val p = player
-                if (p == null) {
+                if (preparing) {
+                    // Still opening the recording.
+                } else if (p == null) {
                     Toast.makeText(context, context.getString(R.string.rec_play_failed), Toast.LENGTH_SHORT).show()
                 } else if (playing) {
                     runCatching { p.pause() }
@@ -282,9 +326,10 @@ private fun Player(r: Recording) {
     }
 }
 
-private fun share(context: Context, r: Recording) {
+/** Shares [file]: the recording itself, or the decrypted copy of an encrypted one (same name, a normal audio file). */
+private fun share(context: Context, r: Recording, file: File) {
     val format = RecordFormat.entries.firstOrNull { r.file.name.endsWith("." + it.extension) } ?: RecordFormat.FLAC
-    val uri = runCatching { FileProvider.getUriForFile(context, context.packageName + ".files", r.file) }.getOrNull() ?: return
+    val uri = runCatching { FileProvider.getUriForFile(context, context.packageName + ".files", file) }.getOrNull() ?: return
     val send = Intent(Intent.ACTION_SEND)
         .setType(format.mime)
         .putExtra(Intent.EXTRA_STREAM, uri)

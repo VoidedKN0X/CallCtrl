@@ -341,6 +341,13 @@
     <string name="rec_saved_copy">Saved to Music/CallCtrl</string>
     <string name="rec_save_failed">Couldn\'t save the copy</string>
     <string name="rec_play_failed">Can\'t play this recording</string>
+    <string name="rec_open_failed">Can\'t open this recording</string>
+    <plurals name="rec_unreadable_title">
+        <item quantity="one">%1$d encrypted recording can\'t be opened</item>
+        <item quantity="other">%1$d encrypted recordings can\'t be opened</item>
+    </plurals>
+    <string name="rec_unreadable_body">CallCtrl encrypts finished recordings with a key kept by this phone\'s secure hardware, and that key isn\'t available right now. The recordings are kept as they are and nothing is deleted. New recordings still work.</string>
+    <string name="rec_unreadable_retry">Try again</string>
     <string name="rec_detail_file">File: %1$s</string>
     <string name="rec_detail_capture">Captured: %1$s</string>
     <string name="rec_khz">%1$s kHz</string>

@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Only call recordings can be shared, and only when you tap Share on one. -->
+<!-- Only call recordings can be shared, and only when you tap Share on one. An encrypted recording is shared
+     as a decrypted copy from cache/shared (a normal audio file, removed again after an hour). -->
 <paths>
     <files-path name="recordings" path="recordings/" />
+    <cache-path name="shared" path="shared/" />
 </paths>

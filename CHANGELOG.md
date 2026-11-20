@@ -4,6 +4,28 @@ What changed in each CallCtrl release. Every release on the [Releases page](http
 
 To publish a new version: bump `versionCode` and `versionName` in `app/build.gradle.kts`, add a section here, and push to `main`. Pushes without a version bump only build; they don't make a release.
 
+## Unreleased
+
+Built and checked by CI only: nothing here has been run on a phone. No new version yet, so nothing is published.
+
+### Security
+
+- **Finished call recordings are now encrypted in CallCtrl's storage.** A recording is still written as a normal audio file while the call lasts; the recorder itself is unchanged. Afterwards, in the background and only when no call is going on, CallCtrl replaces the audio file with an encrypted copy (AES-256-GCM). The key is 32 random bytes kept in `data.key` in CallCtrl's private files, itself encrypted by a key in the phone's secure hardware (Android Keystore, StrongBox when the phone has it) that can't be copied off the phone. No PIN or fingerprint is needed for it, and it is separate from the app lock. What this protects: the audio in files copied off the phone (a storage dump, a backup tool with root). What it does not protect: someone who can use the unlocked phone or the running app; the app lock is still what keeps people out of the app.
+- **Recordings you already have are encrypted too**, one at a time, the next time CallCtrl starts or you open Recents or Recordings. Each file is first written out encrypted next to the original, read back, decrypted and compared byte for byte with the original, and only then put in its place in one step. If anything fails, or the app is stopped halfway, the original recording stays as it is and CallCtrl tries again later. No recording is ever without a readable copy.
+- **Playing, sharing and "Save a copy to Music" work as before and still give a normal audio file.** To play an encrypted recording, CallCtrl decrypts it into a temporary file in its cache, which is removed when you close the recording, when the app locks and when it next starts. Sharing an encrypted recording hands the other app a decrypted copy from the cache with the same file name; that copy is removed after an hour. Opening a long encrypted recording can take a moment before Play responds.
+- **Deliberately not encrypted, and why:**
+  - *Recordings larger than 32 MB* (roughly 10 to 15 minutes of FLAC, about 3 minutes of stereo WAV, hours of Opus or AAC): encrypting and opening a file needs all of it in memory at once, and CallCtrl must never run out of memory around a call. These stay normal audio files, as before.
+  - *The small notes file next to each recording* (number, name, times, format): the list, "Delete after" and the recorder read and write it, also during calls, and nothing there may wait for the key.
+  - *The file names* (date, direction and name or number, like `20261113-142501_in_Anna.flac`): they are the names your shared and saved copies get.
+  - *Your call screening rules* (`screening.json`): they are read the moment a call comes in, and screening must never wait for a key.
+  - *Settings.* Your call history and contacts are the phone's own and were never CallCtrl's files.
+- **If the key is ever lost** (for example the phone's secure key storage was reset, or CallCtrl's files were copied to another phone), encrypted recordings can't be opened. CallCtrl then keeps them exactly as they are, shows "encrypted recordings can't be opened" with a **Try again** button at the top of the Recordings screen, does not let "Delete after" remove them, never makes a new key over the old one, and keeps recording new calls (those stay normal files). You can still delete such recordings yourself.
+- **An older CallCtrl can't play encrypted recordings.** If you go back to 0.2.1 or older, encrypted recordings show in the list but won't play, and sharing them gives an unreadable file. Before downgrading, use "Save a copy to Music/CallCtrl" (or Share) on the recordings you want to keep.
+
+### Project
+
+- A unit test (`SealedFileTest`) covers the encrypted file format, the step that replaces a normal file with an encrypted one, and the key rules. CI builds the app but doesn't run unit tests.
+
 ## v0.2.1 (2026-11-20)
 
 Built and checked by CI only: nothing in this release had been run on a phone when it was published.

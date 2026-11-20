@@ -2,6 +2,8 @@ package com.vknxworks.callctrl
 
 import android.content.Context
 import com.vknxworks.callctrl.data.CallHistory
+import com.vknxworks.callctrl.data.crypto.DataKeyStore
+import com.vknxworks.callctrl.data.crypto.KeystoreWrapper
 import com.vknxworks.callctrl.data.ContactsRepository
 import com.vknxworks.callctrl.data.lock.LockVault
 import com.vknxworks.callctrl.data.screening.ScreeningStore
@@ -29,8 +31,15 @@ class AppContainer(val context: Context) {
     /** Call screening rules (Settings > Call screening), also read by the screening service. */
     val screening = ScreeningStore(context, appScope)
 
+    /**
+     * The key finished call recordings are encrypted with at rest (`files/data.key`, wrapped by a Keystore key).
+     * Making this object reads nothing; the key is only asked for on background threads, when a recording is
+     * sealed or opened. Nothing on the call or screening path uses it.
+     */
+    private val dataKeys = DataKeyStore(context.filesDir, KeystoreWrapper(DATA_KEY_ALIAS))
+
     /** Call recordings (Settings > Call recording), in CallCtrl's private files. */
-    val recordings = RecordingStore(context, appScope)
+    val recordings = RecordingStore(context, appScope, dataKeys)
 
     /** Open the Recordings screen (from a call-recording notification). */
     val showRecordings = MutableStateFlow(false)
@@ -68,6 +77,8 @@ class AppContainer(val context: Context) {
 
     fun onLocked() {
         vault.close()
+        // Decrypted copies of recordings made for playing or sharing don't stay in the cache behind the lock.
+        recordings.clearTemp()
     }
 
     fun onUnlocked() {
@@ -84,9 +95,16 @@ class AppContainer(val context: Context) {
         AppLock.onLocked = { onLocked() }
         // Recordings: fix any cut off by a crash, then apply "Delete after" (both off the main thread).
         appScope.launch {
+            recordings.clearTemp()
             recordings.repairUnfinished()
             recordings.autoDelete(settings.load().recordAutoDelete)
+            // Then, in the background and only when no call is on: encrypt finished recordings that aren't yet.
+            recordings.reload()
         }
+    }
+
+    private companion object {
+        const val DATA_KEY_ALIAS = "callctrl_data_at_rest"
     }
 }
 
