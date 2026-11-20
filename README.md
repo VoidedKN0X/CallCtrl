@@ -77,7 +77,7 @@ How it works: while a call is recorded (or about to be), Shizuku starts a small 
 ## Is it safe to install?
 
 - **Open source.** All of CallCtrl's code is in this repo, under the GPL-3.0 licence. Anyone can read it.
-- **Built by GitHub, not on a personal computer.** Every release on the Releases page is built by [the build workflow](.github/workflows/build.yml) on GitHub Actions, straight from the code in this repo. Each build also checks that the app has no network permission and no Google libraries.
+- **Built by GitHub, not on a personal computer.** Every release on the Releases page is built by [the build workflow](.github/workflows/build.yml) on GitHub Actions, straight from the code in this repo. Each build also checks that the app has no network permission and no Google libraries. The signing key is kept away from the build: one job builds the APK without any secrets, and a separate job that runs no code from this repo signs it and checks the signature against the fingerprint below.
 - **Always signed with the same key.** Android refuses to install an update signed with a different key over CallCtrl, and the CtrlF-Droid repo only accepts APKs signed with this key. The SHA-256 fingerprint of CallCtrl's signing certificate is:
 
   ```
