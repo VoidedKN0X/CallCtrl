@@ -172,13 +172,14 @@ object RecordingMatch {
         callDurationSeconds: Long,
         same: (String, String) -> Boolean,
     ): Boolean {
-        val numberOk = when {
+        // The time first: it is two comparisons, and it rules out nearly every pair before the numbers are
+        // compared (which is slow, and Recents asks this for every call against every recording).
+        if (recStartedAt < callDate - 5_000 || recStartedAt > callDate + callDurationSeconds * 1000 + 120_000) return false
+        return when {
             callHidden || callNumber.isNullOrBlank() -> recNumber.isNullOrBlank()
             recNumber.isNullOrBlank() -> false
             else -> same(recNumber, callNumber)
         }
-        if (!numberOk) return false
-        return recStartedAt >= callDate - 5_000 && recStartedAt <= callDate + callDurationSeconds * 1000 + 120_000
     }
 }
 

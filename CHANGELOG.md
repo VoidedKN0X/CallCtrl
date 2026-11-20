@@ -18,6 +18,13 @@ To publish a new version: bump `versionCode` and `versionName` in `app/build.gra
 - **If the key is lost**, long encrypted recordings behave like the short ones: they are kept as they are, counted in the "encrypted recordings can't be opened" notice with **Try again**, and never removed by "Delete after".
 - **An older CallCtrl can't play them.** CallCtrl 0.3.0 and older see a long encrypted recording as a normal audio file that won't play, and sharing it gives an unreadable file. Before going back to an older version, use "Save a copy to Music/CallCtrl" (or Share) on the recordings you want to keep.
 
+### Faster
+
+- **Typing on the keypad no longer waits for your contacts.** On every digit, the app walked through every contact on the main thread, twice: once for the suggestions and once to see whose number it is (comparing phone numbers properly is slow). Both now happen in the background. What you may notice: the suggestions, the contact's name under the number and the "Add to contacts / Message" row update a moment after the digit appears instead of in the same instant. The name under the number is only ever shown for exactly the digits on screen; the "Add to contacts" row keeps its last state for that moment so it doesn't blink with every digit. Which suggestions you get is unchanged.
+- **Recents with call recordings is lighter.** To show which calls have a recording, every call was compared with every recording, starting with the slow phone-number comparison. The time of the call is now checked first, which rules out nearly every pair with two simple comparisons. The result is the same.
+- **Searching contacts prepares the search text once per letter**, not again for every contact. Same results.
+- **Scrolling the Contacts tab reuses rows better.** Rows and letter headings are marked as different kinds of list item, so each is reused only for its own kind. Nothing looks different.
+
 ### Project
 
 - A unit test (`ChunkedSealedFileTest`, 16 tests) covers the new format: several pieces, lengths that are an exact number of pieces, an empty file, every single flipped bit, a file cut off at every possible length, extra data at the end, pieces swapped, repeated, dropped or taken from another file (with and without the header changed to match), wrong keys, bad headers, that already encrypted files are never rewritten, and that encrypting which is stopped or fails at any point leaves the normal file and no temporary file. These tests, and the existing `SealedFileTest`, were run on a computer and pass; CI builds the app but doesn't run unit tests, and none of this has run on a phone.

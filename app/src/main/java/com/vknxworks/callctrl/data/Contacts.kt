@@ -38,12 +38,16 @@ data class Person(
     /** All the keypad words in a row ("Anna Smit" is 266276648), made once instead of on every typed digit. */
     private val t9Joined: String = t9.joinToString("")
 
-    fun matches(query: String): Boolean {
-        val q = fold(query.trim())
-        if (q.isEmpty()) return true
-        if (searchName.contains(q)) return true
-        val qd = query.filter { it.isDigit() }
-        return qd.length >= 2 && digits.any { it.contains(qd) }
+    fun matches(query: String): Boolean = matches(fold(query.trim()), query.filter { it.isDigit() })
+
+    /**
+     * The same answer as [matches] with the search text, for a text that was prepared once for the whole list:
+     * [folded] is `fold(query.trim())` and [queryDigits] the digits in the query.
+     */
+    fun matches(folded: String, queryDigits: String): Boolean {
+        if (folded.isEmpty()) return true
+        if (searchName.contains(folded)) return true
+        return queryDigits.length >= 2 && digits.any { it.contains(queryDigits) }
     }
 
     /** Keypad search: the typed digits start a word of the name (T9), or appear in a number. */

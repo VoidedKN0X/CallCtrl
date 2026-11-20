@@ -35,6 +35,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -64,6 +65,11 @@ import com.vknxworks.callctrl.ui.theme.CtrlColors
 import com.vknxworks.callctrl.ui.theme.CtrlShapes
 import com.vknxworks.callctrl.ui.theme.CtrlType
 import com.vknxworks.callctrl.ui.theme.Gutter
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+
+/** What the contacts say about the digits typed so far: up to three suggestions, and whose number it is. */
+private class KeypadLookup(val number: String, val matches: List<Person>, val known: Person?)
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -104,10 +110,24 @@ fun KeypadScreen() {
         startCall(context, n) { sims = it }
     }
 
-    val matches = remember(number, people) {
-        if (number.length < 1) emptyList() else people.filter { it.matchesDigits(number) }.take(3)
+    // Worked out off the main thread, so a key press never waits for a walk through every contact. Until the
+    // answer for the newest digit is in (a moment later), the one for the digits before it stays on screen.
+    val lookup by produceState(KeypadLookup("", emptyList(), null), number, people) {
+        val typed = number
+        val all = people
+        value = if (typed.isEmpty()) KeypadLookup("", emptyList(), null) else withContext(Dispatchers.Default) {
+            KeypadLookup(
+                typed,
+                all.asSequence().filter { it.matchesDigits(typed) }.take(3).toList(),
+                all.firstOrNull { p -> p.phones.any { Phone.same(it.number, typed) } },
+            )
+        }
     }
-    val known = remember(number, people) { people.firstOrNull { p -> p.phones.any { Phone.same(it.number, number) } } }
+    val matches = if (number.isEmpty()) emptyList() else lookup.matches
+    // Whose number this is (the name under the number): only ever the answer for exactly these digits.
+    val known = if (number.isNotEmpty() && lookup.number == number) lookup.known else null
+    // "Add to contacts" goes by the latest answer, so the row doesn't blink off and on with every digit.
+    val unknownNumber = number.isNotEmpty() && lookup.known == null
 
     BoxWithConstraints(Modifier.fillMaxSize().statusBarsPadding()) {
         val compact = maxHeight < 640.dp
@@ -124,7 +144,7 @@ fun KeypadScreen() {
                 verticalArrangement = Arrangement.Bottom,
             ) {
                 matches.forEach { p -> Suggestion(p, number) { n -> number = n; call(n) } }
-                if (number.isNotBlank() && known == null && number.count { it.isDigit() } >= 3) {
+                if (number.isNotBlank() && unknownNumber && number.count { it.isDigit() } >= 3) {
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         SmallAction(Icons.Outlined.PersonAdd, stringResource(R.string.add_to_contacts), Modifier.weight(1f)) { addToContacts(context, number) }
                         SmallAction(Icons.Outlined.ChatBubbleOutline, stringResource(R.string.message), Modifier.weight(1f)) { sendMessage(context, number) }

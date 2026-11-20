@@ -83,7 +83,14 @@ fun PeopleScreen() {
     var query by rememberSaveable { mutableStateOf("") }
     var choose by remember { mutableStateOf<Person?>(null) }
     var sims by remember { mutableStateOf<Pair<String, List<CallAccount>>?>(null) }
-    val shown = remember(people, query) { if (query.isBlank()) people else people.filter { it.matches(query) } }
+    val shown = remember(people, query) {
+        if (query.isBlank()) people else {
+            // The search text is prepared once, not again for every contact.
+            val folded = Person.fold(query.trim())
+            val queryDigits = query.filter { it.isDigit() }
+            people.filter { it.matches(folded, queryDigits) }
+        }
+    }
     // Favourites and the A-Z sections are worked out once per list, not every time the list is laid out again.
     val favourites = remember(shown, query) { if (query.isBlank()) shown.filter { it.starred } else emptyList() }
     val groups = remember(shown) {
@@ -125,12 +132,12 @@ fun PeopleScreen() {
             shown.isEmpty() -> MessageView(Icons.Outlined.Search, stringResource(R.string.search_none, query.trim()), modifier = Modifier.bottomClearance())
             else -> LazyColumn(Modifier.fillMaxSize(), contentPadding = PaddingValues(bottom = 24.dp)) {
                 if (favourites.isNotEmpty()) {
-                    stickyHeader(key = "h-fav") { Header(stringResource(R.string.favourites)) }
-                    items(favourites, key = { "f${it.id}" }) { p -> PersonRow(p, onTap = { tap(p) }, onLong = { openContact(context, p.lookupUri) }) }
+                    stickyHeader(key = "h-fav", contentType = "header") { Header(stringResource(R.string.favourites)) }
+                    items(favourites, key = { "f${it.id}" }, contentType = { "person" }) { p -> PersonRow(p, onTap = { tap(p) }, onLong = { openContact(context, p.lookupUri) }) }
                 }
                 for ((letter, group) in groups) {
-                    stickyHeader(key = "h-$letter") { Header(letter) }
-                    items(group, key = { it.id }) { p -> PersonRow(p, onTap = { tap(p) }, onLong = { openContact(context, p.lookupUri) }) }
+                    stickyHeader(key = "h-$letter", contentType = "header") { Header(letter) }
+                    items(group, key = { it.id }, contentType = { "person" }) { p -> PersonRow(p, onTap = { tap(p) }, onLong = { openContact(context, p.lookupUri) }) }
                 }
                 item { Spacer(Modifier.bottomClearance(0.dp)) }
             }
