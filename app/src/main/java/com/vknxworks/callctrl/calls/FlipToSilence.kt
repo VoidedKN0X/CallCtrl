@@ -68,6 +68,8 @@ object FlipToSilence : SensorEventListener {
     private var detector: FlipDetector? = null
     private var starting: Job? = null
     private var watching = false
+    /** The setting was looked up for the call that is ringing now (so it isn't read again for every change of the call). */
+    private var checked = false
 
     /** Called whenever the calls change: [ringing] says whether one is ringing now. */
     fun onCalls(context: Context, ringing: Boolean) {
@@ -75,13 +77,14 @@ object FlipToSilence : SensorEventListener {
             stop()
             return
         }
-        if (watching || starting != null) return
+        if (watching || checked || starting != null) return
         val app = context.applicationContext
         appContext = app
         starting = scope.launch {
             // The saved setting, not the placeholder a freshly started app has for a moment.
             val on = runCatching { app.container.settings.load().flipToSilence }.getOrDefault(false)
             starting = null
+            checked = true
             if (on && CallManager.calls.value.any { it.ringing }) start(app)
         }
     }
@@ -98,6 +101,7 @@ object FlipToSilence : SensorEventListener {
     private fun stop() {
         starting?.cancel()
         starting = null
+        checked = false
         if (watching) runCatching { sensors?.unregisterListener(this) }
         watching = false
         detector = null
@@ -110,6 +114,8 @@ object FlipToSilence : SensorEventListener {
         if (d.feed(event.values[0], event.values[1], event.values[2], SystemClock.elapsedRealtime())) {
             val context = appContext
             stop()
+            // Done for this call: don't start watching again while it keeps ringing silently.
+            checked = true
             if (context != null) runCatching { Phone.telecom(context)?.silenceRinger() }
         }
     }

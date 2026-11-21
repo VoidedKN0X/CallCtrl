@@ -1,0 +1,505 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Shell texts for this app -->
+    <string name="settings_subtitle">Telefoon-app, toetsenblok, recente oproepen en privacy</string>
+    <string name="app_lock_subtitle">Vraag een app-pincode (en eventueel je vingerafdruk) bij het openen van CallCtrl. Inkomende oproepen kun je altijd beantwoorden.</string>
+    <string name="app_lock_footer">CallCtrl werkt volledig offline: het heeft geen internettoestemming, analytics of tracking. Je oproepen lopen via de telefonie van je telefoon zelf, en de oproepgeschiedenis blijft in het oproeplogboek van je telefoon.</string>
+    <string name="lock_prompt_subtitle">Je oproepen en contacten</string>
+    <string name="lock_forgot_body">De pincode kan niet teruggehaald worden. CallCtrl reset zijn eigen instellingen en de regels voor oproepscreening en zet de app-vergrendeling uit. Je oproepgeschiedenis, contacten en geblokkeerde nummers worden niet verwijderd. Als je gespreksopnames hebt, kies je daarna of je ze houdt.</string>
+    <!-- Tabs -->
+    <string name="tab_keypad">Toetsenblok</string>
+    <string name="tab_recents">Recent</string>
+    <string name="tab_contacts">Contacten</string>
+    <!-- Setup -->
+    <string name="setup_default_title">Maak CallCtrl je telefoon-app</string>
+    <string name="setup_default_body">Als je telefoon-app toont CallCtrl inkomende en lopende oproepen, de oproepgeschiedenis en gemiste oproepen. Android blijft de oproepen zelf afhandelen.</string>
+    <string name="setup_default_button">Instellen als telefoon-app</string>
+    <string name="setup_default_skip">Niet nu</string>
+    <string name="setup_perm_title">Sta oproepen, oproepgeschiedenis en contacten toe</string>
+    <string name="setup_perm_body">CallCtrl moet kunnen bellen, je oproepgeschiedenis en contacten lezen en oproepmeldingen tonen. Niets verlaat de telefoon.</string>
+    <string name="setup_perm_blocked">Sommige toestemmingen staan uit voor CallCtrl. Zet Telefoon, Oproeplogboeken, Contacten en Meldingen aan bij de toestemmingen van de app.</string>
+    <string name="setup_perm_button">Toestaan</string>
+    <string name="open_settings">App-instellingen openen</string>
+    <!-- Keypad -->
+    <string name="action_call">Bellen</string>
+    <string name="backspace">Wissen</string>
+    <string name="add_to_contacts">Toevoegen aan contacten</string>
+    <string name="message">Bericht</string>
+    <string name="choose_sim">Bellen met</string>
+    <string name="call_failed">De oproep kon niet gestart worden</string>
+    <string name="need_phone_permission">Geef CallCtrl de toestemming Telefoon om te kunnen bellen</string>
+    <string name="voicemail_failed">Voor deze simkaart is geen voicemailnummer ingesteld</string>
+    <string name="no_app">Geen enkele app op deze telefoon kan dat openen</string>
+    <string name="return_to_call">Terug naar oproep · %1$s</string>
+    <!-- Recents -->
+    <string name="filter_all">Alles</string>
+    <string name="filter_missed">Gemist</string>
+    <string name="no_calls">Nog geen oproepen</string>
+    <string name="no_missed">Geen gemiste oproepen</string>
+    <string name="private_number">Privénummer</string>
+    <string name="unknown_caller">Onbekend</string>
+    <string name="yesterday">Gisteren</string>
+    <string name="clear_history">Oproepgeschiedenis wissen</string>
+    <string name="clear_history_title">Oproepgeschiedenis wissen?</string>
+    <string name="clear_history_body">Elke oproep wordt uit de oproepgeschiedenis van deze telefoon verwijderd. Dit kan niet ongedaan gemaakt worden.</string>
+    <string name="open_contact">Contact openen</string>
+    <string name="copy_number">Nummer kopiëren</string>
+    <string name="block">Nummer blokkeren</string>
+    <string name="block_sub">Geen oproepen of sms\'en meer van dit nummer</string>
+    <string name="unblock">Nummer deblokkeren</string>
+    <string name="unblock_sub">Oproepen en sms\'en van dit nummer komen weer door</string>
+    <string name="block_failed">De geblokkeerde nummers konden niet gewijzigd worden</string>
+    <plurals name="delete_calls">
+        <item quantity="one">Deze oproep verwijderen</item>
+        <item quantity="other">Deze %d oproepen verwijderen</item>
+    </plurals>
+    <string name="call_list">Oproepen</string>
+    <string name="type_incoming">Inkomende oproep</string>
+    <string name="type_outgoing">Uitgaande oproep</string>
+    <string name="type_missed">Gemiste oproep</string>
+    <string name="type_declined">Geweigerde oproep</string>
+    <string name="type_blocked">Geblokkeerde oproep</string>
+    <string name="type_voicemail">Voicemail</string>
+    <!-- Contacts tab -->
+    <string name="search_contacts">Contacten zoeken</string>
+    <string name="search_none">Niets gevonden voor “%1$s”</string>
+    <string name="no_contacts">Geen contacten met een telefoonnummer</string>
+    <string name="no_contacts_body">Contacten die je met een nummer bewaart, verschijnen hier.</string>
+    <string name="favourites">Favorieten</string>
+    <string name="add_contact">Contact toevoegen</string>
+    <!-- Call screen -->
+    <string name="state_incoming">Inkomende oproep</string>
+    <string name="state_calling">Bellen…</string>
+    <string name="state_ongoing">Lopende oproep</string>
+    <string name="state_held">In de wacht</string>
+    <string name="state_waiting">Wisselgesprek</string>
+    <string name="state_choose_sim">Kies een simkaart</string>
+    <string name="state_ended">Oproep beëindigd</string>
+    <string name="conference">Conferentiegesprek (%1$d)</string>
+    <string name="answer">Opnemen</string>
+    <string name="decline">Weigeren</string>
+    <string name="end_call">Ophangen</string>
+    <string name="mute">Dempen</string>
+    <string name="unmute">Dempen opheffen</string>
+    <string name="keypad">Toetsenblok</string>
+    <string name="hide_keypad">Toetsenblok verbergen</string>
+    <string name="hold">In de wacht</string>
+    <string name="resume">Hervatten</string>
+    <string name="add_call">Oproep toevoegen</string>
+    <string name="swap">Wisselen</string>
+    <string name="merge">Samenvoegen</string>
+    <string name="route_speaker">Luidspreker</string>
+    <string name="route_phone">Telefoon</string>
+    <string name="route_headset">Headset</string>
+    <string name="route_bluetooth">Bluetooth</string>
+    <string name="reply_with_message">Antwoorden met een bericht</string>
+    <string name="reply_1">Ik kan nu niet praten. Bel ik je later?</string>
+    <string name="reply_2">Ik bel je zo terug.</string>
+    <string name="reply_3">Ik zit in een vergadering, ik bel je erna.</string>
+    <string name="reply_custom">Schrijf er zelf een…</string>
+    <string name="send">Verzenden</string>
+    <!-- Notifications -->
+    <string name="ch_incoming">Inkomende oproepen</string>
+    <string name="ch_incoming_desc">Het scherm en de banner voor inkomende oproepen. De beltoon wordt door je telefoon afgespeeld.</string>
+    <string name="ch_ongoing">Lopende oproepen</string>
+    <string name="ch_ongoing_desc">De oproep waarin je zit, met ophangen</string>
+    <string name="ch_missed">Gemiste oproepen</string>
+    <string name="ch_missed_desc">Oproepen die je niet opnam</string>
+    <string name="missed_one">Gemiste oproep</string>
+    <plurals name="missed_many">
+        <item quantity="one">%d gemiste oproep</item>
+        <item quantity="other">%d gemiste oproepen</item>
+    </plurals>
+    <string name="missed_last">Laatste van %1$s</string>
+    <string name="call_back">Terugbellen</string>
+    <!-- Settings -->
+    <string name="group_phone_app">Telefoon-app</string>
+    <string name="phone_app_footer">Oproepen lopen altijd via de telefonie van je telefoon zelf. Je simkaart, provider en noodoproepen werken net als voorheen.</string>
+    <string name="default_phone_app">Standaard telefoon-app</string>
+    <string name="default_yes">CallCtrl is je telefoon-app</string>
+    <string name="default_no">Een andere app is je telefoon-app. Tik om dat te wijzigen</string>
+    <string name="full_screen_calls">Oproepen op het vergrendelscherm tonen</string>
+    <string name="full_screen_calls_sub">Meldingen op volledig scherm staan uit voor CallCtrl, dus inkomende oproepen verschijnen alleen als melding. Tik om het toe te staan</string>
+    <string name="blocked_numbers">Geblokkeerde nummers</string>
+    <string name="blocked_numbers_sub">Nummers die je niet kunnen bellen of sms\'en</string>
+    <string name="calling_accounts">Simkaarten en belaccounts</string>
+    <string name="calling_accounts_sub">Via welke simkaart oproepen vertrekken, in de instellingen van Android</string>
+    <string name="ringtone">Beltoon</string>
+    <string name="ringtone_sub">De beltoon en het trillen van je telefoon, in de geluidsinstellingen van Android</string>
+    <string name="group_keypad">Toetsenblok</string>
+    <string name="keypad_tones">Toetsenbloktonen</string>
+    <string name="keypad_tones_sub">Een toon voor elke toets tijdens het kiezen (als de toetsenbloktonen van je telefoon ook aanstaan)</string>
+    <string name="keypad_haptics">Trillen bij een toetsdruk</string>
+    <string name="keypad_haptics_sub">Een korte tik bij elke toets</string>
+    <string name="group_calls">Oproepen groeperen</string>
+    <string name="group_calls_sub">Opeenvolgende oproepen met hetzelfde nummer op één regel</string>
+    <string name="recents_footer">De oproepgeschiedenis is het oproeplogboek van je telefoon zelf, gedeeld met andere telefoon-apps. CallCtrl houdt geen kopie bij.</string>
+    <string name="block_number">Een nummer blokkeren</string>
+    <string name="blocked_empty">Geen geblokkeerde nummers</string>
+    <string name="blocked_empty_body">Blokkeer hier een nummer, of vanuit een oproep in Recent.</string>
+    <string name="blocked_footer">Je telefoon blokkeert deze nummers voor elke app: oproepen rinkelen niet en sms\'en komen niet toe.</string>
+    <!-- Call screening -->
+    <string name="ch_screened">Gescreende oproepen</string>
+    <string name="ch_screened_desc">Een stille melding wanneer de oproepscreening een oproep weigerde</string>
+    <plurals name="screened_title">
+        <item quantity="one">%d oproep geweigerd</item>
+        <item quantity="other">%d oproepen geweigerd</item>
+    </plurals>
+    <string name="screened_last">Laatste van %1$s</string>
+    <string name="screening">Oproepscreening</string>
+    <string name="screening_sub_on">Aan: %1$s</string>
+    <string name="screening_sub_off">Uit. Weiger of demp oproepen op nummer, van verborgen bellers of van mensen die niet in je contacten staan</string>
+    <plurals name="screening_rules_count">
+        <item quantity="one">%d regel</item>
+        <item quantity="other">%d regels</item>
+    </plurals>
+    <string name="screening_not_default">Oproepscreening werkt alleen terwijl CallCtrl je standaard telefoon-app is.</string>
+    <string name="screening_enable">Oproepen screenen</string>
+    <string name="screening_enable_sub">Toets elke inkomende oproep aan je regels voor hij rinkelt</string>
+    <string name="screening_contacts">Contacten rinkelen altijd</string>
+    <string name="screening_contacts_sub">Oproepen van je contacten slaan de regels over (je bellerslijst blijft gelden)</string>
+    <string name="screening_log">Geweigerde oproepen in Recent houden</string>
+    <string name="screening_log_sub">Geweigerde oproepen staan in je oproepgeschiedenis als geblokkeerde oproepen</string>
+    <string name="screening_notify">Stille melding</string>
+    <string name="screening_notify_sub">Een geluidloze melding in het meldingenpaneel wanneer een oproep geweigerd werd</string>
+    <string name="screening_footer">Noodnummers worden nooit gescreend. Nummers op de blokkeerlijst van je telefoon worden door Android zelf geblokkeerd, vóór deze regels.</string>
+    <string name="screening_rules">Regels</string>
+    <string name="screening_rules_footer">Als meerdere regels op een oproep passen, wint Toestaan, dan Weigeren, dan Dempen. Weigeren wijst de oproep af zonder rinkelen; Dempen laat hem rinkelen zonder geluid of trillen, zodat hij als gemiste oproep verschijnt.</string>
+    <string name="screening_add_rule">Een regel toevoegen</string>
+    <string name="screening_edit_rule">Regel bewerken</string>
+    <string name="screening_remove_rule">Regel verwijderen</string>
+    <string name="rule_prefix">Begint met %1$s</string>
+    <string name="rule_exact">Nummer %1$s</string>
+    <string name="rule_pattern">Past op %1$s</string>
+    <string name="rule_not_in_contacts">Niet in je contacten</string>
+    <string name="rule_hidden">Verborgen nummers</string>
+    <string name="rule_kind">Welke oproepen</string>
+    <string name="kind_prefix">Nummer begint met</string>
+    <string name="kind_exact">Eén nummer</string>
+    <string name="kind_pattern">Nummerpatroon</string>
+    <string name="kind_not_in_contacts">Bellers die niet in je contacten staan</string>
+    <string name="kind_hidden">Verborgen of privénummers</string>
+    <string name="rule_value_prefix">Begin van het nummer, bv. +44 of 0900</string>
+    <string name="rule_value_exact">Telefoonnummer</string>
+    <string name="rule_value_pattern">Patroon, bv. +32 4?? 12 *</string>
+    <string name="rule_pattern_help">\? staat voor één cijfer en * voor een willekeurig aantal cijfers. Alleen cijfers, +, ? en * tellen; spaties en streepjes worden genegeerd.</string>
+    <string name="rule_action">Wat er gebeurt</string>
+    <string name="action_reject">Weigeren</string>
+    <string name="action_reject_sub">Afgewezen zonder rinkelen</string>
+    <string name="action_silence">Dempen</string>
+    <string name="action_silence_sub">Rinkelt zonder geluid of trillen</string>
+    <string name="action_allow">Toestaan</string>
+    <string name="action_allow_sub">Rinkelt altijd, wat andere regels ook zeggen</string>
+    <string name="rule_error_empty">Typ een nummer</string>
+    <string name="rule_error_characters">Alleen cijfers, + vooraan, en ? of * in een patroon</string>
+    <string name="rule_error_no_digits">Heeft minstens één cijfer nodig</string>
+    <string name="rule_error_too_long">Te lang (hoogstens 32 cijfers)</string>
+    <string name="screening_list">Je bellerslijst</string>
+    <string name="screening_list_footer">Nummers die je altijd geweigerd of gedempt wilt, ook als ze in je contacten staan. Wordt vóór de regels gecontroleerd.</string>
+    <string name="screening_add_number">Een nummer toevoegen</string>
+    <string name="screening_edit_number">Nummer bewerken</string>
+    <string name="screening_remove_number">Van je lijst halen</string>
+    <string name="screening_show_all">Toon alle %1$d</string>
+    <string name="screening_blocked_sub">De lijst van je telefoon zelf, gedeeld met je berichten-app en andere apps</string>
+    <string name="screening_backup">Importeren en exporteren</string>
+    <string name="screening_backup_footer">Het JSON-bestand bevat elke regel, je bellerslijst, de schakelaars en je geblokkeerde nummers. Het CSV-bestand heeft één regel per regel of nummer (type,value,action), voor een rekenblad of een andere app. Importeren voegt toe aan wat je hebt; je schakelaars blijven zoals ze zijn.</string>
+    <string name="screening_export_json">Exporteren als JSON</string>
+    <string name="screening_export_csv">Exporteren als CSV</string>
+    <string name="screening_import">Regels en nummers importeren</string>
+    <string name="screening_import_sub">Uit een JSON- of CSV-bestand van CallCtrl, of een gewone lijst met te blokkeren nummers</string>
+    <string name="screening_exported">Geëxporteerd</string>
+    <string name="screening_export_failed">Het bestand kon niet geschreven worden</string>
+    <string name="screening_import_failed">Dit bestand kon niet gelezen worden. Kies een JSON- of CSV-export van CallCtrl, of een lijst met nummers.</string>
+    <string name="screening_import_empty">Niets om te importeren in dit bestand</string>
+    <string name="screening_import_title">Importeren?</string>
+    <string name="screening_import_body">%1$s, %2$s en %3$s worden toegevoegd.</string>
+    <plurals name="screening_import_skipped">
+        <item quantity="one">%1$d regel was niet geldig en wordt weggelaten.</item>
+        <item quantity="other">%1$d regels waren niet geldig en worden weggelaten.</item>
+    </plurals>
+    <string name="screening_import_confirm">Importeren</string>
+    <plurals name="import_rules">
+        <item quantity="one">%d regel</item>
+        <item quantity="other">%d regels</item>
+    </plurals>
+    <plurals name="import_list">
+        <item quantity="one">%d nummer voor je bellerslijst</item>
+        <item quantity="other">%d nummers voor je bellerslijst</item>
+    </plurals>
+    <plurals name="import_blocked">
+        <item quantity="one">%d geblokkeerd nummer</item>
+        <item quantity="other">%d geblokkeerde nummers</item>
+    </plurals>
+    <string name="screening_imported">Geïmporteerd</string>
+    <string name="screening_import_blocked_failed">Sommige nummers konden niet aan de blokkeerlijst toegevoegd worden</string>
+    <!-- Call recording: settings -->
+    <string name="call_recording">Gespreksopname</string>
+    <string name="call_recording_sub_off">Uit. Neem oproepen op via Shizuku</string>
+    <string name="call_recording_sub_on">Aan: %1$s</string>
+    <string name="rec_not_default">Gespreksopname werkt alleen terwijl CallCtrl je standaard telefoon-app is.</string>
+    <string name="rec_shizuku_group">Shizuku</string>
+    <string name="rec_shizuku_not_installed">Shizuku is niet geïnstalleerd</string>
+    <string name="rec_shizuku_not_installed_sub">CallCtrl neemt oproepen op via Shizuku, een gratis, opensource-app waarmee apps systeemfuncties kunnen gebruiken zonder root. Installeer het, start het en kom dan hier terug.</string>
+    <string name="rec_shizuku_get">Shizuku halen</string>
+    <string name="rec_shizuku_not_running">Shizuku draait niet</string>
+    <string name="rec_shizuku_not_running_sub">Open Shizuku en tik op Start: met Draadloze foutopsporing op de telefoon zelf (in de Ontwikkelaarsopties), of met adb vanaf een computer. Start het opnieuw na elke herstart van de telefoon.</string>
+    <string name="rec_shizuku_open">Shizuku openen</string>
+    <string name="rec_shizuku_too_old">Shizuku is te oud</string>
+    <string name="rec_shizuku_too_old_sub">Werk Shizuku bij naar versie 11 of nieuwer en kom dan hier terug.</string>
+    <string name="rec_shizuku_permission">CallCtrl toestaan in Shizuku</string>
+    <string name="rec_shizuku_permission_sub">Shizuku vraagt of CallCtrl het mag gebruiken. CallCtrl gebruikt het alleen om het geluid van een oproep op te vangen terwijl die opgenomen wordt.</string>
+    <string name="rec_shizuku_allow">Toestaan</string>
+    <string name="rec_shizuku_denied">CallCtrl is niet toegestaan in Shizuku</string>
+    <string name="rec_shizuku_denied_sub">Je koos ervoor om het niet meer te vragen. Open Shizuku, ga naar de geautoriseerde apps en sta CallCtrl toe.</string>
+    <string name="rec_shizuku_ready">Shizuku is klaar</string>
+    <string name="rec_shizuku_ready_sub">Shizuku draait en CallCtrl mag het gebruiken.</string>
+    <string name="rec_shizuku_footer">Android laat gewone apps geen oproepen opnemen. Terwijl een oproep opgenomen wordt, draait Shizuku een klein deel van CallCtrl met de rechten van de debug-shell van Android. Dat deel kan alleen het geluid van de oproep opvangen, nooit de microfoon, en het stopt samen met de opname.</string>
+    <string name="rec_mode">Oproepen opnemen</string>
+    <string name="rec_mode_off">Uit</string>
+    <string name="rec_mode_ask">Bij elke oproep vragen</string>
+    <string name="rec_mode_always">Altijd</string>
+    <string name="rec_mode_unknown">Alleen nummers die niet in je contacten staan</string>
+    <string name="rec_mode_selected">Alleen gekozen contacten</string>
+    <string name="rec_mode_footer">De opname begint wanneer de oproep beantwoord wordt, nooit terwijl hij rinkelt, en stopt wanneer de oproep eindigt of in de wacht gaat. In elke stand behalve Uit heeft het oproepscherm een knop Opnemen; tik op de rode opnamebalk om te stoppen.</string>
+    <string name="rec_contacts">Op te nemen contacten</string>
+    <string name="rec_contacts_none">Nog geen gekozen</string>
+    <plurals name="rec_contacts_count">
+        <item quantity="one">%d contact</item>
+        <item quantity="other">%d contacten</item>
+    </plurals>
+    <string name="rec_contacts_empty">Geen contacten met een telefoonnummer</string>
+    <string name="rec_group_files">Opnames</string>
+    <string name="rec_format">Bestandstype</string>
+    <string name="rec_format_flac">FLAC: zonder verlies (standaard)</string>
+    <string name="rec_format_wav">WAV: zonder verlies, ongecomprimeerd (groot)</string>
+    <string name="rec_format_opus">Opus (OGG): klein</string>
+    <string name="rec_format_aac">AAC (M4A): klein</string>
+    <string name="rec_on_hold">Blijven opnemen in de wacht</string>
+    <string name="rec_on_hold_sub">Staat dit uit, dan stopt de opname in de wacht en begint er een nieuw bestand wanneer de oproep hervat wordt</string>
+    <string name="rec_copy_music">Kopieën bewaren in Muziek/CallCtrl</string>
+    <string name="rec_copy_music_sub">Een kopie van elke nieuwe opname in je map Muziek, waar andere apps (en je back-ups) ze kunnen zien</string>
+    <string name="rec_auto_delete">Opnames verwijderen na</string>
+    <string name="rec_auto_never">Nooit</string>
+    <plurals name="rec_auto_days">
+        <item quantity="one">%d dag</item>
+        <item quantity="other">%d dagen</item>
+    </plurals>
+    <plurals name="rec_count">
+        <item quantity="one">%d opname</item>
+        <item quantity="other">%d opnames</item>
+    </plurals>
+    <string name="rec_files_footer">Opnames blijven in de privéopslag van CallCtrl, buiten elke back-up en achter de app-vergrendeling. Niets verlaat de telefoon, tenzij je een opname deelt of kopieën in Muziek bewaart. Verwijderen na haalt alleen de eigen kopieën van CallCtrl weg.</string>
+    <string name="rec_notice_title">Voor je oproepen opneemt</string>
+    <string name="rec_notice_body">In België mag je een gesprek opnemen waaraan je zelf deelneemt. De opname gebruiken of delen is beperkt: meestal heb je de toestemming van de andere persoon nodig, en je mag ze niet openbaar maken. Zeg de andere persoon dat je opneemt.\n\nAndere landen hebben andere regels. Je bent zelf verantwoordelijk voor het naleven van de wet waar je bent.</string>
+    <string name="rec_notice_ok">Opname aanzetten</string>
+    <!-- Call recording: call screen -->
+    <string name="rec_button">Opnemen</string>
+    <string name="rec_indicator">Opname · %1$s</string>
+    <string name="rec_tap_stop">Tik om te stoppen</string>
+    <string name="rec_stop">Opname stoppen</string>
+    <string name="rec_starting">Opname starten…</string>
+    <string name="rec_captured_split">Beide kanten, apart opgevangen</string>
+    <string name="rec_captured_downlink">Alleen de stem van de andere persoon</string>
+    <string name="rec_captured_uplink">Alleen je eigen stem</string>
+    <!-- Call recording: notifications and problems -->
+    <string name="ch_recording">Gespreksopname</string>
+    <string name="ch_recording_desc">Wanneer een oproep niet opgenomen kon worden, of een opname te vroeg stopte</string>
+    <string name="rec_problem_not_ready">Oproep niet opgenomen</string>
+    <string name="rec_problem_not_ready_text">Shizuku draait niet, of CallCtrl is er niet in toegestaan. Zie Instellingen > Telefoon-app > Gespreksopname.</string>
+    <string name="rec_problem_lost">Opname gestopt</string>
+    <string name="rec_problem_lost_text">Shizuku stopte tijdens de oproep. Wat tot dan opgenomen was, is bewaard.</string>
+    <string name="rec_problem_refused">Oproep niet opgenomen</string>
+    <string name="rec_problem_refused_text">Je telefoon gaf het geluid van de oproep niet door. CallCtrl neemt nooit de microfoon op in de plaats.</string>
+    <string name="rec_problem_storage">Opname gestopt: opslag vol</string>
+    <string name="rec_problem_storage_text">Je telefoon heeft bijna geen ruimte meer. Wat tot dan opgenomen was, is bewaard.</string>
+    <string name="rec_problem_error">Opname gestopt</string>
+    <string name="rec_problem_error_text">De opname kon niet geschreven worden. Wat tot dan opgenomen was, is bewaard.</string>
+    <!-- Call recording: the Recordings screen -->
+    <string name="recordings">Opnames</string>
+    <string name="recordings_empty">Geen opnames</string>
+    <string name="recordings_empty_body">Opgenomen oproepen verschijnen hier. Zet opnemen aan in Instellingen > Telefoon-app > Gespreksopname.</string>
+    <string name="rec_play">Afspelen</string>
+    <string name="rec_pause">Pauzeren</string>
+    <string name="rec_share">Delen</string>
+    <string name="rec_share_note">Voor het delen van een gespreksopname heb je meestal de toestemming van de andere persoon nodig.</string>
+    <string name="rec_delete">Opname verwijderen</string>
+    <string name="rec_delete_title">Deze opname verwijderen?</string>
+    <string name="rec_delete_body">De opname wordt uit CallCtrl verwijderd. Kopieën in Muziek of die je deelde, blijven. Dit kan niet ongedaan gemaakt worden.</string>
+    <string name="rec_save_copy">Een kopie bewaren in Muziek/CallCtrl</string>
+    <string name="rec_saved_copy">Bewaard in Muziek/CallCtrl</string>
+    <string name="rec_save_failed">De kopie kon niet bewaard worden</string>
+    <string name="rec_play_failed">Deze opname kan niet afgespeeld worden</string>
+    <string name="rec_open_failed">Deze opname kan niet geopend worden</string>
+    <plurals name="rec_unreadable_title">
+        <item quantity="one">%1$d versleutelde opname kan niet geopend worden</item>
+        <item quantity="other">%1$d versleutelde opnames kunnen niet geopend worden</item>
+    </plurals>
+    <string name="rec_unreadable_body">CallCtrl versleutelt afgewerkte opnames met een sleutel die de beveiligde hardware van deze telefoon bewaart, en die sleutel is nu niet beschikbaar. De opnames blijven zoals ze zijn en er wordt niets verwijderd. Nieuwe opnames werken nog altijd.</string>
+    <string name="rec_unreadable_retry">Opnieuw proberen</string>
+    <string name="rec_detail_file">Bestand: %1$s</string>
+    <string name="rec_detail_capture">Opgevangen: %1$s</string>
+    <string name="rec_khz">%1$s kHz</string>
+    <string name="rec_mono">mono</string>
+    <string name="rec_stereo">stereo</string>
+    <string name="rec_bits">%1$d-bit</string>
+    <string name="rec_float">32-bit float</string>
+    <string name="rec_source_call">geluid van de oproep, beide kanten</string>
+    <string name="rec_source_split">beide kanten, apart opgevangen</string>
+    <string name="rec_source_down">alleen de andere persoon</string>
+    <string name="rec_source_up">alleen jij</string>
+    <string name="rec_ended_shizuku">Te vroeg gestopt: Shizuku stopte</string>
+    <string name="rec_ended_storage">Te vroeg gestopt: opslag vol</string>
+    <string name="rec_ended_error">Te vroeg gestopt</string>
+    <string name="rec_part">Deel %1$d</string>
+    <string name="rec_conference">Conferentiegesprek</string>
+    <string name="rec_forgot_title">Ook je gespreksopnames verwijderen?</string>
+    <plurals name="rec_forgot_body">
+        <item quantity="one">Er wordt %d gespreksopname bewaard in CallCtrl. Zonder de app-vergrendeling kan iedereen die deze telefoon gebruikt ze beluisteren.</item>
+        <item quantity="other">Er worden %d gespreksopnames bewaard in CallCtrl. Zonder de app-vergrendeling kan iedereen die deze telefoon gebruikt ze beluisteren.</item>
+    </plurals>
+    <string name="rec_forgot_delete">Opnames verwijderen</string>
+    <string name="rec_forgot_keep">Opnames houden</string>
+
+    <!-- Calls: confirm before calling, flip to silence -->
+    <string name="ok">OK</string>
+    <string name="try_again">Opnieuw proberen</string>
+    <string name="group_calls_options">Oproepen</string>
+    <string name="confirm_calls">Bevestigen voor het bellen</string>
+    <string name="confirm_calls_sub">Vraag \"… bellen?\" voor een oproep die je in CallCtrl start, vertrekt. Noodnummers worden nooit opgehouden</string>
+    <string name="confirm_call_title">%1$s bellen?</string>
+    <string name="flip_to_silence">Omdraaien om te dempen</string>
+    <string name="flip_to_silence_sub">Leg de telefoon met het scherm naar beneden terwijl hij rinkelt om het rinkelen te stoppen. De oproep blijft binnenkomen en je kunt nog altijd opnemen</string>
+
+    <!-- Speed dial -->
+    <string name="speed_dial">Snelkiezen</string>
+    <string name="speed_dial_sub_none">Hou een toets op het toetsenblok ingedrukt om een nummer te bellen</string>
+    <plurals name="speed_dial_count">
+        <item quantity="one">%1$d toets ingesteld</item>
+        <item quantity="other">%1$d toetsen ingesteld</item>
+    </plurals>
+    <string name="speed_dial_footer">Hou op het toetsenblok een toets van 2 tot 9 ingedrukt om haar nummer te bellen. Toets 1 belt de voicemail en toets 0 typt +.</string>
+    <string name="speed_dial_key">Toets %1$d</string>
+    <string name="speed_dial_key_title">Snelkiezen op toets %1$d</string>
+    <string name="speed_dial_not_set">Niet ingesteld</string>
+    <string name="speed_dial_pick_contact">Kiezen uit contacten</string>
+    <string name="speed_dial_type_number">Een nummer typen</string>
+    <string name="speed_dial_remove">Verwijderen</string>
+    <string name="speed_dial_pick_failed">Dat nummer kon niet gebruikt worden</string>
+    <string name="speed_dial_unset">Nog geen snelkiesnummer op toets %1$s. Stel het in bij Instellingen › Snelkiezen</string>
+
+    <!-- Decline messages -->
+    <string name="decline_messages">Weigerberichten</string>
+    <string name="decline_messages_sub_standard">De drie die bij CallCtrl horen</string>
+    <string name="decline_messages_sub_own">Je eigen berichten</string>
+    <string name="decline_messages_footer">De teksten die \"Antwoorden met een bericht\" voorstelt wanneer er een oproep binnenkomt, hoogstens 6. Tik er een aan om het te wijzigen of te verwijderen. Verwijder ze allemaal, of tik op de resetregel, om de drie standaardberichten terug te krijgen.</string>
+    <string name="decline_messages_add">Een bericht toevoegen</string>
+    <string name="decline_messages_edit">Bericht bewerken</string>
+    <string name="decline_messages_delete">Bericht verwijderen</string>
+    <string name="decline_messages_reset">Terug naar de standaardberichten</string>
+
+    <!-- Quiet mode -->
+    <string name="quiet_mode">Stille modus</string>
+    <string name="quiet_mode_sub_off">Uit. Oproepen rinkelen op elk uur</string>
+    <string name="quiet_mode_sub_on">Oproepen rinkelen niet van %1$s tot %2$s</string>
+    <string name="quiet_needs_default">De stille modus werkt alleen terwijl CallCtrl je standaard telefoon-app is: dan vraagt Android het bij elke inkomende oproep.</string>
+    <string name="quiet_enabled">Stille modus volgens schema</string>
+    <string name="quiet_enabled_sub">In deze uren rinkelen of trillen inkomende oproepen niet. Ze verschijnen nog altijd op het scherm en in Recent, en er wordt niets geweigerd</string>
+    <string name="quiet_from">Van</string>
+    <string name="quiet_until">Tot</string>
+    <string name="quiet_footer">Ligt \"Tot\" vroeger dan \"Van\", dan loopt de periode door over middernacht. Twee keer hetzelfde uur betekent de hele dag. Noodnummers rinkelen altijd.</string>
+    <string name="quiet_days">Dagen</string>
+    <string name="quiet_days_footer">De dagen waarop de stille tijd begint. Een nacht die op vrijdag begint, loopt door tot zaterdagochtend.</string>
+    <string name="quiet_exceptions">Rinkelen toch</string>
+    <string name="quiet_exceptions_footer">Heeft toegang tot je contacten nodig. Bellers met een verborgen nummer tellen nooit als contact.</string>
+    <string name="quiet_favourites">Favorieten</string>
+    <string name="quiet_favourites_sub">Oproepen van je contacten met een ster rinkelen zoals gewoonlijk</string>
+    <string name="quiet_contacts">Iedereen in je contacten</string>
+    <string name="quiet_contacts_sub">Alleen bellers die je niet kent, worden gedempt</string>
+
+    <!-- Search in call history -->
+    <string name="search_history">Oproepgeschiedenis doorzoeken</string>
+    <string name="search_close">Zoeken sluiten</string>
+    <string name="search_history_hint">Naam, nummer, notitie of #tag</string>
+    <string name="search_history_none">Geen oproepen gevonden</string>
+    <string name="search_history_none_body">Zoeken kijkt naar namen, nummers en je eigen notities en tags, in de nieuwste 1.000 oproepen.</string>
+
+    <!-- Notes and tags on calls -->
+    <string name="note_title">Notitie bij deze oproep</string>
+    <string name="note_label">Notitie</string>
+    <string name="note_tags_label">Tags</string>
+    <string name="note_tags_hint">werk, opvolgen</string>
+    <string name="note_hint">Tik op een oproep om een notitie of tags toe te voegen.</string>
+    <string name="note_edit">De notitie toevoegen of wijzigen</string>
+    <string name="note_has">Heeft een notitie</string>
+    <string name="note_unreadable">Je notities zijn versleuteld bewaard en kunnen nu niet geopend worden. Ze blijven bewaard. Tik hier om opnieuw te proberen.</string>
+    <string name="note_save_failed">De notitie kon niet bewaard worden</string>
+
+    <!-- History export -->
+    <string name="history_export">Oproepgeschiedenis exporteren</string>
+    <string name="history_export_sub">Elke oproep met je notities en tags, als CSV-bestand voor een rekenblad. Het bestand is niet versleuteld</string>
+    <string name="history_exporting">Exporteren…</string>
+    <plurals name="history_exported">
+        <item quantity="one">%1$d oproep geëxporteerd</item>
+        <item quantity="other">%1$d oproepen geëxporteerd</item>
+    </plurals>
+    <string name="history_export_failed">Het bestand kon niet geschreven worden</string>
+
+    <!-- Call-back reminders -->
+    <string name="ch_reminder">Terugbelherinneringen</string>
+    <string name="ch_reminder_desc">De herinneringen die je instelt om iemand terug te bellen</string>
+    <string name="remind_call_back">Herinner me eraan terug te bellen</string>
+    <string name="remind_call_back_sub">Een melding op het tijdstip dat je kiest</string>
+    <string name="remind_15m">Over 15 minuten</string>
+    <string name="remind_30m">Over 30 minuten</string>
+    <string name="remind_1h">Over 1 uur</string>
+    <string name="remind_3h">Over 3 uur</string>
+    <string name="remind_evening">Vanavond</string>
+    <string name="remind_tomorrow">Morgenochtend</string>
+    <string name="remind_footer">Android kan een herinnering een paar minuten te laat tonen terwijl de telefoon in rust is.</string>
+    <string name="remind_in_hour">Herinner me over 1 uur</string>
+    <string name="reminder_set">Herinnering ingesteld voor %1$s</string>
+    <string name="reminder_set_hour">Herinnering ingesteld voor over een uur</string>
+    <string name="reminder_failed">De herinnering kon niet ingesteld worden</string>
+    <string name="reminder_title">Bel %1$s terug</string>
+    <string name="reminder_text">Je vroeg om een herinnering</string>
+    <string name="reminder_public">Terugbelherinnering</string>
+    <string name="reminders">Terugbelherinneringen</string>
+    <string name="reminders_sub_none">Geen ingesteld. Voeg er een toe vanuit een oproep in Recent</string>
+    <plurals name="reminders_count">
+        <item quantity="one">%1$d herinnering wacht</item>
+        <item quantity="other">%1$d herinneringen wachten</item>
+    </plurals>
+    <string name="reminders_empty">Geen herinneringen</string>
+    <string name="reminders_empty_body">Tik op een oproep in Recent en kies \"Herinner me eraan terug te bellen\".</string>
+    <string name="reminders_footer">Tik op een herinnering om ze te verwijderen.</string>
+    <string name="reminders_unreadable">Je herinneringen kunnen niet geopend worden</string>
+    <string name="reminders_unreadable_body">Ze zijn versleuteld bewaard en kunnen nu niet geopend worden. Ze blijven bewaard.</string>
+    <string name="reminder_remove_title">Deze herinnering verwijderen?</string>
+    <string name="reminder_remove_body">Je wordt er niet aan herinnerd om terug te bellen.</string>
+    <string name="reminder_remove">Verwijderen</string>
+
+    <!-- Settings file -->
+    <string name="value_on">Aan</string>
+    <string name="value_off">Uit</string>
+    <string name="settings_file_title">Instellingenbestand</string>
+    <string name="settings_file_footer">Een instellingenbestand bevat de schakelaars voor het toetsenblok, Recent en oproepen, je snelkiesnummers, je weigerberichten en de stille modus, als leesbare tekst (niet versleuteld). Het bevat nooit de app-vergrendeling of haar pincode, of en wiens oproepen opgenomen worden, de regels voor oproepscreening (die hebben hun eigen export), notities, herinneringen of de oproepgeschiedenis.</string>
+    <string name="settings_file_export">Instellingen exporteren</string>
+    <string name="settings_file_export_sub">Bewaar je instellingen in een bestand</string>
+    <string name="settings_file_import">Instellingen importeren</string>
+    <string name="settings_file_import_sub">Haal instellingen terug uit een bestand. Je ziet eerst wat er verandert</string>
+    <string name="settings_file_exported">Instellingen geëxporteerd.</string>
+    <string name="settings_file_export_failed">Het bestand kon niet geschreven worden.</string>
+    <string name="settings_file_not_ours">Dit is geen instellingenbestand van CallCtrl, of het kan niet gelezen worden.</string>
+    <string name="settings_file_same">Het bestand bevat dezelfde instellingen als je nu hebt. Er is niets te wijzigen.</string>
+    <string name="settings_file_will_change">Dit verandert:</string>
+    <string name="settings_file_speed_dial">Snelkiezen: vervangen door dat uit het bestand (%1$d toetsen)</string>
+    <string name="settings_file_messages">Weigerberichten: vervangen door die uit het bestand</string>
+    <string name="settings_file_quiet_on">Stille modus: aan, van %1$s tot %2$s</string>
+    <string name="settings_file_quiet_off">Stille modus: uit</string>
+    <string name="settings_file_record_format">Bestandstype van opnames</string>
+    <string name="settings_file_record_on_hold">Blijven opnemen in de wacht</string>
+    <string name="settings_file_refused">Blijven zoals ze zijn, want importeren maakt CallCtrl nooit minder privé:</string>
+    <string name="settings_file_confirm_title">Deze instellingen importeren?</string>
+    <string name="settings_file_confirm">Importeren</string>
+    <string name="settings_file_imported">Instellingen geïmporteerd.</string>
+</resources>

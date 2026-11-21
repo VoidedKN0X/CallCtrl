@@ -443,7 +443,7 @@
     <string name="note_hint">Tap a call to add a note or tags.</string>
     <string name="note_edit">Add or change the note</string>
     <string name="note_has">Has a note</string>
-    <string name="note_unreadable">Your notes are stored encrypted and can\'t be opened right now. They are kept.</string>
+    <string name="note_unreadable">Your notes are stored encrypted and can\'t be opened right now. They are kept. Tap here to try again.</string>
     <string name="note_save_failed">Couldn\'t save the note</string>
 
     <!-- History export -->

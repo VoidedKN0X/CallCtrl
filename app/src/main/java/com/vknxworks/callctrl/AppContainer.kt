@@ -6,6 +6,7 @@ import com.vknxworks.callctrl.data.crypto.DataKeyStore
 import com.vknxworks.callctrl.data.crypto.KeystoreWrapper
 import com.vknxworks.callctrl.data.crypto.SealedStore
 import com.vknxworks.callctrl.data.notes.CallNotesStore
+import com.vknxworks.callctrl.data.quiet.QuietHours
 import com.vknxworks.callctrl.data.quiet.QuietStore
 import com.vknxworks.callctrl.data.reminders.Reminders
 import java.io.File
@@ -84,6 +85,7 @@ class AppContainer(val context: Context) {
     suspend fun forgetEverything(deleteRecordings: Boolean) {
         settings.update { AppSettings() }
         screening.reset()
+        quiet.update { QuietHours() }
         if (deleteRecordings) recordings.deleteAll()
         vault.disable()
         AppLock.markUnlocked()

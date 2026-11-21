@@ -80,10 +80,10 @@ class CallNotesStore(private val file: SealedStore, private val scope: Coroutine
         scope.launch { load() }
     }
 
-    private suspend fun load() = withContext(Dispatchers.IO) {
+    private suspend fun load(retryKey: Boolean = false) = withContext(Dispatchers.IO) {
         lock.withLock {
             if (loaded && !_unreadable.value) return@withLock
-            when (val content = file.read()) {
+            when (val content = file.read(retryKey)) {
                 is SealedStore.Content.Unreadable -> _unreadable.value = true
                 is SealedStore.Content.Text -> {
                     val list = content.text?.let { runCatching { json.decodeFromString(serializer, it) }.getOrNull() }
@@ -101,7 +101,7 @@ class CallNotesStore(private val file: SealedStore, private val scope: Coroutine
     }
 
     /** Tries the notes file again after it couldn't be opened. */
-    suspend fun retry() = load()
+    suspend fun retry() = load(retryKey = true)
 
     /** Saves [note] (an empty one removes it). False when it couldn't be saved. */
     suspend fun put(note: CallNote): Boolean = change { map ->

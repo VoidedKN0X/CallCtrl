@@ -90,10 +90,10 @@ class Reminders(private val context: Context, private val file: SealedStore, pri
         scope.launch { load() }
     }
 
-    suspend fun load() = withContext(Dispatchers.IO) {
+    suspend fun load(retryKey: Boolean = false) = withContext(Dispatchers.IO) {
         lock.withLock {
             if (!loaded || _unreadable.value) {
-                when (val content = file.read()) {
+                when (val content = file.read(retryKey)) {
                     is SealedStore.Content.Unreadable -> _unreadable.value = true
                     is SealedStore.Content.Text -> {
                         val list = content.text?.let { runCatching { json.decodeFromString(serializer, it) }.getOrNull() }

@@ -34,6 +34,7 @@ Part of the [Ctrl series](#the-ctrl-series) by VKNXWorks.
 - **The screen turns off at your ear**, and the call keeps a notification with hang up while you use other apps
 - **Works with other apps:** phone number links and "Call" buttons in other apps open CallCtrl's keypad with the number filled in
 - **App lock** with its own PIN and optional fingerprint unlock (incoming calls can always be answered), and **Hide in screenshots** / **Hide in recent apps** (both off until you turn them on)
+- **English and Dutch**, following your phone's language
 - **Ctrl / Signal look**, shared by every Ctrl app: dark and light, following your phone's dark theme setting, high contrast, one violet accent, Space Grotesk and JetBrains Mono; landscape, tablet and foldable layouts
 
 ## Requirements

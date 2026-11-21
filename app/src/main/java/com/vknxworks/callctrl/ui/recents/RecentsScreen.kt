@@ -462,7 +462,10 @@ private fun CallDetails(g: CallGroup, recordings: List<Recording>, onPlay: (Reco
                 Text(
                     stringResource(if (notesUnreadable) R.string.note_unreadable else R.string.note_hint),
                     style = MaterialTheme.typography.bodySmall, color = CtrlColors.Muted,
-                    modifier = Modifier.padding(start = 24.dp, end = 24.dp, bottom = 4.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .then(if (notesUnreadable) Modifier.clickable { scope.launch { c.notes.retry() } } else Modifier)
+                        .padding(start = 24.dp, end = 24.dp, bottom = 4.dp),
                 )
             }
             items(g.calls, key = { it.id }) { call ->

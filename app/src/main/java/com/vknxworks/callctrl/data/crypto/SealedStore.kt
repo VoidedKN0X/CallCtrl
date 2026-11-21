@@ -23,9 +23,11 @@ class SealedStore(private val file: File, private val keys: DataKeyStore) {
     /** Whether writing is safe: nothing is on disk that couldn't be read. */
     @Volatile private var mayWrite = false
 
+    /** [retryKey]: ask the secure hardware for the data key again, after it couldn't be had earlier in this run. */
     @Synchronized
-    fun read(): Content {
+    fun read(retryKey: Boolean = false): Content {
         mayWrite = false
+        if (retryKey) keys.reset()
         try {
             if (!file.exists()) {
                 mayWrite = true

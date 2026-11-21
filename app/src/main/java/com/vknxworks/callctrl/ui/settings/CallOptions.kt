@@ -432,7 +432,7 @@ fun RemindersScreen() {
                 stringResource(R.string.reminders_unreadable),
                 stringResource(R.string.reminders_unreadable_body),
                 actionLabel = stringResource(R.string.try_again),
-                onAction = { scope.launch { c.reminders.load() } },
+                onAction = { scope.launch { c.reminders.load(retryKey = true) } },
             )
             items.isEmpty() -> MessageView(Icons.Outlined.Alarm, stringResource(R.string.reminders_empty), stringResource(R.string.reminders_empty_body))
             else -> Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).navigationBarsPadding().padding(top = 4.dp, bottom = 24.dp)) {
