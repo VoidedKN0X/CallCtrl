@@ -12,7 +12,16 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.SimCard
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.vknxworks.callctrl.container
+import com.vknxworks.callctrl.ui.components.CtrlAlertDialog
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -29,12 +38,17 @@ import com.vknxworks.callctrl.ui.theme.CtrlColors
  * Calls [number]. With several SIMs and no default SIM, [chooseSim] is asked first. Returns false when the call
  * couldn't be placed (no phone permission).
  */
-fun startCall(context: Context, number: String, chooseSim: (List<CallAccount>) -> Unit): Boolean {
+fun startCall(context: Context, number: String, confirmed: Boolean = false, chooseSim: (List<CallAccount>) -> Unit): Boolean {
     val clean = number.trim()
     if (clean.isEmpty()) return false
     if (!Phone.has(context, android.Manifest.permission.CALL_PHONE)) {
         Toast.makeText(context, context.getString(R.string.need_phone_permission), Toast.LENGTH_LONG).show()
         return false
+    }
+    // "Confirm before calling": ask first. Emergency numbers are never held up.
+    if (!confirmed && context.container.settings.settings.value.confirmCalls && !Phone.isEmergency(context, clean)) {
+        CallConfirm.pending = PendingCall(clean) { startCall(context, clean, confirmed = true, chooseSim = chooseSim) }
+        return true
     }
     val accounts = Phone.callAccounts(context)
     // Emergency numbers always go out straight away; Android picks the line.
@@ -45,6 +59,36 @@ fun startCall(context: Context, number: String, chooseSim: (List<CallAccount>) -
     val ok = Phone.call(context, clean)
     if (!ok) Toast.makeText(context, context.getString(R.string.call_failed), Toast.LENGTH_SHORT).show()
     return ok
+}
+
+/** A call waiting for "Call" in the "Confirm before calling" dialog. */
+class PendingCall(val number: String, val proceed: () -> Unit)
+
+/** "Confirm before calling": the call that is waiting for your yes, shown by [CallConfirmDialog]. */
+object CallConfirm {
+    var pending by mutableStateOf<PendingCall?>(null)
+}
+
+/** The "Call Sam?" question of "Confirm before calling". Lives once at the top of the app. */
+@Composable
+fun CallConfirmDialog() {
+    val call = CallConfirm.pending ?: return
+    val context = LocalContext.current
+    val people by context.container.contacts.people.collectAsStateWithLifecycle()
+    val name = remember(call.number, people) { people.firstOrNull { p -> p.phones.any { Phone.same(it.number, call.number) } }?.name }
+    val shown = Phone.format(context, call.number).ifBlank { call.number }
+    CtrlAlertDialog(
+        onDismissRequest = { CallConfirm.pending = null },
+        title = { Text(stringResource(R.string.confirm_call_title, name ?: shown), style = MaterialTheme.typography.titleLarge) },
+        text = if (name != null) ({ Text(shown, style = MaterialTheme.typography.bodyMedium) }) else null,
+        confirmButton = {
+            TextButton(onClick = {
+                CallConfirm.pending = null
+                call.proceed()
+            }) { Text(stringResource(R.string.action_call), color = CtrlColors.AccentText) }
+        },
+        dismissButton = { TextButton(onClick = { CallConfirm.pending = null }) { Text(stringResource(R.string.cancel), color = CtrlColors.Text) } },
+    )
 }
 
 @Composable

@@ -84,9 +84,11 @@ fun SettingsScreen() {
         ScreenTopBar(stringResource(R.string.settings))
         Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).navigationBarsPadding().padding(top = 4.dp, bottom = 24.dp)) {
             PhoneAppGroup()
+            CallsGroup(settings) { set(it) }
             KeypadGroup(settings) { set(it) }
             RecentsGroup(settings) { set(it) }
             PrivacyAndSecurityGroup(settings)
+            SettingsFileGroup()
         }
     }
 }
@@ -190,6 +192,7 @@ private fun RecentsGroup(settings: AppSettings, set: ((AppSettings) -> AppSettin
     var confirm by remember { mutableStateOf(false) }
     Group(stringResource(R.string.tab_recents), footer = stringResource(R.string.recents_footer)) {
         GroupSwitch(stringResource(R.string.group_calls), stringResource(R.string.group_calls_sub), settings.groupRecents, Icons.Outlined.ViewAgenda) { on -> set { it.copy(groupRecents = on) } }
+        HistoryExportRow()
         GroupRow(stringResource(R.string.clear_history), icon = Icons.Outlined.DeleteSweep, onClick = { confirm = true })
     }
     if (confirm) {
@@ -200,7 +203,7 @@ private fun RecentsGroup(settings: AppSettings, set: ((AppSettings) -> AppSettin
             onDismiss = { confirm = false },
             onConfirm = {
                 confirm = false
-                scope.launch { c.history.clearAll() }
+                scope.launch { if (c.history.clearAll()) c.notes.forgetAll() }
             },
         )
     }

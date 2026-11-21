@@ -17,7 +17,9 @@ import com.vknxworks.callctrl.recording.SelectedContact
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.Json
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -67,7 +69,35 @@ data class AppSettings(
     val recordNoticeSeen: Boolean = false,
     /** "Only selected contacts": the contacts whose calls are recorded. */
     val recordContacts: List<SelectedContact> = emptyList(),
+    /** Ask "Call …?" before a call you start in CallCtrl goes out. */
+    val confirmCalls: Boolean = false,
+    /** Turning the phone face down while it rings stops the ringing (the call keeps coming in). */
+    val flipToSilence: Boolean = false,
+    /** Your own "decline with a message" texts; empty means the three that come with CallCtrl. */
+    val declineMessages: List<String> = emptyList(),
+    /** Speed dial: the numbers behind a long press on keys 2 to 9. */
+    val speedDial: List<SpeedDial> = emptyList(),
 )
+
+/** One speed-dial key (2 to 9) and the number it calls. */
+@Serializable
+data class SpeedDial(val key: Int, val number: String, val name: String = "")
+
+/** Rules for speed dial and decline messages. Pure Kotlin. */
+object DialRules {
+    val KEYS = 2..9
+    const val MAX_MESSAGES = 6
+    const val MAX_MESSAGE = 160
+
+    /** Valid entries only, one per key, in key order. */
+    fun cleanSpeedDial(list: List<SpeedDial>): List<SpeedDial> = list
+        .filter { it.key in KEYS && it.number.any { c -> c.isDigit() } }
+        .map { SpeedDial(it.key, it.number.trim().take(64), it.name.trim().take(80)) }
+        .associateBy { it.key }.values.sortedBy { it.key }
+
+    fun cleanMessages(list: List<String>): List<String> =
+        list.map { it.trim().replace('\n', ' ').take(MAX_MESSAGE) }.filter { it.isNotEmpty() }.distinct().take(MAX_MESSAGES)
+}
 
 class SettingsRepository(private val context: Context, scope: CoroutineScope) {
     private object K {
@@ -85,10 +115,16 @@ class SettingsRepository(private val context: Context, scope: CoroutineScope) {
         val recordAutoDelete = stringPreferencesKey("record_auto_delete")
         val recordNoticeSeen = booleanPreferencesKey("record_notice_seen")
         val recordContacts = stringPreferencesKey("record_contacts")
+        val confirmCalls = booleanPreferencesKey("confirm_calls")
+        val flipToSilence = booleanPreferencesKey("flip_to_silence")
+        val declineMessages = stringPreferencesKey("decline_messages")
+        val speedDial = stringPreferencesKey("speed_dial")
     }
 
     private val json = Json { ignoreUnknownKeys = true }
     private val contactsSerializer = ListSerializer(SelectedContact.serializer())
+    private val messagesSerializer = ListSerializer(String.serializer())
+    private val speedDialSerializer = ListSerializer(SpeedDial.serializer())
 
     private val prefs: Flow<Preferences> = context.appDataStore.data.catch { e ->
         if (e is IOException) emit(emptyPreferences()) else throw e
@@ -113,6 +149,12 @@ class SettingsRepository(private val context: Context, scope: CoroutineScope) {
         recordAutoDelete = enumOr(this[K.recordAutoDelete], AutoDelete.NEVER),
         recordNoticeSeen = this[K.recordNoticeSeen] ?: false,
         recordContacts = this[K.recordContacts]?.let { runCatching { json.decodeFromString(contactsSerializer, it) }.getOrNull() }.orEmpty(),
+        confirmCalls = this[K.confirmCalls] ?: false,
+        flipToSilence = this[K.flipToSilence] ?: false,
+        declineMessages = this[K.declineMessages]?.let { runCatching { json.decodeFromString(messagesSerializer, it) }.getOrNull() }
+            ?.let(DialRules::cleanMessages).orEmpty(),
+        speedDial = this[K.speedDial]?.let { runCatching { json.decodeFromString(speedDialSerializer, it) }.getOrNull() }
+            ?.let(DialRules::cleanSpeedDial).orEmpty(),
     )
 
     /** The saved settings, read from disk (not the in-memory default before the first read). */
@@ -137,6 +179,10 @@ class SettingsRepository(private val context: Context, scope: CoroutineScope) {
                 p[K.recordAutoDelete] = s.recordAutoDelete.name
                 p[K.recordNoticeSeen] = s.recordNoticeSeen
                 p[K.recordContacts] = json.encodeToString(contactsSerializer, s.recordContacts)
+                p[K.confirmCalls] = s.confirmCalls
+                p[K.flipToSilence] = s.flipToSilence
+                p[K.declineMessages] = json.encodeToString(messagesSerializer, DialRules.cleanMessages(s.declineMessages))
+                p[K.speedDial] = json.encodeToString(speedDialSerializer, DialRules.cleanSpeedDial(s.speedDial))
             }
         } catch (e: IOException) {
             // Nothing to do: the settings stay as they were.

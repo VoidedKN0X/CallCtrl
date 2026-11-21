@@ -191,6 +191,16 @@ fun KeypadScreen() {
                             number = ""
                             if (!Phone.callVoicemail(context)) android.widget.Toast.makeText(context, context.getString(R.string.voicemail_failed), android.widget.Toast.LENGTH_SHORT).show()
                         }
+                        // Long-press 2 to 9 with nothing else typed: speed dial.
+                        in '2'..'9' -> if (number.length <= 1) {
+                            val entry = settings.speedDial.firstOrNull { it.key == ch - '0' }
+                            number = ""
+                            if (entry != null) {
+                                call(entry.number)
+                            } else {
+                                android.widget.Toast.makeText(context, context.getString(R.string.speed_dial_unset, ch.toString()), android.widget.Toast.LENGTH_LONG).show()
+                            }
+                        }
                     }
                 },
                 modifier = Modifier.widthIn(max = 440.dp).padding(horizontal = Gutter, vertical = 8.dp),

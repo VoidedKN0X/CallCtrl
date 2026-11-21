@@ -80,6 +80,11 @@ import com.vknxworks.callctrl.ui.settings.CallRecordingScreen
 import com.vknxworks.callctrl.ui.settings.ScreeningScreen
 import com.vknxworks.callctrl.ui.settings.SettingsScreen
 import com.vknxworks.callctrl.ui.settings.YouScreen
+import com.vknxworks.callctrl.ui.settings.DeclineMessagesScreen
+import com.vknxworks.callctrl.ui.settings.QuietModeScreen
+import com.vknxworks.callctrl.ui.settings.RemindersScreen
+import com.vknxworks.callctrl.ui.settings.SpeedDialScreen
+import com.vknxworks.callctrl.ui.dialer.CallConfirmDialog
 import com.vknxworks.callctrl.ui.theme.CtrlColors
 
 @Composable
@@ -145,6 +150,9 @@ private fun MainScaffold() {
             selectTab(0)
         }
     }
+
+    // "Confirm before calling": the question for a call started anywhere in the app.
+    CallConfirmDialog()
 
     CompositionLocalProvider(LocalNavigator provides navigator) {
         BoxWithConstraints(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
@@ -216,6 +224,10 @@ private fun AppNavHost(navController: NavHostController) {
         composable<ScreeningRoute> { ScreeningScreen() }
         composable<CallRecordingRoute> { CallRecordingScreen() }
         composable<RecordingsRoute> { RecordingsScreen() }
+        composable<SpeedDialRoute> { SpeedDialScreen() }
+        composable<DeclineMessagesRoute> { DeclineMessagesScreen() }
+        composable<QuietModeRoute> { QuietModeScreen() }
+        composable<RemindersRoute> { RemindersScreen() }
     }
 }
 

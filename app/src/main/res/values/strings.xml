@@ -371,4 +371,147 @@
     </plurals>
     <string name="rec_forgot_delete">Delete recordings</string>
     <string name="rec_forgot_keep">Keep recordings</string>
+
+    <!-- Calls: confirm before calling, flip to silence -->
+    <string name="ok">OK</string>
+    <string name="try_again">Try again</string>
+    <string name="group_calls_options">Calls</string>
+    <string name="confirm_calls">Confirm before calling</string>
+    <string name="confirm_calls_sub">Ask \"Call …?\" before a call you start in CallCtrl goes out. Emergency numbers are never held up</string>
+    <string name="confirm_call_title">Call %1$s?</string>
+    <string name="flip_to_silence">Flip to silence</string>
+    <string name="flip_to_silence_sub">Turn the phone face down while it rings to stop the ringing. The call keeps coming in and you can still answer it</string>
+
+    <!-- Speed dial -->
+    <string name="speed_dial">Speed dial</string>
+    <string name="speed_dial_sub_none">Long-press a key on the keypad to call a number</string>
+    <plurals name="speed_dial_count">
+        <item quantity="one">%1$d key set</item>
+        <item quantity="other">%1$d keys set</item>
+    </plurals>
+    <string name="speed_dial_footer">On the keypad, long-press a key from 2 to 9 to call its number. Key 1 calls voicemail and key 0 types +.</string>
+    <string name="speed_dial_key">Key %1$d</string>
+    <string name="speed_dial_key_title">Speed dial on key %1$d</string>
+    <string name="speed_dial_not_set">Not set</string>
+    <string name="speed_dial_pick_contact">Choose from contacts</string>
+    <string name="speed_dial_type_number">Type a number</string>
+    <string name="speed_dial_remove">Remove</string>
+    <string name="speed_dial_pick_failed">Couldn\'t use that number</string>
+    <string name="speed_dial_unset">No speed dial on key %1$s yet. Set it in Settings › Speed dial</string>
+
+    <!-- Decline messages -->
+    <string name="decline_messages">Decline messages</string>
+    <string name="decline_messages_sub_standard">The three that come with CallCtrl</string>
+    <string name="decline_messages_sub_own">Your own messages</string>
+    <string name="decline_messages_footer">The texts offered by \"Reply with a message\" when a call comes in, up to 6. Tap one to change or delete it. Delete them all, or tap the reset row, to get the three standard messages back.</string>
+    <string name="decline_messages_add">Add a message</string>
+    <string name="decline_messages_edit">Edit message</string>
+    <string name="decline_messages_delete">Delete message</string>
+    <string name="decline_messages_reset">Back to the standard messages</string>
+
+    <!-- Quiet mode -->
+    <string name="quiet_mode">Quiet mode</string>
+    <string name="quiet_mode_sub_off">Off. Calls ring at any hour</string>
+    <string name="quiet_mode_sub_on">Calls don\'t ring from %1$s to %2$s</string>
+    <string name="quiet_needs_default">Quiet mode only works while CallCtrl is your default phone app: that is when Android asks it about every incoming call.</string>
+    <string name="quiet_enabled">Quiet mode on a schedule</string>
+    <string name="quiet_enabled_sub">In these hours incoming calls don\'t ring or vibrate. They still show on the screen and in Recents, and nothing is rejected</string>
+    <string name="quiet_from">From</string>
+    <string name="quiet_until">Until</string>
+    <string name="quiet_footer">\"Until\" earlier than \"From\" runs past midnight. The same time twice means the whole day. Emergency numbers always ring.</string>
+    <string name="quiet_days">Days</string>
+    <string name="quiet_days_footer">The days the quiet time starts on. A night that starts on Friday runs into Saturday morning.</string>
+    <string name="quiet_exceptions">Still ring</string>
+    <string name="quiet_exceptions_footer">Needs access to your contacts. Callers with a hidden number never count as a contact.</string>
+    <string name="quiet_favourites">Favourites</string>
+    <string name="quiet_favourites_sub">Calls from your starred contacts ring as usual</string>
+    <string name="quiet_contacts">Everyone in your contacts</string>
+    <string name="quiet_contacts_sub">Only callers you don\'t know are silenced</string>
+
+    <!-- Search in call history -->
+    <string name="search_history">Search call history</string>
+    <string name="search_close">Close search</string>
+    <string name="search_history_hint">Name, number, note or #tag</string>
+    <string name="search_history_none">No calls found</string>
+    <string name="search_history_none_body">Search looks at names, numbers and your own notes and tags, in the newest 1,000 calls.</string>
+
+    <!-- Notes and tags on calls -->
+    <string name="note_title">Note on this call</string>
+    <string name="note_label">Note</string>
+    <string name="note_tags_label">Tags</string>
+    <string name="note_tags_hint">work, follow up</string>
+    <string name="note_hint">Tap a call to add a note or tags.</string>
+    <string name="note_edit">Add or change the note</string>
+    <string name="note_has">Has a note</string>
+    <string name="note_unreadable">Your notes are stored encrypted and can\'t be opened right now. They are kept.</string>
+    <string name="note_save_failed">Couldn\'t save the note</string>
+
+    <!-- History export -->
+    <string name="history_export">Export call history</string>
+    <string name="history_export_sub">Every call with your notes and tags, as a CSV file for a spreadsheet. The file isn\'t encrypted</string>
+    <string name="history_exporting">Exporting…</string>
+    <plurals name="history_exported">
+        <item quantity="one">%1$d call exported</item>
+        <item quantity="other">%1$d calls exported</item>
+    </plurals>
+    <string name="history_export_failed">Couldn\'t write the file</string>
+
+    <!-- Call-back reminders -->
+    <string name="ch_reminder">Call-back reminders</string>
+    <string name="ch_reminder_desc">The reminders you set to call someone back</string>
+    <string name="remind_call_back">Remind me to call back</string>
+    <string name="remind_call_back_sub">A notification at the time you pick</string>
+    <string name="remind_15m">In 15 minutes</string>
+    <string name="remind_30m">In 30 minutes</string>
+    <string name="remind_1h">In 1 hour</string>
+    <string name="remind_3h">In 3 hours</string>
+    <string name="remind_evening">This evening</string>
+    <string name="remind_tomorrow">Tomorrow morning</string>
+    <string name="remind_footer">Android may show a reminder a few minutes late while the phone is resting.</string>
+    <string name="remind_in_hour">Remind me in 1 hour</string>
+    <string name="reminder_set">Reminder set for %1$s</string>
+    <string name="reminder_set_hour">Reminder set for in an hour</string>
+    <string name="reminder_failed">Couldn\'t set the reminder</string>
+    <string name="reminder_title">Call back %1$s</string>
+    <string name="reminder_text">You asked to be reminded</string>
+    <string name="reminder_public">Call-back reminder</string>
+    <string name="reminders">Call-back reminders</string>
+    <string name="reminders_sub_none">None set. Add one from a call in Recents</string>
+    <plurals name="reminders_count">
+        <item quantity="one">%1$d reminder waiting</item>
+        <item quantity="other">%1$d reminders waiting</item>
+    </plurals>
+    <string name="reminders_empty">No reminders</string>
+    <string name="reminders_empty_body">Tap a call in Recents and choose \"Remind me to call back\".</string>
+    <string name="reminders_footer">Tap a reminder to remove it.</string>
+    <string name="reminders_unreadable">Can\'t open your reminders</string>
+    <string name="reminders_unreadable_body">They are stored encrypted and can\'t be opened right now. They are kept.</string>
+    <string name="reminder_remove_title">Remove this reminder?</string>
+    <string name="reminder_remove_body">You won\'t be reminded to call back.</string>
+    <string name="reminder_remove">Remove</string>
+
+    <!-- Settings file -->
+    <string name="value_on">On</string>
+    <string name="value_off">Off</string>
+    <string name="settings_file_title">Settings file</string>
+    <string name="settings_file_footer">A settings file holds the keypad, Recents and call switches, your speed dial, your decline messages and quiet mode, as readable text (not encrypted). It never holds the app lock or its PIN, whether or whose calls are recorded, call screening rules (they have their own export), notes, reminders or call history.</string>
+    <string name="settings_file_export">Export settings</string>
+    <string name="settings_file_export_sub">Save your settings to a file</string>
+    <string name="settings_file_import">Import settings</string>
+    <string name="settings_file_import_sub">Bring settings back from a file. You see what changes first</string>
+    <string name="settings_file_exported">Settings exported.</string>
+    <string name="settings_file_export_failed">Couldn\'t write the file.</string>
+    <string name="settings_file_not_ours">This isn\'t a CallCtrl settings file, or it can\'t be read.</string>
+    <string name="settings_file_same">The file has the same settings as you have now. Nothing to change.</string>
+    <string name="settings_file_will_change">This will change:</string>
+    <string name="settings_file_speed_dial">Speed dial: replaced by the file\'s (%1$d keys)</string>
+    <string name="settings_file_messages">Decline messages: replaced by the file\'s</string>
+    <string name="settings_file_quiet_on">Quiet mode: on, from %1$s to %2$s</string>
+    <string name="settings_file_quiet_off">Quiet mode: off</string>
+    <string name="settings_file_record_format">Recording file type</string>
+    <string name="settings_file_record_on_hold">Keep recording on hold</string>
+    <string name="settings_file_refused">Left as they are, because an import never makes CallCtrl less private:</string>
+    <string name="settings_file_confirm_title">Import these settings?</string>
+    <string name="settings_file_confirm">Import</string>
+    <string name="settings_file_imported">Settings imported.</string>
 </resources>

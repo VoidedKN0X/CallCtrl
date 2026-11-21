@@ -13,6 +13,7 @@ import android.graphics.drawable.Icon
 import android.net.Uri
 import com.vknxworks.callctrl.MainActivity
 import com.vknxworks.callctrl.R
+import com.vknxworks.callctrl.container
 import com.vknxworks.callctrl.data.Phone
 
 /**
@@ -24,9 +25,12 @@ object CallNotifications {
     const val CH_ONGOING = "ongoing_calls"
     const val CH_MISSED = "missed_calls"
     const val CH_SCREENED = "screened_calls"
+    const val CH_REMINDER = "call_back_reminders"
     private const val ID_CALL = 1
     const val ID_MISSED = 2
     private const val ID_SCREENED = 3
+    /** Call-back reminders use this number plus the reminder's own, so several can show at once. */
+    private const val ID_REMINDER_BASE = 1000
     private var screenedCount = 0
     private val photos = android.util.LruCache<String, Bitmap>(8)
 
@@ -47,6 +51,9 @@ object CallNotifications {
         })
         nm.createNotificationChannel(NotificationChannel(CH_MISSED, context.getString(R.string.ch_missed), NotificationManager.IMPORTANCE_DEFAULT).apply {
             description = context.getString(R.string.ch_missed_desc)
+        })
+        nm.createNotificationChannel(NotificationChannel(CH_REMINDER, context.getString(R.string.ch_reminder), NotificationManager.IMPORTANCE_DEFAULT).apply {
+            description = context.getString(R.string.ch_reminder_desc)
         })
         // Rejected by call screening: quiet (no sound, no vibration, no banner), only in the notification shade.
         nm.createNotificationChannel(NotificationChannel(CH_SCREENED, context.getString(R.string.ch_screened), NotificationManager.IMPORTANCE_LOW).apply {
@@ -156,11 +163,7 @@ object CallNotifications {
                     .setContentTitle(context.resources.getQuantityString(R.plurals.missed_many, count, count)).build(),
             )
         if (count == 1 && !number.isNullOrBlank()) {
-            val callBack = PendingIntent.getBroadcast(
-                context, 11,
-                Intent(context, CallActionReceiver::class.java).setAction(CallActionReceiver.CALL_BACK).putExtra(CallActionReceiver.EXTRA_NUMBER, number),
-                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
-            )
+            val callBack = callBack(context, number, 11, ID_MISSED)
             val message = PendingIntent.getActivity(
                 context, 12,
                 Intent(Intent.ACTION_SENDTO, Uri.fromParts("smsto", number, null)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
@@ -173,8 +176,88 @@ object CallNotifications {
                     .build(),
             )
             b.addAction(Notification.Action.Builder(Icon.createWithResource(context, R.drawable.ic_stat_message), context.getString(R.string.message), message).build())
+            val remind = PendingIntent.getBroadcast(
+                context, 13,
+                Intent(context, CallActionReceiver::class.java).setAction(CallActionReceiver.REMIND)
+                    .putExtra(CallActionReceiver.EXTRA_NUMBER, number)
+                    .putExtra(CallActionReceiver.EXTRA_NAME, caller?.name.orEmpty()),
+                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
+            )
+            b.addAction(Notification.Action.Builder(Icon.createWithResource(context, R.drawable.ic_stat_missed), context.getString(R.string.remind_in_hour), remind).build())
         }
         runCatching { nm.notify(ID_MISSED, b.build()) }
+    }
+
+    /**
+     * The "Call back" button of a notification. Normally it places the call straight away; with "Confirm before
+     * calling" on it opens the keypad with the number filled in instead, so a slip of the thumb doesn't call.
+     * Reads the saved settings: call it off the main thread. [cancelId] is the notification to take away.
+     */
+    private fun callBack(context: Context, number: String, request: Int, cancelId: Int): PendingIntent {
+        val confirm = runCatching { kotlinx.coroutines.runBlocking { context.container.settings.load().confirmCalls } }.getOrDefault(false)
+        return if (confirm) {
+            PendingIntent.getActivity(
+                context, request,
+                Intent(context, MainActivity::class.java).setAction(Intent.ACTION_DIAL).setData(Uri.fromParts("tel", number, null))
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
+                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
+            )
+        } else {
+            PendingIntent.getBroadcast(
+                context, request,
+                Intent(context, CallActionReceiver::class.java).setAction(CallActionReceiver.CALL_BACK)
+                    .setData(Uri.fromParts("callctrl-call", request.toString(), null))
+                    .putExtra(CallActionReceiver.EXTRA_NUMBER, number)
+                    .putExtra(CallActionReceiver.EXTRA_NOTIFICATION, cancelId),
+                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
+            )
+        }
+    }
+
+    /**
+     * "Call back Sam": the reminder you set on a call. The name only shows on the lock screen when the phone
+     * allows private notification content. Call it off the main thread.
+     */
+    fun reminder(context: Context, id: Long, number: String, savedName: String) {
+        channels(context)
+        val nm = context.getSystemService(NotificationManager::class.java) ?: return
+        val notificationId = ID_REMINDER_BASE + (id % 100_000L).toInt()
+        val found = runCatching { com.vknxworks.callctrl.data.ContactsRepository.lookup(context, number).name }.getOrNull()
+        val who = found ?: savedName.takeIf { it.isNotBlank() } ?: Phone.format(context, number).ifBlank { number }
+        val request = 100 + (id % 100_000L).toInt() * 4
+        val open = PendingIntent.getActivity(
+            context, request,
+            Intent(context, MainActivity::class.java).setAction(Intent.ACTION_DIAL).setData(Uri.fromParts("tel", number, null))
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
+        )
+        val message = PendingIntent.getActivity(
+            context, request + 1,
+            Intent(Intent.ACTION_SENDTO, Uri.fromParts("smsto", number, null)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
+        )
+        val title = context.getString(R.string.reminder_title, who)
+        val n = Notification.Builder(context, CH_REMINDER)
+            .setSmallIcon(R.drawable.ic_stat_call)
+            .setContentTitle(title)
+            .setContentText(if (who == number) context.getString(R.string.reminder_text) else Phone.format(context, number).ifBlank { number })
+            .setCategory(Notification.CATEGORY_REMINDER)
+            .setContentIntent(open)
+            .setAutoCancel(true)
+            .setVisibility(Notification.VISIBILITY_PRIVATE)
+            .setPublicVersion(
+                Notification.Builder(context, CH_REMINDER).setSmallIcon(R.drawable.ic_stat_call)
+                    .setContentTitle(context.getString(R.string.reminder_public)).build(),
+            )
+            // Calling from the phone's lock screen needs the phone unlocked first, so nobody can call out from it.
+            .addAction(
+                Notification.Action.Builder(Icon.createWithResource(context, R.drawable.ic_stat_call), context.getString(R.string.action_call), callBack(context, number, request + 2, notificationId))
+                    .setAuthenticationRequired(true)
+                    .build(),
+            )
+            .addAction(Notification.Action.Builder(Icon.createWithResource(context, R.drawable.ic_stat_message), context.getString(R.string.message), message).build())
+            .build()
+        runCatching { nm.notify(notificationId, n) }
     }
 
     /**

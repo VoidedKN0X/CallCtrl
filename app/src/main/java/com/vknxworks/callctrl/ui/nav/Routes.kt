@@ -14,3 +14,7 @@ import kotlinx.serialization.Serializable
 @Serializable data object ScreeningRoute
 @Serializable data object CallRecordingRoute
 @Serializable data object RecordingsRoute
+@Serializable data object SpeedDialRoute
+@Serializable data object DeclineMessagesRoute
+@Serializable data object QuietModeRoute
+@Serializable data object RemindersRoute

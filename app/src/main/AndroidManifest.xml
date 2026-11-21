@@ -22,6 +22,9 @@
          muting go through Android's call service, and keypad haptics through the system, so neither audio-settings
          nor vibrate permission is needed. -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <!-- Call-back reminders: Android forgets alarms when the phone restarts, so they are set again at start-up.
+         Granted at install, no prompt. Not a network permission. -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <!-- Fingerprint unlock for the app lock -->
     <uses-permission android:name="android.permission.USE_BIOMETRIC" />
     <!-- Hides other apps' floating windows over the lock screen, PIN screens and confirmations (only while they
@@ -127,6 +130,17 @@
         <receiver
             android:name=".calls.CallActionReceiver"
             android:exported="false" />
+
+        <!-- Call-back reminders: Android's alarm for a reminder (CallCtrl's own PendingIntent), and setting the
+             alarms again after the phone restarted or CallCtrl was updated. Not exported: no other app can reach it. -->
+        <receiver
+            android:name=".data.reminders.ReminderReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+            </intent-filter>
+        </receiver>
 
         <!-- As the default phone app, Android asks CallCtrl to show the missed-call notification. -->
         <receiver

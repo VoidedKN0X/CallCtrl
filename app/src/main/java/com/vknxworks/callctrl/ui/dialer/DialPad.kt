@@ -40,7 +40,7 @@ private val KEYS = listOf(
 
 /**
  * The phone keypad. [onKey] fires as a key goes down (so call tones start right away), [onKeyUp] when it's let go,
- * and [onLongKey] on a long press (0 for +, 1 for voicemail).
+ * and [onLongKey] on a long press (0 for +, 1 for voicemail, 2 to 9 for speed dial).
  */
 @Composable
 fun DialPad(
@@ -81,7 +81,7 @@ fun DialPad(
                                         tryAwaitRelease()
                                         keyUp()
                                     },
-                                    onLongPress = if (hasLong && (digit == '0' || digit == '1')) ({ _ ->
+                                    onLongPress = if (hasLong && digit in '0'..'9') ({ _ ->
                                         if (haptics) view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
                                         longKey?.invoke(digit)
                                     }) else null,

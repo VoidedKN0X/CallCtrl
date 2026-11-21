@@ -16,6 +16,15 @@ Part of the [Ctrl series](#the-ctrl-series) by VKNXWorks.
 - **Call screen** for incoming, outgoing and waiting calls, also on the lock screen: answer, decline, decline with a text message, mute, keypad tones, speaker, headset and Bluetooth, hold, add a call, swap and merge into a conference
 - **Keypad** with letters, tones and vibration you can turn off; searches your contacts by name on the keypad letters or by number as you type. Long-press 0 for +, long-press 1 for voicemail, and the call button brings back the last number you called
 - **Recents:** your call history with calls in a row grouped, missed calls in red and a Missed filter. Tap a call for its details: call back, message, add to or open in contacts, copy, block and delete
+- **Speed dial:** long-press a key from 2 to 9 on the keypad to call the number you set for it
+- **Search in Recents** by name, number, or your own notes and tags
+- **Notes and tags on calls**, stored encrypted on the phone, and shown on the call in Recents
+- **Call-back reminders:** pick a time on a call (or tap "Remind me in 1 hour" on a missed call) and get a notification with Call and Message
+- **Export your call history** as a CSV file, with your notes and tags
+- **Confirm before calling** (optional), so a slip of the thumb doesn't call anyone, and **flip to silence**: turn the phone face down to stop the ringing
+- **Your own decline messages** for "Reply with a message"
+- **Quiet mode on a schedule:** hours and days in which calls don't ring, with favourites or all contacts still getting through; emergency numbers always ring
+- **Export and import your settings** as a file
 - **Contacts** with a phone number, favourites on top, search, and a choice of number for contacts with several
 - **Missed call notifications** with Call back and Message, and the caller's name only on the lock screen when your phone allows private notification content
 - **Blocked numbers:** block and unblock numbers from Recents or Settings; your phone blocks their calls and texts for every app
@@ -54,6 +63,9 @@ If the Obtainium button doesn't open the app, add `https://github.com/VoidedKN0X
 - **Recents:** tap the phone icon to call back, tap a call for its details. The bin at the top clears the history.
 - **Contacts:** tap a contact to call; long-press to open it in your contacts app.
 - **During a call:** mute, keypad, speaker (or Bluetooth), hold, add a call, then swap or merge. The bar at the top of CallCtrl leads back to the call.
+
+- **More in Recents:** the magnifier searches names, numbers and your notes (type `#work` for a tag). Tap a call, then tap one of its calls in the list to write a note or tags, or choose **Remind me to call back**.
+- **Speed dial, decline messages, quiet mode:** in **Settings > Calls**. Reminders that are still to come are under your profile picture > **Call-back reminders**.
 
 Settings and About are behind your profile picture at the top right of every tab. Call screening is in **Settings > Phone app > Call screening**, call recording in **Settings > Phone app > Call recording**.
 
@@ -96,6 +108,7 @@ How it works: while a call is recorded (or about to be), Shizuku starts a small 
 | Read your contacts (`READ_CONTACTS`) | Names and photos of callers, keypad search and the Contacts tab. |
 | Notifications, full-screen alerts (`POST_NOTIFICATIONS`, `USE_FULL_SCREEN_INTENT`) | The incoming call screen and banner, the ongoing call and missed calls. |
 | Keep awake (`WAKE_LOCK`) | Turning the screen off while the phone is at your ear during a call. |
+| Run at startup (`RECEIVE_BOOT_COMPLETED`) | Call-back reminders: Android forgets alarms when the phone restarts, so CallCtrl sets them again at start-up. Granted at install, without a prompt. It isn't a network permission. |
 | Use biometric hardware (`USE_BIOMETRIC`) | Optional fingerprint unlock for the app lock. |
 | Shizuku API (`moe.shizuku.manager.permission.API_V23`) | Only for call recording: it's Shizuku's own permission, added by the Shizuku library, and it's how the Shizuku app lists CallCtrl among its authorised apps. It grants nothing by itself: CallCtrl can use Shizuku only after you allow it in Shizuku's dialog. Not a network permission. |
 | Hide other apps' floating windows (`HIDE_OVERLAY_WINDOWS`) | Hide other apps' floating windows over the PIN screen, and over the lock screen and confirmations, only while they show (never over the call screen). Granted at install, without a prompt. It isn't a network permission. |
@@ -126,6 +139,9 @@ Turn it on under **Settings > Privacy and security > App lock** (tap your profil
 
 - Calls go through your phone's own telephony. Your call history stays in the phone's call log and your contacts in its contacts storage; CallCtrl keeps no copy, its own files hold only its settings, your call screening rules and your call recordings. Screening and recording run on your phone; nothing about your calls leaves it.
 - Call recordings stay in CallCtrl's private storage, left out of every backup. Once a recording is finished (and no call is going on) CallCtrl encrypts the audio file there with AES-256-GCM, under a key that is itself locked by a key in the phone's secure hardware (Android Keystore). That protects the audio in files copied off the phone; it does not protect against someone who can use the unlocked phone or the running app. Long recordings (over 32 MB) are encrypted in pieces of 1 MB, so they never have to fit in memory; playing or sharing one first decrypts it into a temporary copy, which takes a moment and needs that much free space. Not encrypted: the small notes file next to each recording (number, name, times, format), the file names, your screening rules and your settings. Playing, sharing and saving a copy give a normal audio file as before. They leave it only when you share one, save a copy, or turn on "Save copies to Music/CallCtrl". Shizuku only runs CallCtrl's own capture code; nothing goes to Shizuku's developers or anyone else.
+- Your notes and tags on calls and your call-back reminders are kept in CallCtrl's private storage, encrypted the same way as recordings (AES-256-GCM under the data key). If they ever can't be opened, CallCtrl leaves them as they are and says so; it never writes over them. Speed dial, decline messages and quiet mode are settings and aren't encrypted (quiet mode has to be readable the moment a call comes in).
+- A call-history export and a settings file are plain, readable files, written only where you choose with the system file picker. The settings file never holds the app lock, recording choices, screening rules, notes, reminders or call history, and an import can't turn off **Hide in screenshots** or **Hide in recent apps**.
+- Flip to silence uses the motion sensor only while a call is ringing; it needs no permission.
 - A text you send when declining a call goes out as a normal SMS through your phone.
 - Copied numbers are marked as sensitive, so Android doesn't show them in the clipboard preview.
 - CallCtrl is left out of Android's cloud backup and its phone-to-phone transfer.

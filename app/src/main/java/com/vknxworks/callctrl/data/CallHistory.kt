@@ -71,14 +71,19 @@ class CallHistory(private val context: Context, private val scope: CoroutineScop
         }
     }
 
-    private fun load(): List<CallEntry> {
+    /** The whole call log (up to [max] calls, newest first), for the history export. */
+    suspend fun all(max: Int = 50_000): List<CallEntry> = withContext(Dispatchers.IO) {
+        runCatching { load(max) }.getOrDefault(emptyList())
+    }
+
+    private fun load(limit: Int = 1000): List<CallEntry> {
         val out = ArrayList<CallEntry>()
         val proj = arrayOf(
             Calls._ID, Calls.NUMBER, Calls.CACHED_NAME, Calls.TYPE, Calls.DATE, Calls.DURATION,
             Calls.PHONE_ACCOUNT_ID, Calls.NEW, Calls.NUMBER_PRESENTATION,
         )
         // The newest 1000 calls are plenty for a phone screen and keep loading instant.
-        context.contentResolver.query(Calls.CONTENT_URI.buildUpon().appendQueryParameter(Calls.LIMIT_PARAM_KEY, "1000").build(), proj, null, null, "${Calls.DATE} DESC")?.use { c ->
+        context.contentResolver.query(Calls.CONTENT_URI.buildUpon().appendQueryParameter(Calls.LIMIT_PARAM_KEY, limit.toString()).build(), proj, null, null, "${Calls.DATE} DESC")?.use { c ->
             while (c.moveToNext()) {
                 out += CallEntry(
                     id = c.getLong(0),

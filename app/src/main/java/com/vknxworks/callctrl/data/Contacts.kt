@@ -171,6 +171,20 @@ class ContactsRepository(private val context: Context, private val scope: Corout
             }
         }.getOrNull() ?: Caller(null, null, null, null)
 
+        /** Whether [number] belongs to a contact, and whether any contact it belongs to is a favourite (starred). */
+        fun contactFlags(context: Context, number: String): Pair<Boolean, Boolean> = runCatching {
+            val uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(number))
+            var contact = false
+            var starred = false
+            context.contentResolver.query(uri, arrayOf(ContactsContract.PhoneLookup._ID, ContactsContract.PhoneLookup.STARRED), null, null, null)?.use { c ->
+                while (c.moveToNext()) {
+                    contact = true
+                    if (c.getInt(1) != 0) starred = true
+                }
+            }
+            contact to starred
+        }.getOrDefault(false to false)
+
         /** A contact's own page in your contacts app. */
         fun contactUri(id: Long): Uri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, id)
     }

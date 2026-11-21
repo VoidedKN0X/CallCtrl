@@ -466,11 +466,15 @@ private fun SimChoice(main: CallInfo) {
 @Composable
 private fun QuickReplies(onDismiss: () -> Unit, onSend: (String) -> Unit) {
     var custom by remember { mutableStateOf(false) }
-    val canned = listOf(
-        stringResource(R.string.reply_1),
-        stringResource(R.string.reply_2),
-        stringResource(R.string.reply_3),
-    )
+    // Your own messages (Settings > Decline messages), or the three that come with CallCtrl.
+    val own = LocalContext.current.container.settings.settings.collectAsStateWithLifecycle().value.declineMessages
+    val canned = own.ifEmpty {
+        listOf(
+            stringResource(R.string.reply_1),
+            stringResource(R.string.reply_2),
+            stringResource(R.string.reply_3),
+        )
+    }
     CtrlBottomSheet(onDismissRequest = onDismiss) {
         Column(Modifier.navigationBarsPadding().padding(bottom = 12.dp)) {
             Text(stringResource(R.string.reply_with_message), style = MaterialTheme.typography.titleLarge, modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp))

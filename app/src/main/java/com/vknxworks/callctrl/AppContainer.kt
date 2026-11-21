@@ -4,6 +4,11 @@ import android.content.Context
 import com.vknxworks.callctrl.data.CallHistory
 import com.vknxworks.callctrl.data.crypto.DataKeyStore
 import com.vknxworks.callctrl.data.crypto.KeystoreWrapper
+import com.vknxworks.callctrl.data.crypto.SealedStore
+import com.vknxworks.callctrl.data.notes.CallNotesStore
+import com.vknxworks.callctrl.data.quiet.QuietStore
+import com.vknxworks.callctrl.data.reminders.Reminders
+import java.io.File
 import com.vknxworks.callctrl.data.ContactsRepository
 import com.vknxworks.callctrl.data.lock.LockVault
 import com.vknxworks.callctrl.data.screening.ScreeningStore
@@ -40,6 +45,15 @@ class AppContainer(val context: Context) {
 
     /** Call recordings (Settings > Call recording), in CallCtrl's private files. */
     val recordings = RecordingStore(context, appScope, dataKeys)
+
+    /** Scheduled quiet mode (Settings > Quiet mode), also read by the screening service. */
+    val quiet = QuietStore(context, appScope)
+
+    /** Your notes and tags on calls, sealed with the data key like recordings. */
+    val notes = CallNotesStore(SealedStore(File(context.filesDir, "call_notes.bin"), dataKeys), appScope)
+
+    /** Call-back reminders, sealed with the data key like recordings. */
+    val reminders = Reminders(context, SealedStore(File(context.filesDir, "reminders.bin"), dataKeys), appScope)
 
     /** Open the Recordings screen (from a call-recording notification). */
     val showRecordings = MutableStateFlow(false)
@@ -101,6 +115,9 @@ class AppContainer(val context: Context) {
             // Then, in the background and only when no call is on: encrypt finished recordings that aren't yet.
             recordings.reload()
         }
+        // Notes on calls, and the alarms of call-back reminders (alarms don't survive a restart of the phone).
+        notes.start()
+        reminders.start()
     }
 
     private companion object {

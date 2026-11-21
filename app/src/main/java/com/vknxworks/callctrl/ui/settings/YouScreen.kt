@@ -56,6 +56,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vknxworks.callctrl.BuildConfig
 import com.vknxworks.callctrl.R
+import com.vknxworks.callctrl.container
+import com.vknxworks.callctrl.ui.nav.RemindersRoute
+import androidx.compose.material.icons.outlined.Alarm
 import com.vknxworks.callctrl.ui.components.ConfirmDialog
 import com.vknxworks.callctrl.ui.components.Group
 import com.vknxworks.callctrl.ui.components.GroupRow
@@ -149,6 +152,15 @@ fun YouScreen() {
                     icon = Icons.Outlined.Tune,
                     showChevron = true,
                     onClick = { nav.navigate(SettingsRoute) },
+                )
+                val reminders by context.container.reminders.items.collectAsStateWithLifecycle()
+                GroupRow(
+                    stringResource(R.string.reminders),
+                    if (reminders.isEmpty()) stringResource(R.string.reminders_sub_none)
+                    else pluralStringResource(R.plurals.reminders_count, reminders.size, reminders.size),
+                    icon = Icons.Outlined.Alarm,
+                    showChevron = true,
+                    onClick = { nav.navigate(RemindersRoute) },
                 )
             }
 

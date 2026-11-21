@@ -119,6 +119,7 @@ object CallManager {
         _calls.value = emptyList()
         CallRecorder.onCalls(emptyList())
         updateProximity()
+        appContext?.let { FlipToSilence.onCalls(it, false) }
     }
 
     private fun refresh() {
@@ -151,6 +152,7 @@ object CallManager {
         CallRecorder.onCalls(_calls.value)
         svc?.let { CallNotifications.update(it, _calls.value) }
         updateProximity()
+        appContext?.let { FlipToSilence.onCalls(it, _calls.value.any { c -> c.ringing }) }
     }
 
     private fun order(state: Int) = when (state) {

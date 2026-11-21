@@ -96,6 +96,25 @@ import com.vknxworks.callctrl.ui.theme.CtrlColors
 import com.vknxworks.callctrl.ui.theme.CtrlShapes
 import com.vknxworks.callctrl.ui.theme.CtrlType
 import com.vknxworks.callctrl.ui.theme.Gutter
+import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.automirrored.outlined.Notes
+import androidx.compose.material.icons.outlined.Alarm
+import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material.icons.outlined.SearchOff
+import androidx.compose.material3.TextButton
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import com.vknxworks.callctrl.data.Person
+import com.vknxworks.callctrl.data.notes.CallNote
+import com.vknxworks.callctrl.data.notes.CallNoteRules
+import com.vknxworks.callctrl.data.reminders.ReminderTimes
+import com.vknxworks.callctrl.ui.components.CtrlAlertDialog
+import com.vknxworks.callctrl.ui.components.CtrlTextField
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.launch
 
 @Composable
@@ -107,6 +126,10 @@ fun RecentsScreen() {
     val loaded by c.history.loaded.collectAsStateWithLifecycle()
     val settings by c.settings.settings.collectAsStateWithLifecycle()
     var missedOnly by rememberSaveable { mutableStateOf(false) }
+    var searching by rememberSaveable { mutableStateOf(false) }
+    var query by rememberSaveable { mutableStateOf("") }
+    val notes by c.notes.notes.collectAsStateWithLifecycle()
+    val people by c.contacts.people.collectAsStateWithLifecycle()
     var open by remember { mutableStateOf<CallGroup?>(null) }
     var confirmClear by remember { mutableStateOf(false) }
     var sims by remember { mutableStateOf<Pair<String, List<CallAccount>>?>(null) }
@@ -114,10 +137,17 @@ fun RecentsScreen() {
     // Opening Recents counts as seeing the missed calls.
     LaunchedEffect(loaded) { if (loaded) c.history.markMissedSeen() }
 
-    val groups = remember(calls, missedOnly, settings.groupRecents) {
-        val list = if (missedOnly) calls.filter { it.missed } else calls
+    // Search: worked out off the main thread (it walks the contacts), so typing never waits for it.
+    val found by produceState<List<CallEntry>?>(null, calls, query, searching, people, notes) {
+        val q = query.trim()
+        value = if (!searching || q.isEmpty()) null else withContext(Dispatchers.Default) { searchCalls(calls, q, people, notes) }
+    }
+    val shown = found ?: calls
+    val groups = remember(shown, missedOnly, settings.groupRecents) {
+        val list = if (missedOnly) shown.filter { it.missed } else shown
         if (settings.groupRecents) CallHistory.group(list) else list.map { CallGroup(listOf(it)) }
     }
+    BackHandler(enabled = searching) { searching = false; query = "" }
 
     // Call recordings, shown on their call.
     val recordingList by c.recordings.list.collectAsStateWithLifecycle()
@@ -140,9 +170,29 @@ fun RecentsScreen() {
         TabTitle(
             stringResource(R.string.tab_recents),
             trailing = {
-                if (calls.isNotEmpty()) CtrlSquareButton(Icons.Outlined.DeleteSweep, stringResource(R.string.clear_history), onClick = { confirmClear = true })
+                if (calls.isNotEmpty()) {
+                    CtrlSquareButton(
+                        if (searching) Icons.Outlined.SearchOff else Icons.Outlined.Search,
+                        stringResource(if (searching) R.string.search_close else R.string.search_history),
+                        onClick = { searching = !searching; query = "" },
+                    )
+                    CtrlSquareButton(Icons.Outlined.DeleteSweep, stringResource(R.string.clear_history), onClick = { confirmClear = true })
+                }
             },
         )
+        if (searching) {
+            val focus = remember { FocusRequester() }
+            LaunchedEffect(Unit) { runCatching { focus.requestFocus() } }
+            CtrlTextField(
+                value = query,
+                onValueChange = { query = it.take(60) },
+                modifier = Modifier.fillMaxWidth().padding(horizontal = Gutter, vertical = 4.dp).focusRequester(focus),
+                placeholder = { Text(stringResource(R.string.search_history_hint)) },
+                leadingIcon = { Icon(Icons.Outlined.Search, null, Modifier.size(20.dp), tint = CtrlColors.Muted) },
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+            )
+        }
         Row(Modifier.padding(horizontal = Gutter, vertical = 4.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             FilterChip(stringResource(R.string.filter_all), !missedOnly) { missedOnly = false }
             FilterChip(stringResource(R.string.filter_missed), missedOnly) { missedOnly = true }
@@ -150,13 +200,20 @@ fun RecentsScreen() {
         when {
             !loaded -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { CircularProgressIndicator(color = CtrlColors.AccentText) }
             groups.isEmpty() -> MessageView(
-                Icons.Outlined.History,
-                stringResource(if (missedOnly) R.string.no_missed else R.string.no_calls),
+                if (found != null) Icons.Outlined.SearchOff else Icons.Outlined.History,
+                stringResource(if (found != null) R.string.search_history_none else if (missedOnly) R.string.no_missed else R.string.no_calls),
+                if (found != null) stringResource(R.string.search_history_none_body) else null,
                 modifier = Modifier.bottomClearance(),
             )
             else -> LazyColumn(Modifier.fillMaxSize(), contentPadding = PaddingValues(bottom = 24.dp)) {
                 items(groups, key = { it.key }) { g ->
-                    CallRow(g, recorded = recorded.containsKey(g.key), onOpen = { open = g }, onCall = { call(g.first.number) })
+                    CallRow(
+                        g,
+                        recorded = recorded.containsKey(g.key),
+                        noted = g.calls.any { notes.containsKey(CallNoteRules.key(it.id, it.date)) },
+                        onOpen = { open = g },
+                        onCall = { call(g.first.number) },
+                    )
                 }
                 item { Spacer(Modifier.bottomClearance(0.dp)) }
             }
@@ -172,7 +229,10 @@ fun RecentsScreen() {
             onCall = { open = null; call(g.first.number) },
             onDelete = {
                 open = null
-                scope.launch { c.history.delete(g.calls.map { it.id }) }
+                scope.launch {
+                    c.history.delete(g.calls.map { it.id })
+                    c.notes.forget(g.calls.map { CallNoteRules.key(it.id, it.date) })
+                }
             },
         )
     }
@@ -185,7 +245,7 @@ fun RecentsScreen() {
             onDismiss = { confirmClear = false },
             onConfirm = {
                 confirmClear = false
-                scope.launch { c.history.clearAll() }
+                scope.launch { if (c.history.clearAll()) c.notes.forgetAll() }
             },
         )
     }
@@ -217,8 +277,30 @@ fun rememberCaller(number: String): Caller {
     return caller
 }
 
+/**
+ * The calls that match [query]: by number (digits), by the name saved with the call, by a contact's name
+ * (also typed on the keypad letters), or by your own note or tag on the call ("#work" looks at tags only).
+ */
+private fun searchCalls(calls: List<CallEntry>, query: String, people: List<Person>, notes: Map<String, CallNote>): List<CallEntry> {
+    val digits = query.filter { it.isDigit() }
+    val byDigits = digits.length >= 2 && query.all { it.isDigit() || it in " +-()./" }
+    val folded = Person.fold(query)
+    // The last nine digits of every number of every contact whose name matches.
+    val named = HashSet<String>()
+    if (!query.startsWith("#")) {
+        for (p in people) if (p.matches(query)) for (d in p.digits) if (d.isNotEmpty()) named += d.takeLast(9)
+    }
+    return calls.filter { e ->
+        val own = e.number.filter { it.isDigit() }
+        (byDigits && own.contains(digits)) ||
+            (!query.startsWith("#") && e.cachedName != null && Person.fold(e.cachedName).contains(folded)) ||
+            (own.isNotEmpty() && own.takeLast(9) in named) ||
+            (notes[CallNoteRules.key(e.id, e.date)]?.let { CallNoteRules.matches(it, query) } == true)
+    }
+}
+
 @Composable
-private fun CallRow(g: CallGroup, recorded: Boolean, onOpen: () -> Unit, onCall: () -> Unit) {
+private fun CallRow(g: CallGroup, recorded: Boolean, noted: Boolean, onOpen: () -> Unit, onCall: () -> Unit) {
     val context = LocalContext.current
     val e = g.first
     val caller = if (e.hidden) Caller(null, null, null, null) else rememberCaller(e.number)
@@ -244,6 +326,10 @@ private fun CallRow(g: CallGroup, recorded: Boolean, onOpen: () -> Unit, onCall:
                 Spacer(Modifier.width(6.dp))
                 if (recorded) {
                     Icon(Icons.Outlined.RadioButtonChecked, stringResource(R.string.recordings), Modifier.size(14.dp), tint = CtrlColors.Muted)
+                    Spacer(Modifier.width(6.dp))
+                }
+                if (noted) {
+                    Icon(Icons.AutoMirrored.Outlined.Notes, stringResource(R.string.note_has), Modifier.size(14.dp), tint = CtrlColors.Muted)
                     Spacer(Modifier.width(6.dp))
                 }
                 Text(
@@ -294,6 +380,11 @@ private fun CallDetails(g: CallGroup, recordings: List<Recording>, onPlay: (Reco
     val caller = if (e.hidden) Caller(null, null, null, null) else rememberCaller(e.number)
     var blocked by remember { mutableStateOf<Boolean?>(null) }
     LaunchedEffect(e.number) { if (!e.hidden && Blocked.canBlock(context)) blocked = Blocked.isBlocked(context, e.number) }
+    val c = context.container
+    val notes by c.notes.notes.collectAsStateWithLifecycle()
+    val notesUnreadable by c.notes.unreadable.collectAsStateWithLifecycle()
+    var noteFor by remember { mutableStateOf<CallEntry?>(null) }
+    var reminding by remember { mutableStateOf(false) }
 
     CtrlBottomSheet(onDismissRequest = onDismiss) {
         LazyColumn(Modifier.navigationBarsPadding(), contentPadding = PaddingValues(bottom = 16.dp)) {
@@ -319,6 +410,7 @@ private fun CallDetails(g: CallGroup, recordings: List<Recording>, onPlay: (Reco
                     else GroupRow(stringResource(R.string.add_to_contacts), icon = Icons.Outlined.PersonAdd, onClick = { onDismiss(); addToContacts(context, e.number) })
                 }
                 item { GroupRow(stringResource(R.string.copy_number), icon = Icons.Outlined.ContentCopy, onClick = { copy(context, e.number); onDismiss() }) }
+                item { GroupRow(stringResource(R.string.remind_call_back), stringResource(R.string.remind_call_back_sub), icon = Icons.Outlined.Alarm, onClick = { reminding = true }) }
                 blocked?.let { isBlocked ->
                     item {
                         GroupRow(
@@ -366,8 +458,19 @@ private fun CallDetails(g: CallGroup, recordings: List<Recording>, onPlay: (Reco
                     modifier = Modifier.padding(start = 24.dp, end = 24.dp, top = 16.dp, bottom = 6.dp),
                 )
             }
+            item {
+                Text(
+                    stringResource(if (notesUnreadable) R.string.note_unreadable else R.string.note_hint),
+                    style = MaterialTheme.typography.bodySmall, color = CtrlColors.Muted,
+                    modifier = Modifier.padding(start = 24.dp, end = 24.dp, bottom = 4.dp),
+                )
+            }
             items(g.calls, key = { it.id }) { call ->
-                Row(Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+                val note = notes[CallNoteRules.key(call.id, call.date)]
+                Row(
+                    Modifier.fillMaxWidth().clickable(enabled = !notesUnreadable, onClickLabel = stringResource(R.string.note_edit)) { noteFor = call }.padding(horizontal = 24.dp, vertical = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
                     Icon(typeIcon(call), null, Modifier.size(18.dp), tint = if (call.missed) CtrlColors.Error else CtrlColors.Muted)
                     Spacer(Modifier.width(12.dp))
                     Column(Modifier.weight(1f)) {
@@ -376,10 +479,107 @@ private fun CallDetails(g: CallGroup, recordings: List<Recording>, onPlay: (Reco
                             DateUtils.formatDateTime(context, call.date, DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_TIME or DateUtils.FORMAT_SHOW_WEEKDAY or DateUtils.FORMAT_ABBREV_ALL),
                             style = CtrlType.Data, color = CtrlColors.Muted,
                         )
+                        if (note != null) {
+                            if (note.note.isNotBlank()) Text(note.note, style = MaterialTheme.typography.bodyMedium, color = CtrlColors.Text, modifier = Modifier.padding(top = 4.dp))
+                            if (note.tags.isNotEmpty()) Text(note.tags.joinToString("  ") { "#$it" }, style = CtrlType.Data, color = CtrlColors.AccentText, modifier = Modifier.padding(top = 2.dp))
+                        }
                     }
                     if (call.duration > 0) Text(formatDuration(call.duration), style = CtrlType.Data, color = CtrlColors.Muted)
                 }
             }
+        }
+    }
+
+    noteFor?.let { call ->
+        NoteDialog(notes[CallNoteRules.key(call.id, call.date)], onDismiss = { noteFor = null }) { text, tags ->
+            noteFor = null
+            scope.launch {
+                val ok = c.notes.put(CallNote(call.id, call.date, text, tags))
+                if (!ok) Toast.makeText(context, context.getString(R.string.note_save_failed), Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+    if (reminding) {
+        val name = caller.name ?: e.cachedName.orEmpty()
+        ReminderSheet(onDismiss = { reminding = false }) { at ->
+            reminding = false
+            scope.launch {
+                val saved = c.reminders.add(e.number, name, at)
+                Toast.makeText(
+                    context,
+                    if (saved != null) context.getString(R.string.reminder_set, DateUtils.formatDateTime(context, at, DateUtils.FORMAT_SHOW_TIME))
+                    else context.getString(R.string.reminder_failed),
+                    Toast.LENGTH_LONG,
+                ).show()
+            }
+        }
+    }
+}
+
+/** Writing the note and tags of one call. An empty note with no tags removes it. */
+@Composable
+private fun NoteDialog(initial: CallNote?, onDismiss: () -> Unit, onSave: (String, List<String>) -> Unit) {
+    var text by remember { mutableStateOf(initial?.note.orEmpty()) }
+    var tags by remember { mutableStateOf(initial?.tags.orEmpty().joinToString(", ")) }
+    CtrlAlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.note_title), style = MaterialTheme.typography.titleLarge) },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                CtrlTextField(
+                    value = text,
+                    onValueChange = { text = it.take(CallNoteRules.MAX_NOTE) },
+                    label = { Text(stringResource(R.string.note_label)) },
+                    minLines = 3,
+                    keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
+                    modifier = Modifier.fillMaxWidth(),
+                )
+                CtrlTextField(
+                    value = tags,
+                    onValueChange = { tags = it.take(200) },
+                    label = { Text(stringResource(R.string.note_tags_label)) },
+                    placeholder = { Text(stringResource(R.string.note_tags_hint)) },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            }
+        },
+        confirmButton = { TextButton(onClick = { onSave(text, CallNoteRules.parseTags(tags)) }) { Text(stringResource(R.string.save)) } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.cancel), color = CtrlColors.Text) } },
+    )
+}
+
+/** "Remind me to call back": when. */
+@Composable
+private fun ReminderSheet(onDismiss: () -> Unit, onPick: (Long) -> Unit) {
+    val context = LocalContext.current
+    val now = remember { System.currentTimeMillis() }
+    val options = remember(now) {
+        listOf(
+            ReminderTimes.Choice.MIN_15 to R.string.remind_15m,
+            ReminderTimes.Choice.MIN_30 to R.string.remind_30m,
+            ReminderTimes.Choice.HOUR_1 to R.string.remind_1h,
+            ReminderTimes.Choice.HOUR_3 to R.string.remind_3h,
+            ReminderTimes.Choice.EVENING to R.string.remind_evening,
+            ReminderTimes.Choice.TOMORROW to R.string.remind_tomorrow,
+        ).mapNotNull { (choice, label) -> ReminderTimes.at(choice, now)?.let { label to it } }
+    }
+    CtrlBottomSheet(onDismissRequest = onDismiss) {
+        Column(Modifier.navigationBarsPadding().padding(bottom = 12.dp)) {
+            Text(stringResource(R.string.remind_call_back), style = MaterialTheme.typography.titleLarge, modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp))
+            options.forEach { (label, at) ->
+                GroupRow(
+                    stringResource(label),
+                    icon = Icons.Outlined.Alarm,
+                    value = DateUtils.formatDateTime(context, at, DateUtils.FORMAT_SHOW_TIME),
+                    onClick = { onPick(at) },
+                )
+            }
+            Text(
+                stringResource(R.string.remind_footer),
+                style = MaterialTheme.typography.bodySmall, color = CtrlColors.Muted,
+                modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp),
+            )
         }
     }
 }
