@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Shared Ctrl series strings in German ("du"): the You page, Settings shell and the app lock. App strings are in strings.xml. -->
+<resources>
+    <string name="group_about">Über</string>
+    <string name="support_title">CallCtrl unterstützen</string>
+    <string name="bugs_title">Fehler melden</string>
+    <string name="bugs_subtitle">Ein Problem oder eine Idee? Eröffne ein Issue auf GitHub</string>
+    <string name="source_title">Quellcode</string>
+    <string name="source_subtitle">github.com/VoidedKN0X/CallCtrl</string>
+    <string name="licence_title">Lizenz</string>
+    <string name="licence_subtitle">GNU General Public License v3.0</string>
+    <string name="about_footer">CallCtrl %1$s · VKNXWorks</string>
+
+    <string name="settings">Einstellungen</string>
+    <string name="you_title">Du</string>
+    <string name="label_profile">Profil</string>
+    <string name="label_app">App</string>
+    <string name="label_lock_brand">VKNXWorks · Ctrl</string>
+    <string name="label_footer_badges">Google-frei · Ohne Telemetrie · arm64</string>
+    <string name="you_this_phone">Dieses Smartphone</string>
+    <string name="you_offline">Offline · nichts verlässt dieses Smartphone</string>
+    <string name="cancel">Abbrechen</string>
+    <string name="back">Zurück</string>
+    <string name="selected">Ausgewählt</string>
+    <string name="save">Speichern</string>
+    <string name="clear">Leeren</string>
+
+    <!-- Privacy and security: the shared Ctrl series app lock -->
+    <string name="group_privacy">Datenschutz und Sicherheit</string>
+    <string name="app_lock">App-Sperre</string>
+    <string name="hide_screenshots">In Screenshots ausblenden</string>
+    <string name="hide_screenshots_subtitle">Screenshots und Bildschirmaufnahmen zeigen einen leeren Bildschirm</string>
+    <string name="hide_recents">In letzten Apps ausblenden</string>
+    <string name="hide_recents_subtitle">Die Übersicht der letzten Apps zeigt statt der App eine leere Karte</string>
+    <string name="lock_title">Gesperrt</string>
+    <string name="lock_prompt_title">CallCtrl entsperren</string>
+    <string name="lock_use_pin">PIN verwenden</string>
+    <string name="lock_use_fingerprint">Fingerabdruck verwenden</string>
+    <string name="lock_fingerprint_failed">Entsperren mit Fingerabdruck fehlgeschlagen. Verwende deine PIN.</string>
+    <string name="lock_fingerprint_changed">Ein Fingerabdruck wurde hinzugefügt oder entfernt. Entsperre mit deiner PIN und schalte dann das Entsperren per Fingerabdruck wieder ein.</string>
+    <string name="lock_enter_pin">PIN eingeben</string>
+    <string name="lock_pin_required">Gib deine PIN ein. Sie wird nach einem Neustart und alle 72 Stunden benötigt.</string>
+    <string name="lock_wrong_pin">Falsche PIN</string>
+    <string name="lock_too_many">Zu viele Versuche. Versuche es in %1$d s erneut</string>
+    <string name="lock_forgot">PIN vergessen?</string>
+    <string name="lock_forgot_title">PIN vergessen?</string>
+    <string name="lock_forgot_confirm">App-Sperre zurücksetzen</string>
+    <string name="lock_choose_pin">App-PIN wählen</string>
+    <string name="lock_enable_intro">Mindestens %1$d Ziffern, anders als die PIN deines Smartphones. Wenn du sie vergisst, kannst du die App-Sperre und die eigenen Einstellungen von CallCtrl zurücksetzen.</string>
+    <string name="lock_change_pin">App-PIN ändern</string>
+    <string name="lock_change_intro">Mindestens %1$d Ziffern, anders als die PIN deines Smartphones.</string>
+    <string name="lock_change_pin_subtitle">Mindestens %1$d Ziffern, getrennt von der PIN deines Smartphones</string>
+    <string name="lock_turn_off">App-Sperre ausschalten</string>
+    <string name="lock_turn_off_intro">Gib deine App-PIN ein, um die Sperre auszuschalten.</string>
+    <string name="lock_enter_current_pin">Aktuelle PIN eingeben</string>
+    <string name="lock_repeat_pin">Gib dieselbe PIN noch einmal ein</string>
+    <string name="lock_pin_too_easy">Zu leicht zu erraten. Wähle eine weniger offensichtliche PIN.</string>
+    <string name="lock_pin_mismatch">Die PINs stimmen nicht überein. Fang noch einmal an.</string>
+    <string name="lock_save_failed">PIN konnte nicht gespeichert werden. Versuche es noch einmal.</string>
+    <string name="lock_ok">OK</string>
+    <string name="lock_next">Weiter</string>
+    <string name="lock_done">Fertig</string>
+    <string name="lock_delete_digit">Löschen</string>
+    <string name="lock_fingerprint">Mit Fingerabdruck entsperren</string>
+    <string name="lock_fingerprint_subtitle">Nur starke Biometrie wie dein Fingerabdruck, geprüft von der sicheren Hardware des Smartphones. Die PIN wird nach einem Neustart und alle 72 Stunden weiterhin benötigt.</string>
+    <string name="lock_fingerprint_unavailable">Richte zuerst einen Fingerabdruck auf diesem Smartphone ein</string>
+    <string name="lock_fingerprint_setup_failed">Entsperren per Fingerabdruck konnte nicht eingerichtet werden</string>
+    <string name="lock_fingerprint_enable_title">Entsperren per Fingerabdruck einschalten</string>
+    <string name="lock_fingerprint_enable_subtitle">Bestätige deinen Fingerabdruck</string>
+    <string name="lock_again">Erneut sperren</string>
+    <string name="lock_again_immediately">Sobald du die App verlässt</string>
+    <string name="lock_again_1m">Nach 1 Minute Abwesenheit</string>
+    <string name="lock_again_5m">Nach 5 Minuten Abwesenheit</string>
+    <string name="lock_again_15m">Nach 15 Minuten Abwesenheit</string>
+    <string name="lock_again_1h">Nach 1 Stunde Abwesenheit</string>
+    <string name="lock_again_restart">Nur beim Neustart der App</string>
+</resources>

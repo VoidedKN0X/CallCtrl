@@ -4,6 +4,14 @@ What changed in each CallCtrl release. Every release on the [Releases page](http
 
 To publish a new version: bump `versionCode` and `versionName` in `app/build.gradle.kts`, add a section here, and push to `main`. Pushes without a version bump only build; they don't make a release.
 
+## Unreleased
+
+Changes on `main` that aren't in a release yet. They ship with the next version.
+
+### New
+
+- **CallCtrl in French and German, following the phone's language.** When your phone is set to French, CallCtrl now shows in French (polite "vous"); set to German, it shows in German (informal "du"). Every screen is translated, including the call screen, call notifications, call screening, call recording, the app lock and the You page; the three standard decline messages are in French or German too. Product and format names (Shizuku, FLAC, Opus, JSON, CSV, Music/CallCtrl, ...) stay as they are. Android's per-app language setting (Settings > Apps > CallCtrl > Language) now lists English, Dutch, French and German, so you can also pick a language for CallCtrl alone. Not yet tried on a phone.
+
 ## v0.5.0 (2026-11-21)
 
 Built and checked by CI only: nothing in this release had been run on a phone when it was published.

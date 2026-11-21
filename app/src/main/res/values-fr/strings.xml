@@ -1,0 +1,518 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- French ("vous"). Android picks it when the phone is set to French. -->
+<resources>
+    <!-- Shell texts for this app -->
+    <string name="settings_subtitle">Appli Téléphone, clavier, appels récents et confidentialité</string>
+    <string name="app_lock_subtitle">Demander un code (et éventuellement votre empreinte) à l\'ouverture de CallCtrl. Vous pouvez toujours répondre aux appels entrants.</string>
+    <string name="app_lock_footer">CallCtrl fonctionne entièrement hors ligne : pas d\'autorisation Internet, pas d\'analyse, pas de pistage. Vos appels passent par la téléphonie de votre téléphone, et l\'historique reste dans le journal d\'appels de votre téléphone.</string>
+    <string name="lock_prompt_subtitle">Vos appels et contacts</string>
+    <string name="lock_forgot_body">Le code ne peut pas être récupéré. CallCtrl réinitialise ses propres paramètres et règles de filtrage des appels, et désactive le verrouillage. Votre historique d\'appels, vos contacts et vos numéros bloqués ne sont pas supprimés. Si vous avez des enregistrements d\'appels, vous choisirez ensuite de les garder ou non.</string>
+
+    <!-- Tabs -->
+    <string name="tab_keypad">Clavier</string>
+    <string name="tab_recents">Récents</string>
+    <string name="tab_contacts">Contacts</string>
+
+    <!-- Setup -->
+    <string name="setup_default_title">Faire de CallCtrl votre appli Téléphone</string>
+    <string name="setup_default_body">En tant qu\'appli Téléphone, CallCtrl affiche les appels entrants et en cours, l\'historique et les appels manqués. Android continue de gérer les appels eux-mêmes.</string>
+    <string name="setup_default_button">Définir comme appli Téléphone</string>
+    <string name="setup_default_skip">Pas maintenant</string>
+    <string name="setup_perm_title">Autoriser les appels, l\'historique et les contacts</string>
+    <string name="setup_perm_body">CallCtrl doit pouvoir passer des appels, lire votre historique d\'appels et vos contacts, et afficher les notifications d\'appel. Rien ne quitte le téléphone.</string>
+    <string name="setup_perm_blocked">Certaines autorisations sont désactivées pour CallCtrl. Activez Téléphone, Journaux d\'appels, Contacts et Notifications dans les autorisations de l\'appli.</string>
+    <string name="setup_perm_button">Autoriser</string>
+    <string name="open_settings">Ouvrir les paramètres de l\'appli</string>
+
+    <!-- Keypad -->
+    <string name="action_call">Appeler</string>
+    <string name="backspace">Effacer</string>
+    <string name="add_to_contacts">Ajouter aux contacts</string>
+    <string name="message">Message</string>
+    <string name="choose_sim">Appeler avec</string>
+    <string name="call_failed">Impossible de lancer l\'appel</string>
+    <string name="need_phone_permission">Autorisez l\'accès Téléphone pour que CallCtrl puisse passer des appels</string>
+    <string name="voicemail_failed">Aucun numéro de messagerie vocale n\'est défini pour cette SIM</string>
+    <string name="no_app">Aucune appli de ce téléphone ne peut ouvrir cela</string>
+    <string name="return_to_call">Retour à l\'appel · %1$s</string>
+
+    <!-- Recents -->
+    <string name="filter_all">Tous</string>
+    <string name="filter_missed">Manqués</string>
+    <string name="no_calls">Aucun appel pour l\'instant</string>
+    <string name="no_missed">Aucun appel manqué</string>
+    <string name="private_number">Numéro privé</string>
+    <string name="unknown_caller">Inconnu</string>
+    <string name="yesterday">Hier</string>
+    <string name="clear_history">Effacer l\'historique des appels</string>
+    <string name="clear_history_title">Effacer l\'historique des appels ?</string>
+    <string name="clear_history_body">Tous les appels sont supprimés de l\'historique de ce téléphone. Cette action est irréversible.</string>
+    <string name="open_contact">Ouvrir le contact</string>
+    <string name="copy_number">Copier le numéro</string>
+    <string name="block">Bloquer le numéro</string>
+    <string name="block_sub">Plus d\'appels ni de SMS de ce numéro</string>
+    <string name="unblock">Débloquer le numéro</string>
+    <string name="unblock_sub">Les appels et SMS de ce numéro arrivent à nouveau</string>
+    <string name="block_failed">Impossible de modifier les numéros bloqués</string>
+    <plurals name="delete_calls">
+        <item quantity="one">Supprimer cet appel</item>
+        <item quantity="other">Supprimer ces %d appels</item>
+    </plurals>
+    <string name="call_list">Appels</string>
+    <string name="type_incoming">Appel entrant</string>
+    <string name="type_outgoing">Appel sortant</string>
+    <string name="type_missed">Appel manqué</string>
+    <string name="type_declined">Appel refusé</string>
+    <string name="type_blocked">Appel bloqué</string>
+    <string name="type_voicemail">Messagerie vocale</string>
+
+    <!-- Contacts tab -->
+    <string name="search_contacts">Rechercher des contacts</string>
+    <string name="search_none">Aucun résultat pour « %1$s »</string>
+    <string name="no_contacts">Aucun contact avec un numéro de téléphone</string>
+    <string name="no_contacts_body">Les contacts que vous enregistrez avec un numéro apparaissent ici.</string>
+    <string name="favourites">Favoris</string>
+    <string name="add_contact">Ajouter un contact</string>
+
+    <!-- Call screen -->
+    <string name="state_incoming">Appel entrant</string>
+    <string name="state_calling">Appel en cours…</string>
+    <string name="state_ongoing">Appel en cours</string>
+    <string name="state_held">En attente</string>
+    <string name="state_waiting">Double appel</string>
+    <string name="state_choose_sim">Choisissez une SIM</string>
+    <string name="state_ended">Appel terminé</string>
+    <string name="conference">Conférence (%1$d)</string>
+    <string name="answer">Répondre</string>
+    <string name="decline">Refuser</string>
+    <string name="end_call">Raccrocher</string>
+    <string name="mute">Muet</string>
+    <string name="unmute">Réactiver</string>
+    <string name="keypad">Clavier</string>
+    <string name="hide_keypad">Masquer le clavier</string>
+    <string name="hold">Attente</string>
+    <string name="resume">Reprendre</string>
+    <string name="add_call">Ajouter un appel</string>
+    <string name="swap">Permuter</string>
+    <string name="merge">Fusionner</string>
+    <string name="route_speaker">Haut-parleur</string>
+    <string name="route_phone">Téléphone</string>
+    <string name="route_headset">Casque</string>
+    <string name="route_bluetooth">Bluetooth</string>
+    <string name="reply_with_message">Répondre par un message</string>
+    <string name="reply_1">Je ne peux pas parler. Je vous rappelle ?</string>
+    <string name="reply_2">Je vous rappelle tout de suite.</string>
+    <string name="reply_3">Je suis en réunion, je vous rappelle après.</string>
+    <string name="reply_custom">Écrire votre message…</string>
+    <string name="send">Envoyer</string>
+
+    <!-- Notifications -->
+    <string name="ch_incoming">Appels entrants</string>
+    <string name="ch_incoming_desc">L\'écran et la bannière d\'appel entrant. La sonnerie est jouée par votre téléphone.</string>
+    <string name="ch_ongoing">Appels en cours</string>
+    <string name="ch_ongoing_desc">L\'appel en cours, avec Raccrocher</string>
+    <string name="ch_missed">Appels manqués</string>
+    <string name="ch_missed_desc">Les appels auxquels vous n\'avez pas répondu</string>
+    <string name="missed_one">Appel manqué</string>
+    <plurals name="missed_many">
+        <item quantity="one">%d appel manqué</item>
+        <item quantity="other">%d appels manqués</item>
+    </plurals>
+    <string name="missed_last">Dernier de %1$s</string>
+    <string name="call_back">Rappeler</string>
+
+    <!-- Settings -->
+    <string name="group_phone_app">Appli Téléphone</string>
+    <string name="phone_app_footer">Les appels passent toujours par la téléphonie de votre téléphone. Votre SIM, votre opérateur et les appels d\'urgence fonctionnent comme avant.</string>
+    <string name="default_phone_app">Appli Téléphone par défaut</string>
+    <string name="default_yes">CallCtrl est votre appli Téléphone</string>
+    <string name="default_no">Une autre appli est votre appli Téléphone. Appuyez pour changer</string>
+    <string name="full_screen_calls">Afficher les appels sur l\'écran de verrouillage</string>
+    <string name="full_screen_calls_sub">Les alertes en plein écran sont désactivées pour CallCtrl, les appels entrants ne s\'affichent donc qu\'en notification. Appuyez pour autoriser</string>
+    <string name="blocked_numbers">Numéros bloqués</string>
+    <string name="blocked_numbers_sub">Numéros qui ne peuvent ni vous appeler ni vous envoyer de SMS</string>
+    <string name="calling_accounts">SIM et comptes d\'appel</string>
+    <string name="calling_accounts_sub">La SIM utilisée pour les appels, dans les paramètres Android</string>
+    <string name="ringtone">Sonnerie</string>
+    <string name="ringtone_sub">La sonnerie et le vibreur de votre téléphone, dans les paramètres de son Android</string>
+    <string name="group_keypad">Clavier</string>
+    <string name="keypad_tones">Tonalités du clavier</string>
+    <string name="keypad_tones_sub">Une tonalité par touche pendant la numérotation (si les tonalités du clavier de votre téléphone sont aussi activées)</string>
+    <string name="keypad_haptics">Vibrer à chaque touche</string>
+    <string name="keypad_haptics_sub">Une courte vibration à chaque touche</string>
+    <string name="group_calls">Regrouper les appels</string>
+    <string name="group_calls_sub">Les appels successifs avec le même numéro sur une seule ligne</string>
+    <string name="recents_footer">L\'historique des appels est le journal d\'appels de votre téléphone, partagé avec les autres applis Téléphone. CallCtrl n\'en garde aucune copie.</string>
+    <string name="block_number">Bloquer un numéro</string>
+    <string name="blocked_empty">Aucun numéro bloqué</string>
+    <string name="blocked_empty_body">Bloquez un numéro ici, ou depuis un appel dans Récents.</string>
+    <string name="blocked_footer">Votre téléphone bloque ces numéros pour toutes les applis : les appels ne sonnent pas et les SMS n\'arrivent pas.</string>
+    <!-- Call screening -->
+    <string name="ch_screened">Appels filtrés</string>
+    <string name="ch_screened_desc">Une note discrète quand le filtrage a rejeté un appel</string>
+    <plurals name="screened_title">
+        <item quantity="one">%d appel rejeté</item>
+        <item quantity="other">%d appels rejetés</item>
+    </plurals>
+    <string name="screened_last">Dernier de %1$s</string>
+    <string name="screening">Filtrage des appels</string>
+    <string name="screening_sub_on">Activé : %1$s</string>
+    <string name="screening_sub_off">Désactivé. Rejeter ou rendre muets des appels selon le numéro, les numéros masqués ou les personnes absentes de vos contacts</string>
+    <plurals name="screening_rules_count">
+        <item quantity="one">%d règle</item>
+        <item quantity="other">%d règles</item>
+    </plurals>
+    <string name="screening_not_default">Le filtrage des appels ne fonctionne que si CallCtrl est votre appli Téléphone par défaut.</string>
+    <string name="screening_enable">Filtrer les appels</string>
+    <string name="screening_enable_sub">Vérifier chaque appel entrant selon vos règles avant qu\'il sonne</string>
+    <string name="screening_contacts">Les contacts sonnent toujours</string>
+    <string name="screening_contacts_sub">Les appels de vos contacts ignorent les règles (votre liste d\'appelants s\'applique quand même)</string>
+    <string name="screening_log">Garder les appels rejetés dans Récents</string>
+    <string name="screening_log_sub">Les appels rejetés apparaissent dans votre historique comme appels bloqués</string>
+    <string name="screening_notify">Notification discrète</string>
+    <string name="screening_notify_sub">Une note silencieuse dans le volet des notifications quand un appel a été rejeté</string>
+    <string name="screening_footer">Les numéros d\'urgence ne sont jamais filtrés. Les numéros de la liste de blocage de votre téléphone sont bloqués par Android lui-même, avant ces règles.</string>
+    <string name="screening_rules">Règles</string>
+    <string name="screening_rules_footer">Quand plusieurs règles correspondent à un appel, Autoriser l\'emporte, puis Rejeter, puis Muet. Rejeter refuse l\'appel sans sonnerie ; Muet le laisse sonner sans son ni vibration, il apparaît donc comme appel manqué.</string>
+    <string name="screening_add_rule">Ajouter une règle</string>
+    <string name="screening_edit_rule">Modifier la règle</string>
+    <string name="screening_remove_rule">Supprimer la règle</string>
+    <string name="rule_prefix">Commence par %1$s</string>
+    <string name="rule_exact">Numéro %1$s</string>
+    <string name="rule_pattern">Correspond à %1$s</string>
+    <string name="rule_not_in_contacts">Absent de vos contacts</string>
+    <string name="rule_hidden">Numéros masqués</string>
+    <string name="rule_kind">Quels appels</string>
+    <string name="kind_prefix">Le numéro commence par</string>
+    <string name="kind_exact">Un numéro</string>
+    <string name="kind_pattern">Modèle de numéro</string>
+    <string name="kind_not_in_contacts">Appelants absents de vos contacts</string>
+    <string name="kind_hidden">Numéros masqués ou privés</string>
+    <string name="rule_value_prefix">Début du numéro, p. ex. +44 ou 0900</string>
+    <string name="rule_value_exact">Numéro de téléphone</string>
+    <string name="rule_value_pattern">Modèle, p. ex. +32 4?? 12 *</string>
+    <string name="rule_pattern_help">\? remplace un chiffre et * un nombre quelconque de chiffres. Seuls les chiffres, +, ? et * comptent ; les espaces et tirets sont ignorés.</string>
+    <string name="rule_action">Ce qui se passe</string>
+    <string name="action_reject">Rejeter</string>
+    <string name="action_reject_sub">Refusé sans sonnerie</string>
+    <string name="action_silence">Muet</string>
+    <string name="action_silence_sub">Sonne sans son ni vibration</string>
+    <string name="action_allow">Autoriser</string>
+    <string name="action_allow_sub">Sonne toujours, quelles que soient les autres règles</string>
+    <string name="rule_error_empty">Saisissez un numéro</string>
+    <string name="rule_error_characters">Uniquement des chiffres, + au début, et ? ou * dans un modèle</string>
+    <string name="rule_error_no_digits">Au moins un chiffre est nécessaire</string>
+    <string name="rule_error_too_long">Trop long (32 chiffres maximum)</string>
+    <string name="screening_list">Votre liste d\'appelants</string>
+    <string name="screening_list_footer">Les numéros que vous voulez toujours rejeter ou rendre muets, même s\'ils sont dans vos contacts. Vérifiés avant les règles.</string>
+    <string name="screening_add_number">Ajouter un numéro</string>
+    <string name="screening_edit_number">Modifier le numéro</string>
+    <string name="screening_remove_number">Retirer de votre liste</string>
+    <string name="screening_show_all">Afficher les %1$d</string>
+    <string name="screening_blocked_sub">La liste de votre téléphone, partagée avec votre appli de messagerie et les autres applis</string>
+    <string name="screening_backup">Import et export</string>
+    <string name="screening_backup_footer">Le fichier JSON contient toutes les règles, votre liste d\'appelants, les interrupteurs et vos numéros bloqués. Le fichier CSV a une ligne par règle ou numéro (type,value,action), pour un tableur ou une autre appli. L\'import s\'ajoute à ce que vous avez ; vos interrupteurs restent tels quels.</string>
+    <string name="screening_export_json">Exporter en JSON</string>
+    <string name="screening_export_csv">Exporter en CSV</string>
+    <string name="screening_import">Importer des règles et numéros</string>
+    <string name="screening_import_sub">Depuis un fichier JSON ou CSV de CallCtrl, ou une simple liste de numéros à bloquer</string>
+    <string name="screening_exported">Exporté</string>
+    <string name="screening_export_failed">Impossible d\'écrire le fichier</string>
+    <string name="screening_import_failed">Impossible de lire ce fichier. Choisissez un export JSON ou CSV de CallCtrl, ou une liste de numéros.</string>
+    <string name="screening_import_empty">Rien à importer dans ce fichier</string>
+    <string name="screening_import_title">Importer ?</string>
+    <string name="screening_import_body">%1$s, %2$s et %3$s seront ajoutés.</string>
+    <plurals name="screening_import_skipped">
+        <item quantity="one">%1$d ligne n\'était pas valide et est ignorée.</item>
+        <item quantity="other">%1$d lignes n\'étaient pas valides et sont ignorées.</item>
+    </plurals>
+    <string name="screening_import_confirm">Importer</string>
+    <plurals name="import_rules">
+        <item quantity="one">%d règle</item>
+        <item quantity="other">%d règles</item>
+    </plurals>
+    <plurals name="import_list">
+        <item quantity="one">%d numéro pour votre liste d\'appelants</item>
+        <item quantity="other">%d numéros pour votre liste d\'appelants</item>
+    </plurals>
+    <plurals name="import_blocked">
+        <item quantity="one">%d numéro bloqué</item>
+        <item quantity="other">%d numéros bloqués</item>
+    </plurals>
+    <string name="screening_imported">Importé</string>
+    <string name="screening_import_blocked_failed">Certains numéros n\'ont pas pu être ajoutés à la liste de blocage</string>
+
+    <!-- Call recording: settings -->
+    <string name="call_recording">Enregistrement des appels</string>
+    <string name="call_recording_sub_off">Désactivé. Enregistrer les appels via Shizuku</string>
+    <string name="call_recording_sub_on">Activé : %1$s</string>
+    <string name="rec_not_default">L\'enregistrement des appels ne fonctionne que si CallCtrl est votre appli Téléphone par défaut.</string>
+    <string name="rec_shizuku_group">Shizuku</string>
+    <string name="rec_shizuku_not_installed">Shizuku n\'est pas installé</string>
+    <string name="rec_shizuku_not_installed_sub">CallCtrl enregistre les appels via Shizuku, une appli libre et gratuite qui permet aux applis d\'utiliser des fonctions système sans root. Installez-la, démarrez-la, puis revenez ici.</string>
+    <string name="rec_shizuku_get">Obtenir Shizuku</string>
+    <string name="rec_shizuku_not_running">Shizuku n\'est pas démarré</string>
+    <string name="rec_shizuku_not_running_sub">Ouvrez Shizuku et appuyez sur Démarrer : avec le débogage sans fil sur le téléphone lui-même (dans les Options pour les développeurs), ou avec adb depuis un ordinateur. Redémarrez-le après chaque redémarrage du téléphone.</string>
+    <string name="rec_shizuku_open">Ouvrir Shizuku</string>
+    <string name="rec_shizuku_too_old">Shizuku est trop ancien</string>
+    <string name="rec_shizuku_too_old_sub">Mettez Shizuku à jour en version 11 ou plus récente, puis revenez ici.</string>
+    <string name="rec_shizuku_permission">Autoriser CallCtrl dans Shizuku</string>
+    <string name="rec_shizuku_permission_sub">Shizuku demande si CallCtrl peut l\'utiliser. CallCtrl ne l\'utilise que pour capter l\'audio de l\'appel pendant un enregistrement.</string>
+    <string name="rec_shizuku_allow">Autoriser</string>
+    <string name="rec_shizuku_denied">CallCtrl n\'est pas autorisé dans Shizuku</string>
+    <string name="rec_shizuku_denied_sub">Vous avez choisi de ne plus être sollicité. Ouvrez Shizuku, allez dans ses applications autorisées et autorisez CallCtrl.</string>
+    <string name="rec_shizuku_ready">Shizuku est prêt</string>
+    <string name="rec_shizuku_ready_sub">Shizuku est démarré et CallCtrl peut l\'utiliser.</string>
+    <string name="rec_shizuku_footer">Android ne permet pas aux applis normales d\'enregistrer les appels. Pendant un enregistrement, Shizuku exécute une petite partie de CallCtrl avec les droits du shell de débogage d\'Android. Cette partie ne peut capter que l\'audio de l\'appel, jamais le micro, et elle s\'arrête avec l\'enregistrement.</string>
+    <string name="rec_mode">Enregistrer les appels</string>
+    <string name="rec_mode_off">Désactivé</string>
+    <string name="rec_mode_ask">Demander à chaque appel</string>
+    <string name="rec_mode_always">Toujours</string>
+    <string name="rec_mode_unknown">Uniquement les numéros absents de vos contacts</string>
+    <string name="rec_mode_selected">Uniquement les contacts choisis</string>
+    <string name="rec_mode_footer">L\'enregistrement démarre quand l\'appel est décroché, jamais pendant la sonnerie, et s\'arrête quand l\'appel se termine ou est mis en attente. Dans tous les modes sauf Désactivé, l\'écran d\'appel a un bouton Enregistrer ; appuyez sur la barre rouge d\'enregistrement pour arrêter.</string>
+    <string name="rec_contacts">Contacts à enregistrer</string>
+    <string name="rec_contacts_none">Aucun choisi pour l\'instant</string>
+    <plurals name="rec_contacts_count">
+        <item quantity="one">%d contact</item>
+        <item quantity="other">%d contacts</item>
+    </plurals>
+    <string name="rec_contacts_empty">Aucun contact avec un numéro de téléphone</string>
+    <string name="rec_group_files">Enregistrements</string>
+    <string name="rec_format">Type de fichier</string>
+    <string name="rec_format_flac">FLAC : sans perte (par défaut)</string>
+    <string name="rec_format_wav">WAV : sans perte, non compressé (volumineux)</string>
+    <string name="rec_format_opus">Opus (OGG) : léger</string>
+    <string name="rec_format_aac">AAC (M4A) : léger</string>
+    <string name="rec_on_hold">Continuer l\'enregistrement en attente</string>
+    <string name="rec_on_hold_sub">Si désactivé, l\'enregistrement s\'arrête pendant l\'attente et un nouveau fichier démarre à la reprise de l\'appel</string>
+    <string name="rec_copy_music">Enregistrer des copies dans Music/CallCtrl</string>
+    <string name="rec_copy_music_sub">Une copie de chaque nouvel enregistrement dans votre dossier Music, où les autres applis (et vos sauvegardes) peuvent la voir</string>
+    <string name="rec_auto_delete">Supprimer les enregistrements après</string>
+    <string name="rec_auto_never">Jamais</string>
+    <plurals name="rec_auto_days">
+        <item quantity="one">%d jour</item>
+        <item quantity="other">%d jours</item>
+    </plurals>
+    <plurals name="rec_count">
+        <item quantity="one">%d enregistrement</item>
+        <item quantity="other">%d enregistrements</item>
+    </plurals>
+    <string name="rec_files_footer">Les enregistrements restent dans le stockage privé de CallCtrl, exclus de toute sauvegarde et protégés par le verrouillage de l\'appli. Rien ne quitte le téléphone, sauf si vous partagez un enregistrement ou en enregistrez des copies dans Music. La suppression automatique ne retire que les copies propres à CallCtrl.</string>
+    <string name="rec_notice_title">Avant d\'enregistrer des appels</string>
+    <string name="rec_notice_body">En Belgique, vous pouvez enregistrer un appel auquel vous participez vous-même. L\'utilisation ou le partage de l\'enregistrement est limité : il faut en général le consentement de l\'autre personne, et vous ne pouvez pas le rendre public. Prévenez l\'autre personne que vous enregistrez.\n\nD\'autres pays ont d\'autres règles. Vous êtes responsable du respect de la loi là où vous êtes.</string>
+    <string name="rec_notice_ok">Activer l\'enregistrement</string>
+
+    <!-- Call recording: call screen -->
+    <string name="rec_button">Enregistrer</string>
+    <string name="rec_indicator">Enregistrement · %1$s</string>
+    <string name="rec_tap_stop">Appuyez pour arrêter</string>
+    <string name="rec_stop">Arrêter l\'enregistrement</string>
+    <string name="rec_starting">Démarrage de l\'enregistrement…</string>
+    <string name="rec_captured_split">Les deux côtés, captés séparément</string>
+    <string name="rec_captured_downlink">Uniquement la voix de l\'autre personne</string>
+    <string name="rec_captured_uplink">Uniquement votre voix</string>
+
+    <!-- Call recording: notifications and problems -->
+    <string name="ch_recording">Enregistrement des appels</string>
+    <string name="ch_recording_desc">Quand un appel n\'a pas pu être enregistré, ou qu\'un enregistrement s\'est arrêté trop tôt</string>
+    <string name="rec_problem_not_ready">Appel non enregistré</string>
+    <string name="rec_problem_not_ready_text">Shizuku n\'est pas démarré, ou CallCtrl n\'y est pas autorisé. Voir Paramètres > Appli Téléphone > Enregistrement des appels.</string>
+    <string name="rec_problem_lost">Enregistrement arrêté</string>
+    <string name="rec_problem_lost_text">Shizuku s\'est arrêté pendant l\'appel. Ce qui a été enregistré jusque-là est conservé.</string>
+    <string name="rec_problem_refused">Appel non enregistré</string>
+    <string name="rec_problem_refused_text">Votre téléphone n\'a pas partagé l\'audio de l\'appel. CallCtrl n\'enregistre jamais le micro à la place.</string>
+    <string name="rec_problem_storage">Enregistrement arrêté : stockage plein</string>
+    <string name="rec_problem_storage_text">Votre téléphone n\'a presque plus d\'espace. Ce qui a été enregistré jusque-là est conservé.</string>
+    <string name="rec_problem_error">Enregistrement arrêté</string>
+    <string name="rec_problem_error_text">L\'enregistrement n\'a pas pu être écrit. Ce qui a été enregistré jusque-là est conservé.</string>
+
+    <!-- Call recording: the Recordings screen -->
+    <string name="recordings">Enregistrements</string>
+    <string name="recordings_empty">Aucun enregistrement</string>
+    <string name="recordings_empty_body">Les appels enregistrés apparaissent ici. Activez l\'enregistrement dans Paramètres > Appli Téléphone > Enregistrement des appels.</string>
+    <string name="rec_play">Lire</string>
+    <string name="rec_pause">Pause</string>
+    <string name="rec_share">Partager</string>
+    <string name="rec_share_note">Partager un enregistrement d\'appel nécessite en général le consentement de l\'autre personne.</string>
+    <string name="rec_delete">Supprimer l\'enregistrement</string>
+    <string name="rec_delete_title">Supprimer cet enregistrement ?</string>
+    <string name="rec_delete_body">L\'enregistrement est supprimé de CallCtrl. Les copies dans Music ou celles que vous avez partagées restent. Cette action est irréversible.</string>
+    <string name="rec_save_copy">Enregistrer une copie dans Music/CallCtrl</string>
+    <string name="rec_saved_copy">Enregistré dans Music/CallCtrl</string>
+    <string name="rec_save_failed">Impossible d\'enregistrer la copie</string>
+    <string name="rec_play_failed">Impossible de lire cet enregistrement</string>
+    <string name="rec_open_failed">Impossible d\'ouvrir cet enregistrement</string>
+    <plurals name="rec_unreadable_title">
+        <item quantity="one">%1$d enregistrement chiffré ne peut pas être ouvert</item>
+        <item quantity="other">%1$d enregistrements chiffrés ne peuvent pas être ouverts</item>
+    </plurals>
+    <string name="rec_unreadable_body">CallCtrl chiffre les enregistrements terminés avec une clé gardée par le matériel sécurisé de ce téléphone, et cette clé n\'est pas disponible pour le moment. Les enregistrements sont conservés tels quels et rien n\'est supprimé. Les nouveaux enregistrements fonctionnent toujours.</string>
+    <string name="rec_unreadable_retry">Réessayer</string>
+    <string name="rec_detail_file">Fichier : %1$s</string>
+    <string name="rec_detail_capture">Capté : %1$s</string>
+    <string name="rec_khz">%1$s kHz</string>
+    <string name="rec_mono">mono</string>
+    <string name="rec_stereo">stéréo</string>
+    <string name="rec_bits">%1$d bits</string>
+    <string name="rec_float">32 bits flottant</string>
+    <string name="rec_source_call">audio de l\'appel, les deux côtés</string>
+    <string name="rec_source_split">les deux côtés, captés séparément</string>
+    <string name="rec_source_down">uniquement l\'autre personne</string>
+    <string name="rec_source_up">uniquement vous</string>
+    <string name="rec_ended_shizuku">Arrêté trop tôt : Shizuku s\'est arrêté</string>
+    <string name="rec_ended_storage">Arrêté trop tôt : stockage plein</string>
+    <string name="rec_ended_error">Arrêté trop tôt</string>
+    <string name="rec_part">Partie %1$d</string>
+    <string name="rec_conference">Conférence</string>
+    <string name="rec_forgot_title">Supprimer aussi vos enregistrements d\'appels ?</string>
+    <plurals name="rec_forgot_body">
+        <item quantity="one">%d enregistrement d\'appel est conservé dans CallCtrl. Sans le verrouillage de l\'appli, toute personne utilisant ce téléphone peut l\'écouter.</item>
+        <item quantity="other">%d enregistrements d\'appels sont conservés dans CallCtrl. Sans le verrouillage de l\'appli, toute personne utilisant ce téléphone peut les écouter.</item>
+    </plurals>
+    <string name="rec_forgot_delete">Supprimer les enregistrements</string>
+    <string name="rec_forgot_keep">Garder les enregistrements</string>
+
+    <!-- Calls: confirm before calling, flip to silence -->
+    <string name="ok">OK</string>
+    <string name="try_again">Réessayer</string>
+    <string name="group_calls_options">Appels</string>
+    <string name="confirm_calls">Confirmer avant d\'appeler</string>
+    <string name="confirm_calls_sub">Demander \"Appeler … ?\" avant qu\'un appel lancé dans CallCtrl parte. Les numéros d\'urgence ne sont jamais retardés</string>
+    <string name="confirm_call_title">Appeler %1$s ?</string>
+    <string name="flip_to_silence">Retourner pour couper la sonnerie</string>
+    <string name="flip_to_silence_sub">Posez le téléphone face contre la table pendant qu\'il sonne pour arrêter la sonnerie. L\'appel continue d\'arriver et vous pouvez toujours répondre</string>
+
+    <!-- Speed dial -->
+    <string name="speed_dial">Numérotation rapide</string>
+    <string name="speed_dial_sub_none">Appuyez de manière prolongée sur une touche du clavier pour appeler un numéro</string>
+    <plurals name="speed_dial_count">
+        <item quantity="one">%1$d touche définie</item>
+        <item quantity="other">%1$d touches définies</item>
+    </plurals>
+    <string name="speed_dial_footer">Sur le clavier, appuyez de manière prolongée sur une touche de 2 à 9 pour appeler son numéro. La touche 1 appelle la messagerie vocale et la touche 0 saisit +.</string>
+    <string name="speed_dial_key">Touche %1$d</string>
+    <string name="speed_dial_key_title">Numérotation rapide sur la touche %1$d</string>
+    <string name="speed_dial_not_set">Non définie</string>
+    <string name="speed_dial_pick_contact">Choisir dans les contacts</string>
+    <string name="speed_dial_type_number">Saisir un numéro</string>
+    <string name="speed_dial_remove">Supprimer</string>
+    <string name="speed_dial_pick_failed">Impossible d\'utiliser ce numéro</string>
+    <string name="speed_dial_unset">Pas encore de numérotation rapide sur la touche %1$s. Définissez-la dans Paramètres › Numérotation rapide</string>
+
+    <!-- Decline messages -->
+    <string name="decline_messages">Messages de refus</string>
+    <string name="decline_messages_sub_standard">Les trois fournis avec CallCtrl</string>
+    <string name="decline_messages_sub_own">Vos propres messages</string>
+    <string name="decline_messages_footer">Les textes proposés par \"Répondre par un message\" quand un appel arrive, jusqu\'à 6. Appuyez sur l\'un d\'eux pour le modifier ou le supprimer. Supprimez-les tous, ou appuyez sur la ligne de réinitialisation, pour retrouver les trois messages standard.</string>
+    <string name="decline_messages_add">Ajouter un message</string>
+    <string name="decline_messages_edit">Modifier le message</string>
+    <string name="decline_messages_delete">Supprimer le message</string>
+    <string name="decline_messages_reset">Revenir aux messages standard</string>
+
+    <!-- Quiet mode -->
+    <string name="quiet_mode">Mode silencieux</string>
+    <string name="quiet_mode_sub_off">Désactivé. Les appels sonnent à toute heure</string>
+    <string name="quiet_mode_sub_on">Les appels ne sonnent pas de %1$s à %2$s</string>
+    <string name="quiet_needs_default">Le mode silencieux ne fonctionne que si CallCtrl est votre appli Téléphone par défaut : c\'est alors qu\'Android la consulte pour chaque appel entrant.</string>
+    <string name="quiet_enabled">Mode silencieux programmé</string>
+    <string name="quiet_enabled_sub">Pendant ces heures, les appels entrants ne sonnent pas et ne vibrent pas. Ils s\'affichent quand même à l\'écran et dans Récents, et rien n\'est rejeté</string>
+    <string name="quiet_from">De</string>
+    <string name="quiet_until">À</string>
+    <string name="quiet_footer">Si \"À\" est plus tôt que \"De\", la période passe minuit. La même heure deux fois signifie toute la journée. Les numéros d\'urgence sonnent toujours.</string>
+    <string name="quiet_days">Jours</string>
+    <string name="quiet_days_footer">Les jours où la période silencieuse commence. Une nuit qui commence le vendredi se prolonge jusqu\'au samedi matin.</string>
+    <string name="quiet_exceptions">Sonnent quand même</string>
+    <string name="quiet_exceptions_footer">Nécessite l\'accès à vos contacts. Les appelants avec un numéro masqué ne comptent jamais comme contact.</string>
+    <string name="quiet_favourites">Favoris</string>
+    <string name="quiet_favourites_sub">Les appels de vos contacts favoris sonnent normalement</string>
+    <string name="quiet_contacts">Tous vos contacts</string>
+    <string name="quiet_contacts_sub">Seuls les appelants que vous ne connaissez pas sont rendus muets</string>
+
+    <!-- Search in call history -->
+    <string name="search_history">Rechercher dans l\'historique</string>
+    <string name="search_close">Fermer la recherche</string>
+    <string name="search_history_hint">Nom, numéro, note ou #tag</string>
+    <string name="search_history_none">Aucun appel trouvé</string>
+    <string name="search_history_none_body">La recherche porte sur les noms, les numéros et vos propres notes et tags, dans les 1 000 appels les plus récents.</string>
+
+    <!-- Notes and tags on calls -->
+    <string name="note_title">Note sur cet appel</string>
+    <string name="note_label">Note</string>
+    <string name="note_tags_label">Tags</string>
+    <string name="note_tags_hint">travail, à suivre</string>
+    <string name="note_hint">Appuyez sur un appel pour ajouter une note ou des tags.</string>
+    <string name="note_edit">Ajouter ou modifier la note</string>
+    <string name="note_has">A une note</string>
+    <string name="note_unreadable">Vos notes sont stockées chiffrées et ne peuvent pas être ouvertes pour le moment. Elles sont conservées. Appuyez ici pour réessayer.</string>
+    <string name="note_save_failed">Impossible d\'enregistrer la note</string>
+
+    <!-- History export -->
+    <string name="history_export">Exporter l\'historique des appels</string>
+    <string name="history_export_sub">Chaque appel avec vos notes et tags, en fichier CSV pour un tableur. Le fichier n\'est pas chiffré</string>
+    <string name="history_exporting">Exportation…</string>
+    <plurals name="history_exported">
+        <item quantity="one">%1$d appel exporté</item>
+        <item quantity="other">%1$d appels exportés</item>
+    </plurals>
+    <string name="history_export_failed">Impossible d\'écrire le fichier</string>
+
+    <!-- Call-back reminders -->
+    <string name="ch_reminder">Rappels pour rappeler</string>
+    <string name="ch_reminder_desc">Les rappels que vous avez programmés pour rappeler quelqu\'un</string>
+    <string name="remind_call_back">Me rappeler de rappeler</string>
+    <string name="remind_call_back_sub">Une notification à l\'heure choisie</string>
+    <string name="remind_15m">Dans 15 minutes</string>
+    <string name="remind_30m">Dans 30 minutes</string>
+    <string name="remind_1h">Dans 1 heure</string>
+    <string name="remind_3h">Dans 3 heures</string>
+    <string name="remind_evening">Ce soir</string>
+    <string name="remind_tomorrow">Demain matin</string>
+    <string name="remind_footer">Android peut afficher un rappel avec quelques minutes de retard quand le téléphone est au repos.</string>
+    <string name="remind_in_hour">Me le rappeler dans 1 heure</string>
+    <string name="reminder_set">Rappel programmé pour %1$s</string>
+    <string name="reminder_set_hour">Rappel programmé dans une heure</string>
+    <string name="reminder_failed">Impossible de programmer le rappel</string>
+    <string name="reminder_title">Rappeler %1$s</string>
+    <string name="reminder_text">Vous avez demandé un rappel</string>
+    <string name="reminder_public">Rappel pour rappeler</string>
+    <string name="reminders">Rappels pour rappeler</string>
+    <string name="reminders_sub_none">Aucun. Ajoutez-en un depuis un appel dans Récents</string>
+    <plurals name="reminders_count">
+        <item quantity="one">%1$d rappel en attente</item>
+        <item quantity="other">%1$d rappels en attente</item>
+    </plurals>
+    <string name="reminders_empty">Aucun rappel</string>
+    <string name="reminders_empty_body">Appuyez sur un appel dans Récents et choisissez \"Me rappeler de rappeler\".</string>
+    <string name="reminders_footer">Appuyez sur un rappel pour le supprimer.</string>
+    <string name="reminders_unreadable">Impossible d\'ouvrir vos rappels</string>
+    <string name="reminders_unreadable_body">Ils sont stockés chiffrés et ne peuvent pas être ouverts pour le moment. Ils sont conservés.</string>
+    <string name="reminder_remove_title">Supprimer ce rappel ?</string>
+    <string name="reminder_remove_body">Vous ne serez pas invité à rappeler.</string>
+    <string name="reminder_remove">Supprimer</string>
+
+    <!-- Settings file -->
+    <string name="value_on">Activé</string>
+    <string name="value_off">Désactivé</string>
+    <string name="settings_file_title">Fichier de paramètres</string>
+    <string name="settings_file_footer">Un fichier de paramètres contient les interrupteurs du clavier, de Récents et des appels, votre numérotation rapide, vos messages de refus et le mode silencieux, en texte lisible (non chiffré). Il ne contient jamais le verrouillage de l\'appli ni son code, ni si ou quels appels sont enregistrés, ni les règles de filtrage (elles ont leur propre export), ni les notes, rappels ou l\'historique des appels.</string>
+    <string name="settings_file_export">Exporter les paramètres</string>
+    <string name="settings_file_export_sub">Enregistrer vos paramètres dans un fichier</string>
+    <string name="settings_file_import">Importer les paramètres</string>
+    <string name="settings_file_import_sub">Récupérer des paramètres depuis un fichier. Vous voyez d\'abord ce qui change</string>
+    <string name="settings_file_exported">Paramètres exportés.</string>
+    <string name="settings_file_export_failed">Impossible d\'écrire le fichier.</string>
+    <string name="settings_file_not_ours">Ce n\'est pas un fichier de paramètres CallCtrl, ou il est illisible.</string>
+    <string name="settings_file_same">Le fichier a les mêmes paramètres que maintenant. Rien à changer.</string>
+    <string name="settings_file_will_change">Ceci va changer :</string>
+    <string name="settings_file_speed_dial">Numérotation rapide : remplacée par celle du fichier (%1$d touches)</string>
+    <string name="settings_file_messages">Messages de refus : remplacés par ceux du fichier</string>
+    <string name="settings_file_quiet_on">Mode silencieux : activé, de %1$s à %2$s</string>
+    <string name="settings_file_quiet_off">Mode silencieux : désactivé</string>
+    <string name="settings_file_record_format">Type de fichier d\'enregistrement</string>
+    <string name="settings_file_record_on_hold">Continuer l\'enregistrement en attente</string>
+    <string name="settings_file_refused">Laissés tels quels, car un import ne rend jamais CallCtrl moins privé :</string>
+    <string name="settings_file_confirm_title">Importer ces paramètres ?</string>
+    <string name="settings_file_confirm">Importer</string>
+    <string name="settings_file_imported">Paramètres importés.</string>
+</resources>
