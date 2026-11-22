@@ -103,7 +103,6 @@ object ShizukuGate {
             .daemon(false)
             .processNameSuffix("capture")
             .tag("callctrl-capture")
-            .debuggable(BuildConfig.DEBUG)
             .version(BuildConfig.VERSION_CODE)
     }
 
