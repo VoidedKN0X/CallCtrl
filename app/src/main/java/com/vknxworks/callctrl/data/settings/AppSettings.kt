@@ -21,11 +21,12 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.Json
-import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import java.io.IOException
 
 val Context.appDataStore: DataStore<Preferences> by preferencesDataStore(name = "callctrl")
@@ -130,9 +131,26 @@ class SettingsRepository(private val context: Context, scope: CoroutineScope) {
         if (e is IOException) emit(emptyPreferences()) else throw e
     }
 
-    val settings: StateFlow<AppSettings> = prefs
-        .map { it.toSettings() }
-        .stateIn(scope, SharingStarted.Eagerly, AppSettings())
+    private val current = MutableStateFlow(AppSettings())
+    private val read = MutableStateFlow(false)
+
+    /** The settings; the defaults until the saved ones have been read (see [loaded]). */
+    val settings: StateFlow<AppSettings> = current.asStateFlow()
+
+    /**
+     * True once the saved settings have been read from storage. Always set after [settings] got its first
+     * saved value, so whoever sees `true` here also sees the saved settings.
+     */
+    val loaded: StateFlow<Boolean> = read.asStateFlow()
+
+    init {
+        scope.launch {
+            prefs.map { it.toSettings() }.collect { s ->
+                current.value = s
+                read.value = true
+            }
+        }
+    }
 
     private fun Preferences.toSettings() = AppSettings(
         keypadTones = this[K.keypadTones] ?: true,

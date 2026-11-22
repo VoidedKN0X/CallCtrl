@@ -68,7 +68,8 @@ class MainActivity : ComponentActivity() {
  */
 fun ComponentActivity.secureBeforeFirstFrame() {
     val c = container
-    if (c.settings.settings.value.hideScreenshots || lockCovering(c.vault)) {
+    // Until the saved settings are read, "Hide in screenshots" counts as on (it may be).
+    if (!c.settings.loaded.value || c.settings.settings.value.hideScreenshots || lockCovering(c.vault)) {
         window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
     }
 }
@@ -86,8 +87,11 @@ fun CtrlWindow(activity: ComponentActivity, content: @Composable () -> Unit) {
         activity.enableEdgeToEdge(statusBarStyle = bars, navigationBarStyle = bars)
         onDispose { }
     }
+    // Read before the settings: once this is true, the settings read below are the saved ones.
+    val loaded by c.settings.loaded.collectAsStateWithLifecycle()
     val settings by c.settings.settings.collectAsStateWithLifecycle()
-    val secure = settings.hideScreenshots || lockCovering(c.vault)
+    // Hidden from screenshots until the saved settings are known.
+    val secure = !loaded || settings.hideScreenshots || lockCovering(c.vault)
     val blankRecents = settings.hideRecents || c.vault.enabled
     LaunchedEffect(secure, blankRecents) {
         if (secure) activity.window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
