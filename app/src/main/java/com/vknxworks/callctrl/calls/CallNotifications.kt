@@ -34,6 +34,8 @@ object CallNotifications {
     private var screenedCount = 0
     private val photos = android.util.LruCache<String, Bitmap>(8)
 
+    @Volatile private var channelsMade = false
+
     fun channels(context: Context) {
         val nm = context.getSystemService(NotificationManager::class.java) ?: return
         nm.createNotificationChannel(NotificationChannel(CH_INCOMING, context.getString(R.string.ch_incoming), NotificationManager.IMPORTANCE_HIGH).apply {
@@ -86,7 +88,11 @@ object CallNotifications {
 
     /** Shows the notification for the most important call: ringing first, then the ongoing one. */
     fun update(context: Context, calls: List<CallInfo>) {
-        channels(context)
+        // Runs on every change during a call; the channels only need making once per process.
+        if (!channelsMade) {
+            channels(context)
+            channelsMade = true
+        }
         val nm = context.getSystemService(NotificationManager::class.java) ?: return
         val main = calls.firstOrNull { it.ringing } ?: calls.firstOrNull { !it.ended }
         if (main == null) {

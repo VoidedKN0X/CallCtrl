@@ -12,11 +12,13 @@ import com.vknxworks.callctrl.calls.ScreeningService
 import com.vknxworks.callctrl.container
 import com.vknxworks.callctrl.data.ContactsRepository
 import com.vknxworks.callctrl.data.Phone
+import com.vknxworks.callctrl.data.settings.AppSettings
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -74,8 +76,18 @@ object CallRecorder {
     private val parts = HashMap<Call, Int>()
     /** The capture failed for this call: don't try again on its own (a tap on Record does). */
     private val failed = HashSet<Call>()
+    /** Calls added and not yet removed, so a decision that finishes after a short call ended is dropped. */
+    private val known = HashSet<Call>()
     private var calls: List<CallInfo> = emptyList()
     private var current: Call? = null
+
+    /**
+     * The saved settings, once read from disk. The settings StateFlow starts with placeholder defaults (recording
+     * off), and a call that wakes CallCtrl from a closed process arrives before it has loaded them.
+     */
+    @Volatile private var loaded: AppSettings? = null
+
+    private fun settingsNow(context: Context): AppSettings = loaded ?: context.container.settings.settings.value
 
     // Worker-thread state.
     @Volatile private var workerTarget: Call? = null
@@ -90,9 +102,12 @@ object CallRecorder {
 
     private fun ctx(context: Context) {
         if (app == null) {
-            app = context.applicationContext
+            val a = context.applicationContext
+            app = a
             ShizukuGate.start(context)
             ShizukuGate.onDead = { onCaptureLost() }
+            // Later changes (the first value may still be the placeholder; each call reads the disk itself).
+            scope.launch { a.container.settings.settings.drop(1).collect { loaded = it } }
         }
     }
 
@@ -102,24 +117,32 @@ object CallRecorder {
     fun onAdded(context: Context, call: Call) {
         ctx(context)
         val c = context.applicationContext
-        val settings = c.container.settings.settings.value
-        if (settings.recordMode == RecordMode.OFF) {
-            wanted[call] = false
-            return
-        }
         val number = call.details.handle?.schemeSpecificPart?.takeIf { it.isNotBlank() }
         val hidden = number == null || call.details.handlePresentation != android.telecom.TelecomManager.PRESENTATION_ALLOWED
         val conference = call.details.hasProperty(Call.Details.PROPERTY_CONFERENCE)
+        known += call
         scope.launch {
+            // Read from disk: when this call started CallCtrl, the in-memory settings are still the defaults
+            // (recording off). Until this is decided, the call counts as not recorded (wanted has no entry).
+            val settings = runCatching { c.container.settings.load() }.getOrNull() ?: settingsNow(c)
+            loaded = settings
+            if (call !in known) return@launch
+            if (settings.recordMode == RecordMode.OFF) {
+                if (wanted[call] == null) wanted[call] = false
+                update()
+                return@launch
+            }
             val looked = if (!hidden && number != null && Phone.has(c, android.Manifest.permission.READ_CONTACTS)) {
                 withContext(Dispatchers.IO) { ContactsRepository.lookup(c, number) }
             } else null
+            if (call !in known) return@launch
             val f = CallFacts(number, hidden, looked?.name != null, conference)
             facts[call] = f
             names[call] = looked?.name ?: call.details.contactDisplayName?.toString()?.takeIf { it.isNotBlank() }
             val auto = withContext(Dispatchers.IO) {
                 RecordingRules.autoRecord(settings.recordMode, f, settings.recordContacts) { ScreeningService.forms(c, it) }
             }
+            if (call !in known) return@launch
             // A conference is recorded when one of the calls merged into it was.
             val fromChildren = conference && call.children.any { wanted[it] == true }
             if (wanted[call] == null) wanted[call] = auto || fromChildren
@@ -130,6 +153,7 @@ object CallRecorder {
     fun onRemoved(call: Call) {
         calls = calls.filter { it.call != call }
         update()
+        known.remove(call)
         wanted.remove(call)
         facts.remove(call)
         names.remove(call)
@@ -178,7 +202,7 @@ object CallRecorder {
 
     private fun update() {
         val context = app ?: return
-        val settings = context.container.settings.settings.value
+        val settings = settingsNow(context)
         val list = live()
         val target = RecordingPlanner.target(list, current, settings.recordOnHold)
         val needed = RecordingPlanner.needsCapture(list)
@@ -210,7 +234,7 @@ object CallRecorder {
                 fail(target, RecordProblem.SHIZUKU_NOT_READY)
                 return@bind
             }
-            val settings = context.container.settings.settings.value
+            val settings = settingsNow(context)
             val part = (parts[target] ?: 0) + 1
             parts[target] = part
             val info = Info(
@@ -334,7 +358,7 @@ object CallRecorder {
                 endReason = reason,
             )
             store.writeMeta(seg.file, done)
-            val settings = context.container.settings.settings.value
+            val settings = runCatching { kotlinx.coroutines.runBlocking { context.container.settings.load() } }.getOrNull() ?: settingsNow(context)
             if (settings.recordCopyToMusic) {
                 kotlinx.coroutines.runBlocking { store.copyToMusic(Recording(seg.file, done)) }
             }

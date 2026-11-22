@@ -72,8 +72,11 @@ import com.vknxworks.callctrl.ui.components.ScreenTopBar
 import com.vknxworks.callctrl.ui.theme.CtrlColors
 import com.vknxworks.callctrl.ui.theme.CtrlType
 import com.vknxworks.callctrl.ui.theme.Gutter
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 
 /**
@@ -261,13 +264,26 @@ private fun Player(r: Recording) {
         while (made == null && attempts < 2) {
             attempts++
             val source = c.recordings.playable(r) ?: break
-            made = runCatching {
-                MediaPlayer().apply {
-                    setDataSource(source.path)
-                    prepare()
-                    setOnCompletionListener { playing = false; position = 0; runCatching { seekTo(0) } }
+            // Made here (its events come on the main thread), prepared off it (a long FLAC or WAV is parsed
+            // then), and released again if it can't be prepared or this closes meanwhile.
+            val p = MediaPlayer()
+            val ready = try {
+                withContext(Dispatchers.IO) {
+                    p.setDataSource(source.path)
+                    p.prepare()
                 }
-            }.getOrNull()
+                true
+            } catch (e: CancellationException) {
+                runCatching { p.release() }
+                throw e
+            } catch (e: Exception) {
+                runCatching { p.release() }
+                false
+            }
+            if (ready) {
+                p.setOnCompletionListener { playing = false; position = 0; runCatching { it.seekTo(0) } }
+                made = p
+            }
         }
         loaded = made
         preparing = false

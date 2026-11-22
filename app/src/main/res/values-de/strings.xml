@@ -6,7 +6,10 @@
     <string name="app_lock_subtitle">Beim Öffnen von CallCtrl nach einer App-PIN fragen (und optional nach deinem Fingerabdruck). Eingehende Anrufe kannst du immer annehmen.</string>
     <string name="app_lock_footer">CallCtrl funktioniert komplett offline: keine Internetberechtigung, keine Analyse, kein Tracking. Deine Anrufe laufen über die Telefonie deines Smartphones, und die Anrufliste bleibt im Anrufprotokoll deines Smartphones.</string>
     <string name="lock_prompt_subtitle">Deine Anrufe und Kontakte</string>
-    <string name="lock_forgot_body">Die PIN kann nicht wiederhergestellt werden. CallCtrl setzt seine eigenen Einstellungen und Anruffilter-Regeln zurück und schaltet die App-Sperre aus. Anrufliste, Kontakte und blockierte Nummern werden nicht gelöscht. Wenn du Anrufaufnahmen hast, entscheidest du als Nächstes, ob du sie behältst.</string>
+    <string name="lock_forgot_body">Die PIN kann nicht wiederhergestellt werden. CallCtrl setzt seine eigenen Einstellungen und Anruffilter-Regeln zurück und schaltet die App-Sperre aus. Anrufliste, Kontakte und blockierte Nummern werden nicht gelöscht. Wenn du Anrufaufnahmen hast, entscheidest du als Nächstes, ob du sie behältst. Wenn dein Smartphone eine Displaysperre hat, bestätigst du zuerst damit.</string>
+    <string name="lock_reset_prompt_title">App-Sperre von CallCtrl zurücksetzen</string>
+    <string name="lock_reset_prompt_subtitle">Bestätige mit der Displaysperre deines Smartphones, dass du es bist</string>
+    <string name="lock_reset_prompt_failed">Displaysperre konnte nicht angezeigt werden</string>
 
     <!-- Tabs -->
     <string name="tab_keypad">Tastenfeld</string>

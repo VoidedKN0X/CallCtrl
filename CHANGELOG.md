@@ -4,6 +4,24 @@ What changed in each CallCtrl release. Every release on the [Releases page](http
 
 To publish a new version: bump `versionCode` and `versionName` in `app/build.gradle.kts`, add a section here, and push to `main`. Pushes without a version bump only build; they don't make a release.
 
+## Unreleased
+
+Built and checked by CI only: nothing here has been run on a phone yet.
+
+### Fixed
+
+- **Automatic call recording now also works for the first call after CallCtrl was closed.** When a call came in (or went out) while CallCtrl wasn't running, Android started it for the call, and the recorder decided whether to record before CallCtrl had read your settings. It then saw "Record calls automatically" as off and didn't record that call, without telling you. The recorder now reads your saved settings first; until it has decided (a few milliseconds), the call counts as not recorded, and your tap on Record always wins.
+- **The recording player no longer leaks when a recording can't be opened.** If a damaged recording couldn't be prepared, the half-made player stayed in memory (and a second one was made on the retry). It is now released, and a recording is opened in the background instead of on the main thread, so opening a long FLAC or WAV recording no longer makes the screen stutter.
+- **A short or declined call no longer stays in memory.** When the contact lookup for a call finished after the call had already ended, the call was kept until the phone app service stopped. It is now dropped.
+
+### Changed
+
+- **Less work during a call.** CallCtrl asked Android for the list of SIMs and recreated its five notification channels on every change during a call (HD voice, conference updates and so on). The SIMs are now asked once per call and the channels made once.
+
+### Security
+
+- **"Forgot PIN?" now asks for your phone's screen lock first.** Resetting CallCtrl's app lock (and deciding about your call recordings) now needs your phone's own PIN, pattern, password or a strong fingerprint, so someone who picks up your unlocked phone can't simply reset it. Cancelling the prompt changes nothing. If your phone has no screen lock, the reset works as before, after the confirmation.
+
 ## v0.6.1 (2026-11-22)
 
 Built and checked by CI only: nothing in this release had been run on a phone when it was published.

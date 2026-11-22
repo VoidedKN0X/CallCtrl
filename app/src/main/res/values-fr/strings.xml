@@ -6,7 +6,10 @@
     <string name="app_lock_subtitle">Demander un code (et éventuellement votre empreinte) à l\'ouverture de CallCtrl. Vous pouvez toujours répondre aux appels entrants.</string>
     <string name="app_lock_footer">CallCtrl fonctionne entièrement hors ligne : pas d\'autorisation Internet, pas d\'analyse, pas de pistage. Vos appels passent par la téléphonie de votre téléphone, et l\'historique reste dans le journal d\'appels de votre téléphone.</string>
     <string name="lock_prompt_subtitle">Vos appels et contacts</string>
-    <string name="lock_forgot_body">Le code ne peut pas être récupéré. CallCtrl réinitialise ses propres paramètres et règles de filtrage des appels, et désactive le verrouillage. Votre historique d\'appels, vos contacts et vos numéros bloqués ne sont pas supprimés. Si vous avez des enregistrements d\'appels, vous choisirez ensuite de les garder ou non.</string>
+    <string name="lock_forgot_body">Le code ne peut pas être récupéré. CallCtrl réinitialise ses propres paramètres et règles de filtrage des appels, et désactive le verrouillage. Votre historique d\'appels, vos contacts et vos numéros bloqués ne sont pas supprimés. Si vous avez des enregistrements d\'appels, vous choisirez ensuite de les garder ou non. Si votre téléphone a un verrouillage d\'écran, vous le confirmerez d\'abord avec celui-ci.</string>
+    <string name="lock_reset_prompt_title">Réinitialiser le verrouillage de CallCtrl</string>
+    <string name="lock_reset_prompt_subtitle">Utilisez le verrouillage d\'écran de votre téléphone pour confirmer votre identité</string>
+    <string name="lock_reset_prompt_failed">Impossible d\'afficher le verrouillage d\'écran</string>
 
     <!-- Tabs -->
     <string name="tab_keypad">Clavier</string>

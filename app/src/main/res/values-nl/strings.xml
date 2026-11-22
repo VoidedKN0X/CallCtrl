@@ -5,7 +5,10 @@
     <string name="app_lock_subtitle">Vraag een app-pincode (en eventueel je vingerafdruk) bij het openen van CallCtrl. Inkomende oproepen kun je altijd beantwoorden.</string>
     <string name="app_lock_footer">CallCtrl werkt volledig offline: het heeft geen internettoestemming, analytics of tracking. Je oproepen lopen via de telefonie van je telefoon zelf, en de oproepgeschiedenis blijft in het oproeplogboek van je telefoon.</string>
     <string name="lock_prompt_subtitle">Je oproepen en contacten</string>
-    <string name="lock_forgot_body">De pincode kan niet teruggehaald worden. CallCtrl reset zijn eigen instellingen en de regels voor oproepscreening en zet de app-vergrendeling uit. Je oproepgeschiedenis, contacten en geblokkeerde nummers worden niet verwijderd. Als je gespreksopnames hebt, kies je daarna of je ze houdt.</string>
+    <string name="lock_forgot_body">De pincode kan niet teruggehaald worden. CallCtrl reset zijn eigen instellingen en de regels voor oproepscreening en zet de app-vergrendeling uit. Je oproepgeschiedenis, contacten en geblokkeerde nummers worden niet verwijderd. Als je gespreksopnames hebt, kies je daarna of je ze houdt. Heeft je telefoon een schermvergrendeling, dan bevestig je eerst daarmee.</string>
+    <string name="lock_reset_prompt_title">App-vergrendeling van CallCtrl resetten</string>
+    <string name="lock_reset_prompt_subtitle">Bevestig met de schermvergrendeling van je telefoon dat jij het bent</string>
+    <string name="lock_reset_prompt_failed">De schermvergrendeling kon niet getoond worden</string>
     <!-- Tabs -->
     <string name="tab_keypad">Toetsenblok</string>
     <string name="tab_recents">Recent</string>

@@ -5,7 +5,10 @@
     <string name="app_lock_subtitle">Ask for an app PIN (and optionally your fingerprint) when opening CallCtrl. Incoming calls can always be answered.</string>
     <string name="app_lock_footer">CallCtrl works fully offline: it has no internet permission, analytics or tracking. Your calls go through your phone\'s own telephony, and the call history stays in your phone\'s call log.</string>
     <string name="lock_prompt_subtitle">Your calls and contacts</string>
-    <string name="lock_forgot_body">The PIN can\'t be recovered. CallCtrl will reset its own settings and call screening rules and turn the app lock off. Your call history, contacts and blocked numbers are not deleted. If you have call recordings, you choose next whether to keep them.</string>
+    <string name="lock_forgot_body">The PIN can\'t be recovered. CallCtrl will reset its own settings and call screening rules and turn the app lock off. Your call history, contacts and blocked numbers are not deleted. If you have call recordings, you choose next whether to keep them. If your phone has a screen lock, you\'ll confirm with it first.</string>
+    <string name="lock_reset_prompt_title">Reset CallCtrl\'s app lock</string>
+    <string name="lock_reset_prompt_subtitle">Use your phone\'s screen lock to confirm it\'s you</string>
+    <string name="lock_reset_prompt_failed">Couldn\'t show the screen lock prompt</string>
 
     <!-- Tabs -->
     <string name="tab_keypad">Keypad</string>

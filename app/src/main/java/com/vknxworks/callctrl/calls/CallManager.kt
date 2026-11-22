@@ -69,6 +69,8 @@ object CallManager {
     internal var service: CallService? = null
     private var appContext: Context? = null
     private val callers = HashMap<Call, Caller>()
+    /** [com.vknxworks.callctrl.data.Phone.callAccounts] while calls go on; null between calls. */
+    private var accounts: List<com.vknxworks.callctrl.data.CallAccount>? = null
     private var proximity: PowerManager.WakeLock? = null
 
     private val callback = object : Call.Callback() {
@@ -88,6 +90,8 @@ object CallManager {
         val number = numberOf(call)
         if (number != null) scope.launch {
             val found = withContext(Dispatchers.IO) { ContactsRepository.lookup(context.applicationContext, number) }
+            // The call may have ended meanwhile (a short or declined call): don't keep it in the map.
+            if (call !in callers) return@launch
             val name = found.name ?: callers[call]?.name
             callers[call] = found.copy(name = name)
             refresh()
@@ -116,6 +120,7 @@ object CallManager {
 
     fun clearAll() {
         callers.clear()
+        accounts = null
         _calls.value = emptyList()
         CallRecorder.onCalls(emptyList())
         updateProximity()
@@ -127,7 +132,10 @@ object CallManager {
         val all = svc?.calls.orEmpty()
         // Conference children are shown as one call (the conference itself).
         val top = all.filter { it.parent == null }
-        val accounts = appContext?.let { com.vknxworks.callctrl.data.Phone.callAccounts(it) }.orEmpty()
+        // The SIMs only change between calls: asked from Telecom once while calls go on, not on every change.
+        if (top.isEmpty()) this.accounts = null
+        val accounts = this.accounts ?: appContext?.let { com.vknxworks.callctrl.data.Phone.callAccounts(it) }.orEmpty()
+            .also { if (top.isNotEmpty()) this.accounts = it }
         _calls.value = top.map { c ->
             val d = c.details
             val state = d.state
